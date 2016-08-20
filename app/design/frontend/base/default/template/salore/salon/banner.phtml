@@ -1,0 +1,52 @@
+<?php $bannerObj = $this->getBanner() ?>
+<?php $banners = count($bannerObj)?>
+<?php $flagFirst = true?>
+<div class="slider-wrapper">
+	<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+	  <!-- Indicators -->
+	  <ol class="carousel-indicators">
+	    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+	    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+	    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+	  </ol>
+	  <!-- Wrapper for slides -->
+		<div class="carousel-inner">
+			<?php if($banners !=0) :?>
+			  <?php foreach ($bannerObj as $banner): ?>
+			
+			    <div class="item <?php if($flagFirst):?> active  <?php endif;?> ">
+			   		<div class="row">
+			   			<div class="col-sm-6 col-md-12 >">
+							<img alt="<?php echo $banner->getDescription() ? $banner->getDescription() : 'banner' ?>" src="<?php  echo $banner->getBannerUrl() ? $banner->getBannerUrl()  : ''?>">
+						</div>
+			   		</div>
+			    </div>
+		     <?php $flagFirst = false?>
+			    <?php endforeach;?>
+			    <?php else :?> 
+				 <div class="item active">
+				   		<div class="row">
+				   			<div class="col-sm-6 col-md-12">
+								<img src="<?php echo  Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/'.'salon/'.'default/'.'images/'.'banners/'.'spa-banner-1.jpg'?>">
+							</div>
+				   		</div>
+				 </div>
+				 <div class="item ">
+				    	<div class="row">
+				   			<div class="col-sm-6 col-md-12">
+								<img src="<?php echo  Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/'.'salon/'.'default/'.'images/'.'banners/'.'spa-banner-2.jpg'?>">
+							</div>
+				   		</div>
+				 </div>
+			    <?php endif;?>
+	  </div>
+	  <!-- Controls -->
+	  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+	    <span class="icon-large icon-chevron-left"></span>
+	  </a>
+	  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+	    <span class="icon-large icon-chevron-right"></span>
+	  </a>
+	</div>
+</div>
+

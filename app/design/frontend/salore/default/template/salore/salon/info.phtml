@@ -1,0 +1,9 @@
+<?php $salon = $this->getSalon()?>
+<div class="box general-info text-center">
+   	<a href="<?php echo Mage::helper('salon')->getUrl('home')?>"> 
+   		<img style="width: 162px;" src="<?php echo $salon->getImgRepresent() ? $salon->getImgRepresent() : $this->getSkinUrl('images/not-available.jpg') ?>" class="img-rounded">
+   	</a>
+	<a href="<?php echo Mage::helper('salon')->getUrl('home')?>">
+		<h2><?php echo $salon->getSalonName()?></h2>
+	</a>
+</div>

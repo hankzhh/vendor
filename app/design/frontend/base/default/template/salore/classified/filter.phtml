@@ -1,0 +1,16 @@
+<?php $categoryCollection = $this->getCategoryCollection()?>
+<div class="filter-wrapper">
+	<div class="currently">
+		<h3 class="block-subtitle"><?php echo $this->__('Category') ?></h3>
+		<ol class="list-unstyled">
+			<?php foreach($categoryCollection as $category):?>
+			<li>
+				<a href="<?php echo Mage::getUrl().'classified/?category='.$category->getData('entity_id').'&mode=list'?>">
+					<span class="value"><?php echo $category->getData('title')?></span>
+				</a>
+			</li>
+			<?php endforeach;?>
+		</ol>
+	</div>
+</div>
+	

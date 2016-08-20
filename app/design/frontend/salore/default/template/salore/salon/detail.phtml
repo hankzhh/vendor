@@ -1,0 +1,11 @@
+<?php $salon = $this->getSalon()?>
+<div class="box">
+	<h4><?php echo $this->__('Salon Information')?></h4>
+	<p><?php echo $this->__('Address: ') . $salon->getAddress()?></p>
+	<p><?php echo $this->__('City: ') . $salon->getCity()?></p>
+	<p><?php echo $this->__('State: ') . $salon->getRegion()?></p>
+	<p><?php echo $this->__('Telephone: ') . $salon->getTelephone()?></p>
+	<a href="<?php echo Mage::helper('salon')->getUrl('map')?>">
+		<p><?php echo $this->__('See us on the Map')?></p>
+	</a>
+</div>

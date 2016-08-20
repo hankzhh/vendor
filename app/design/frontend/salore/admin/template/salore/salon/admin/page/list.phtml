@@ -1,0 +1,181 @@
+<!-- /.row -->
+<?php $pageCollection = $this->getPageCollection() ?>
+<div class="row">
+	<div class="col-lg-12">
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+		<div class="content-wrapper">
+			<div class="panel-heading">
+				<?php echo $this->__('Page Management')?>
+			</div>
+			<div class="action-row">
+				<a href="<?php echo $this->helper('salon')->getUrl('admin/page/new')?>" class="btn btn-default"><?php echo $this->__('Add New')?></a>
+			</div>
+			<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div id="message-session"class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>" >
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+			<div id="message"class="" style="display: none">
+				<blockquote class="">
+				</blockquote>
+			</div>
+			<div>
+				<div class="row">
+					<div class="col-lg-12">
+						<table id="dataTables-menu"
+							class="table no-footer table-bordered"
+							aria-describedby="dataTables-example_info">
+							<thead>
+								<tr role="row">
+									<th class="sorting_asc" tabindex="0"
+										aria-controls="dataTables-example" rowspan="1" colspan="1"
+										style="width: 283px;" aria-sort="ascending"
+										aria-label="Rendering engine: activate to sort column ascending">Title</th>
+									<th class="sorting" tabindex="0"
+									aria-controls="dataTables-example" rowspan="1" colspan="1"
+									style="width: 361px;"
+									aria-label="Platform(s): activate to sort column ascending">Action</th>
+									<th class="sorting" tabindex="0"
+									aria-controls="dataTables-example" rowspan="1" colspan="1"
+									style="width: 361px;"
+									aria-label="Platform(s): activate to sort column ascending">Edit</th>
+									<th class="sorting" tabindex="0"
+										aria-controls="dataTables-example" rowspan="1" colspan="1"
+										style="width: 361px;"
+										aria-label="Platform(s): activate to sort column ascending">Delete</th>
+								</tr>
+							</thead>
+<tbody>
+								<?php $index = 0 ?>
+								<?php foreach ($pageCollection as $pageItem):?>
+								<tr title="<?php echo $pageItem->getData('entity_id')?>" class="gradeA <?php if (($index%2) == 0):?>old<?php else: ?>even<?php endif;?>">
+									<td class="sorting_1"><?php echo $pageItem->getData('title')?></td>
+									<td class=" ">
+										<div class="btn-group btn-toggle"> 
+									    	<button class="btn btn-sm btn-default power <?php echo ((int)$pageItem->getData('active') == 1 ) ? 'active btn-primary' : ''?>">ON</button>
+									    	<button class="btn btn-sm btn-default power <?php echo ((int)$pageItem->getData('active') == 0) ? 'active btn-primary' : ''?>">OFF</button>
+									  	</div>
+									</td>
+									<td><a class="btn btn-default" href="<?php echo Mage::helper('salon')->getUrl('admin/page/edit') . '?id=' . $pageItem->getData('entity_id') ?>">Edit</a></td>
+									<td><a onclick="ajaxDelete(this)"  class="btn btn-default" href="#">Delete</a></td>
+								</tr>
+								<?php $index++ ?>
+								<?php endforeach;?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- /.row (nested) -->
+			</div>
+			<!-- /.panel-body -->
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<script type="text/javascript">
+//<![CDATA[
+$('.power').click(function(event){
+	$('#message').css("display", "none");
+	if($('#message-session') != null)
+	{
+		$('#message-session').remove();
+	}
+	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+	var button = this;
+	var pageId = $(this).parent().parent().parent().attr('title');
+	var active = $(this).html();
+	var urlActive = '<?php echo $this->helper('salon')->getUrl('admin/page/ajaxactive')?>';
+	var str = $(this).attr('class');
+	var classArr = str.split(" ");
+	var checkActive = null;
+	classArr.forEach(function(item){
+		if(item === 'active')
+		{
+			checkActive = item;
+		}
+	});
+	if(checkActive == null)
+	{
+		///ajax is here
+		jQuery.ajax({
+    		type: "POST",
+    		url: urlActive,
+    		data: { id: pageId },
+    		dataType: "json",
+    	    success: function(data){
+        	    if(data.status === 'SUCCESS')
+        	    {
+            	    $(button).addClass('active btn-primary');
+					if(active === 'ON')
+					{
+						$(button).next().removeClass('active btn-primary');
+					}
+					else
+					{
+						$(button).prev().removeClass('active btn-primary');
+					}   
+					$('#message').addClass('animated bounceInDown text-success').css("display", "block");
+					$('#message').find('blockquote').addClass('bg-success').html(data.message);
+            	}
+        	    else
+        	    {
+        	    	$('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+					$('#message').find('blockquote').addClass('bg-danger').html(data.message);            	     
+            	}
+			},
+		}); 
+	}
+	else
+	{
+		return false;
+	}
+}); 
+
+ var urlDelete = '<?php echo Mage::helper('salon')->getUrl('admin/page/ajaxDelete')?>';
+ function ajaxDelete(arg)
+{
+	$('#message').css("display", "none");
+	if($('#message-session') != null)
+	{
+		$('#message-session').remove();
+	}
+	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+	var pageId = $(arg).parent().parent().attr('title');
+	var pageTitle = $(arg).parent().parent().children().first().html();
+	var r = confirm('['+pageTitle+'] Are you sure remove ' + pageTitle + ' page?');
+	if (r == true)
+	  {
+		jQuery.ajax({
+    		type: "POST",
+    		url: urlDelete,
+    		data: { id: pageId },
+    		dataType: "json",
+    	    success: function(data){
+        	    if(data.status === 'SUCCESS')
+        	    {
+        	    	 $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+ 					$('#message').find('blockquote').addClass('bg-success').html(data.message);    
+        	    	$(arg).parent().parent().remove();
+            	}
+        	    else
+        	    {
+        	    	 $('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+  					$('#message').find('blockquote').addClass('bg-danger').html(data.message); 
+            	}
+			},
+		}); 
+	  }   	
+}
+//]]>
+</script>
+
+						
+
+

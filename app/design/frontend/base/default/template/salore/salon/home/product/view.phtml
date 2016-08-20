@@ -1,0 +1,64 @@
+<?php $product = $this->getProduct();?>
+<div style="padding: 10px;" class="row col-sm-12 ">
+<form class="form-horizontal" role="form" action="" method="post">
+<div class="row">
+	  <div class="col-xs-6 col-md-3">
+	    <a href="#" class="thumbnail">
+	     <img src="<?php echo $product->getImageProduct() ? $product->getImageProduct() : $this->getSkinUrl('images/not-available.jpg')?>"  alt="" />
+	    </a>
+	  </div>
+	 <div class="col-xs-3 row col-md-3">
+	 	<div id="description" class="caption">
+    		 	<span id="productName" class="control-label ">ProductName : <?php echo $product->getProductName()?></span>
+    		 	<span id="description" class="control-label ">Description :<?php echo $product->getDescription()?></span>
+                
+                	<div class="price-box">
+	                   	<span  class="control-label ">Price : <?php $price = Mage::helper('salon')->stringFormatToPrice($product->getPrice())?></span> 
+	            			<?php if($product->getSpecialPrice()):?>
+		            			<?php $specialPrice = Mage::helper('salon')->stringFormatToPrice($product->getSpecialPrice());?>
+		                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+		                			<strong class="price text-muted" id="old-price-7"><s><?php echo $price ? $price : ''?></s></strong>
+		                			&nbsp;&nbsp;
+		                	    	<span class="price-label hidden"><?php echo $this->__('Special Price')?></span>
+		                			<strong class="price text-primary" id="product-price-7"><?php echo $specialPrice ? $specialPrice : ''?></strong>
+		                		<?php else:?>
+		                		<p class="price">
+		                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+		                			<strong class="text-primary" id="price"><?php echo $price ? $price : ''?></strong>
+		            			</p>
+	                		<?php endif;?>
+	                		 <span><button id="checkout" onclick="ajaxAddToCart(this,'add')" type="button" title="<?php echo $this->__('Add To Cart') ?>" class="btn nk-btn-default btn-cart" ><span><span><?php echo $this->__('Add To Cart') ?></span></span></button></span>
+                   </div>
+               	
+         </div>
+  </div>
+ </div>
+</form>
+</div>
+<script>
+var urlAddToCart = '<?php echo Mage::helper('salon')->getUrl('product/addToCart')?>';
+var miniLoading = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/salon/'.'default/'.'images/'.'mini_loading.gif' ?>';
+var url = window.location.pathname;
+var stuff = url.split('/');
+var id = stuff[stuff.length-1];
+var productname = $('#description').find('#productName').text();
+var price = $('#description').find('#price').text();
+var product = productname.substring(13);
+function ajaxAddToCart(params, type)
+{
+	jQuery.ajax({
+		type: "POST",
+		url: urlAddToCart,
+		data: {id: id, productname:product , price: price , type: type},
+		dataType: "json",
+	    success: function(data){
+	    	if(data.status =="SUCCESS")
+	    	{
+		    	window.location.href ="<?php echo Mage::helper('salon')->getUrl('cart')?>"
+		    	//alert('Thanh Cong');
+	    	}
+			
+		}
+	}); 
+}
+</script>

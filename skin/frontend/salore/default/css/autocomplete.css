@@ -1,0 +1,13 @@
+.search-suggestions{
+	border: 1px solid #aaa;
+	border-top: none;
+	background: #ffffff;
+}
+.search-suggestions .suggestion-item{
+	border-bottom: 1px solid #ddd;
+	padding: 5px 10px;
+}
+.search-suggestions .suggestion-item-selected
+{
+	background: #e0e0e0;
+}

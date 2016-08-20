@@ -1,0 +1,60 @@
+<?php $products = $this->getProductFromMongoDb()?>
+<?php $productTotal = count($products)?>
+<?php $item = 0; $rowNumber = ceil($productTotal / 4); $columnStt = 1;?>
+<?php if (is_array($products) && !empty($products)):?>
+<?php if(Mage::helper('salon/services')->allowRenderHeadText()):?>
+<h3><?php echo $this->__('Our Product')?></h3>
+<?php endif;?>
+<div class="item-wrapper row text-center content">
+   <?php foreach ($products as $product): ?>
+   		<?php if($item % $rowNumber == 0):?>
+		<div class="col-sm-3 col-xs-12 product-list">
+		<?php endif;?>	
+			<div class="thumbnail product-item item-box">
+				<div class="img-box">
+			 		<a href="<?php echo isset($product['entity_id']) ? Mage::helper('salon')->getUrl('product/view') .'id/'.$product['entity_id'] : ''?>">
+			 			<img src="<?php echo isset($product['thumbnail_image']) ? $product['thumbnail_image']['url'] : $this->getSkinUrl('images/not-available.jpg')?>"  alt="" />
+			 		</a>
+			 	</div>
+                <h4 class="product-name text-capitalize text-info">
+                	<a href="<?php echo isset($product['entity_id']) ? Mage::helper('salon')->getUrl('product/view') .'id/'.$product['entity_id'] : ''?>">
+                		<?php echo isset($product['product_name']) ? $product['product_name'] : ''?>
+                	</a>
+                </h4>
+                   
+                    <div class="price-box">
+                    <?php $price = isset($product['price']) ? Mage::helper('salon')->stringFormatToPrice($product['price']) : ''?>
+            			<?php if(isset($product['special_price']) && $product['special_price']):?>
+            			<?php $specialPrice = Mage::helper('salon')->stringFormatToPrice($product['special_price']);?>
+            			<p class="price">
+                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+                			<strong class="price text-muted" id="old-price-7"><s><?php echo $price ? $price : ''?></s></strong>
+                			&nbsp;&nbsp;
+                	    	<span class="price-label hidden"><?php echo $this->__('Special Price')?></span>
+                			<strong class="price text-primary" id="product-price-7"><?php echo $specialPrice ? $specialPrice : ''?></strong>
+                		</p>
+                		<?php else:?>
+                		<p class="price">
+                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+                			<strong class="text-primary" id=""><?php echo $price ? $price : ''?></strong>
+            			</p>
+                		<?php endif;?>
+                    </div>
+				</div>
+				<?php if((($item + 1) % $rowNumber) == 0):?>
+		<?php if(($rowNumber > 1) && ($columnStt == $productTotal % 4) && (($item + 1) % $columnStt == 0)){
+			 $rowNumber--;
+			 $item += (($rowNumber-1) - ($item % $rowNumber)) ;
+		}?>
+		<?php $columnStt++?>
+		</div>
+	<?php endif;?>
+	<?php $item++?>
+<?php endforeach;?>
+</div>
+<?php if(!$this->isHome):?>
+<div class="text-center">
+	<?php echo $this->getChildHtml('product.pager')?>
+</div>
+<?php endif;?>
+<?php endif;?>

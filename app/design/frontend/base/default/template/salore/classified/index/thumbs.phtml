@@ -1,0 +1,20 @@
+<?php $postArr = $this->getPostsByCategory()?>
+<div id="classifed-thumbs" class="tabbed-content">
+	<ul>
+	<?php foreach ($postArr as $post):?>
+		<li class="row">
+			<div class="img-thumb col-sm-1">
+				<a href="<?php echo Mage::getUrl('classified/view', array('id'=>$post['entity_id']))?>">
+					<img src="<?php echo isset($post['thumbnail_image']['url']) ? $post['thumbnail_image']['url'] : ''?>" alt="thumbs" />
+				</a>
+			</div>
+			<div class="info-thumb col-sm-11">
+				<p><a href="<?php echo Mage::getUrl('classified/view', array('id'=>$post['entity_id']))?>"><?php echo isset($post['title']) ? $post['title'] : ''?></a></p>
+				<p><?php echo isset($post['expired_date']) ? $post['expired_date'] : ''?></p>
+				<small><?php echo isset($post['description']) ? $post['description'] : ''?></small>
+			</div>
+		</li>
+	<?php endforeach;?>
+	</ul>
+	<?php echo $this->getChildHtml('classified.post.pager')?>
+</div>

@@ -1,0 +1,88 @@
+<?php $staff = $this->getStaff();?>
+<?php echo $this->getChildHtml('salon_admin_staff_header')?>
+<div class="row">
+	<div class="col-sm-6">
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+		<div class="col-sm-offset-3 page-title">
+			<?php if($this->getActionName() == 'edit'):?> 
+				<h1> Edit Your Salon Staff</h1>
+			<?php else: ?>
+			<?php $checked = true?>
+				<h3>Add New Your Salon Staff</h3>
+			<?php endif; ?>
+		</div>
+		<form class="form-horizontal" role="form" action="<?php echo $this->getActionForForm() ?>" method="post" id="form-validate" enctype="multipart/form-data">
+			<ul class="form-list list-unstyled row">
+				<li class="form-group">
+					<label for="title-content" class="col-sm-3 control-label"><em>*</em><?php echo $this->__('Name') ?></label>
+					<div class="col-sm-9" id="tit"> 
+						<input type="text" name="name" id="title-content" title="<?php echo $this->__('Name') ?>" placeholder="<?php echo $this->__('Insert Name') ?>"class="form-control required-entry" value="<?php echo $staff->getName()?>" required/>
+					</div>
+				</li>
+				<li class="form-group">
+					<label for="price" class="col-sm-3 control-label"><em>*</em><?php echo $this->__('Sex') ?></label>
+					<div id="checkbox" class="col-sm-9">
+						<?php if($staff->getSex() == 'male'):?>
+						<label class="checkbox-inline">	
+							<input type="radio" name="sex" value="male" <?php echo "checked"?>> Male
+						</label>
+						<label class="checkbox-inline">
+							<input type="radio" name="sex" value="female"> Female
+						</label>
+							<?php else :?>
+						<label class="checkbox-inline">	
+							<input type="radio" name="sex" value="male"> Male
+						</label>
+						<label class="checkbox-inline">
+							<input type="radio" name="sex" value="female" <?php echo 'checked'?>> Female
+						</label>
+						<?php endif;?>
+					</div>
+				</li>
+				<li class="form-group">
+					<label class="col-sm-3 control-label" for="age"><em>*</em><?php echo $this->__('Age') ?></label>
+					<div id="age" class="col-sm-9">
+						<input type="number" value="<?php echo $staff->getAge()?>" name="age" class="required-entry validate-number form-control" required/>
+					</div>
+				</li>
+				<li class="form-group"> 
+					<label class="col-sm-3 control-label" for="year"><em>*</em><?php echo $this->__('Year') ?></label>
+					<div class="col-sm-9 year" id="year">
+						<input type="number" value="<?php echo $staff->getYear()?>" name="year" class="required-entry validate-number form-control" required/>
+					</div>
+				</li>
+				<li class="form-group">
+					   <label class="col-sm-3 control-label" for="img_avatar"><?php echo $this->__('Avatar Image') ?></label>
+					   <div class="col-sm-9">
+					   	<input type="file" accept="image/*" name="img_avatar" id="img_avatar"  title="<?php echo $this->__('Avatar Image') ?>" />
+					   </div>
+				</li>
+				<li class="form-group">
+					   	<input type="hidden"name="id" id="staff_id" value="<?php echo $staff->getEntityId() ?  $staff->getEntityId() : ''?>" />
+				</li>
+				<li class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button  type="submit"
+							title="<?php echo $this->__('Save Staff') ?>" class="btn btn-default btn-save-information">
+							<?php echo $this->__('Save Staff') ?>
+						</button>
+					</div>
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>
+
+
+
+
+
+
+

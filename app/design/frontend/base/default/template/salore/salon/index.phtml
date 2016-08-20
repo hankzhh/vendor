@@ -1,0 +1,75 @@
+<?php echo $this->getChildHtml('salon.slider.category')?>
+<?php $salonArr = $this->getSalonArrAfterSort()?>
+<?php $faceText = $this->getTextForFaceBook($salonArr)?>
+<?php $faceArr = Mage::helper('salon')->getFaceBookData($faceText)?>
+<?php $_collectionSize = count($salonArr) ?>
+<?php if($_collectionSize > 0):?>
+<?php $rowItem = 0 ?>
+<?php $columnStt = 1?>
+<?php $rowNumber = ceil($_collectionSize / 6)?>
+<?php   for ($i = 0; $i < $_collectionSize; $i++): ?>
+	<?php if ($rowItem % $rowNumber == 0):?>
+		<div class="col-sm-2">
+	<?php endif;?>
+		<div class="thumbnail item">
+				<div class="img-box">
+            	<a href="<?php echo Mage::getUrl(Mage::helper('salon')->transportText($salonArr[$i]['salon_url']));?>">
+            		<img class="img-rounded img-represent lazy" src="<?php echo $this->getSkinUrl('images/loading.gif')?>" data-src="<?php echo isset($salonArr[$i]['img_represent']) ? $salonArr[$i]['img_represent'] : $this->getSkinUrl('images/not-available.jpg') ?>">
+            	</a>
+            	</div>
+            	<p class="description-para">
+            		<?php 
+            			echo isset($salonArr[$i]['salon_description']) ? Mage::helper('salon')->_substr($salonArr[$i]['salon_description'], 120, 3) : '';  
+					?>
+            	</p>
+            	<div class="caption text-center face-wrapper">
+            		<div class="face-group">
+            			<div class="salon-logo">
+            				<img class="logo-span" src="<?php echo isset($salonArr[$i]['logo']) ? $salonArr[$i]['logo'] : $this->getSkinUrl('images/not-available.jpg') ?>" class="" >
+            			</div>
+            			<div class="face-select" onclick="showFaceBook(this)">
+            				<p><strong><?php echo isset($salonArr[$i]['salon_name']) ? $salonArr[$i]['salon_name'] :'Salon'?></strong></p>
+            				<p>
+	            				<em></em>
+	            				<em class="face-count"><?php echo isset($faceArr[$i]['comment_count']) ? $faceArr[$i]['comment_count'] : 0 ?></em>
+	            				<em class="face-like"></em>
+	            				<em><?php echo isset($faceArr[$i]['like_count']) ? $faceArr[$i]['like_count'] : 0 ?></em>
+	            			</p>
+            			</div>
+            			<div class="btn-bonus" >
+	            			<a id="<?php echo $salonArr[$i]['salon_url']?>" href="" onclick="$(this).slfavorite(this, event)"><em  class="lovest"></em></a>
+            			</div>
+            			<div class="pseudo-class"></div>
+            		</div>
+            		<div class="face-comment"  style="display: none">
+					    <div class="box-collateral">
+					    	<div id="fb-root"></div>
+					    	<script type="text/javascript">(function (d, s, id) {
+					                var js, fjs = d.getElementsByTagName(s)[0];
+					                if (d.getElementById(id)) {
+					                    return;
+					                }
+					                js = d.createElement(s);
+					                js.id = id;
+					                js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+					                fjs.parentNode.insertBefore(js, fjs);
+					            }(document, 'script', 'facebook-jssdk'));
+				            </script>
+					        <fb:comments href="<?php echo Mage::getUrl(Mage::helper('salon')->transportText($salonArr[$i]['salon_url'] )) ?>" data-width="100%" num_posts="1" data-colorscheme="light"><div class="facebook-comment-loading">&nbsp;</div></fb:comments>
+					    </div>
+            		</div>
+            	</div>
+            </div>
+	<?php if((($rowItem + 1) % $rowNumber) == 0):?>
+		<?php if(($rowNumber > 1) && ($columnStt == $_collectionSize % 6) && (($rowItem + 1) % $columnStt == 0)){
+			 $rowNumber--;
+			 $rowItem += (($rowNumber-1) - ($rowItem % $rowNumber)) ;
+		}?>
+		<?php $columnStt++?>
+		</div>
+	<?php endif;?>
+	<?php $rowItem++?>
+<?php endfor; ?>
+<?php endif;?>
+
+

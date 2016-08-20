@@ -1,0 +1,77 @@
+<?php //$salonCollection = $this->getSalonResultCollection()?>
+<?php $salonArr = $this->getSalonResultArr()?>
+<div id="map_canvas" style="width: 100%; height:629px;"></div>
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+    //<![CDATA[
+   var salonData = <?php echo json_encode($salonArr)?>;
+   var bounds;
+    var infowindow;
+    var lat = '32.9678449';
+    var lng = '-96.88872019999999';
+    if(salonData.length == 0)
+    {
+    	var zipcode = $('#search-input').val();
+        $.ajax({
+           //url : "http://maps.googleapis.com/maps/api/geocode/json?address=santa+cruz&components=postal_code:"+zipcode+"&sensor=false",
+           url: "http://maps.googleapis.com/maps/api/geocode/json?address="+zipcode+"&sensor=false",
+           method: "POST",
+           success:function(data){
+               if(typeof data.results[0] != 'undefined' && typeof data.results[0] != 'undefined'){
+        	   		lat = data.results[0].geometry.location.lat;
+        	   		lng= data.results[0].geometry.location.lng;
+               }
+               var map = new google.maps.Map(document.getElementById('map_canvas'), {
+	           	   	zoom: 6,
+	           	    center: new google.maps.LatLng(lat, lng),
+	           	    mapTypeId: google.maps.MapTypeId.ROADMAP
+	           	});
+	           	var infowindow = new google.maps.InfoWindow({maxWidth: 320});
+           }
+        });
+    }
+    else
+    {
+	   var map = new google.maps.Map(document.getElementById('map_canvas'), {
+		   	zoom: 5,
+		    center: new google.maps.LatLng(lat, lng),
+		    mapTypeId: google.maps.MapTypeId.ROADMAP
+		});
+		var infowindow = new google.maps.InfoWindow({maxWidth: 320});
+		var marker, i;
+		var bounds = new google.maps.LatLngBounds();
+		//console.log(locations);
+		$.each(salonData, function(index, element) {
+		    	var marker = new google.maps.Marker({
+	   	    	position: new google.maps.LatLng(element.lat_varchar, element.lng_varchar),
+	   	        map: map,
+	   	        info:  '<div id="content">'+
+	   	        	   '<div id="siteNotice">'+
+	   	               '</div>'+
+	   	               '<a href="'+location.protocol + '//' + location.host + '/' +element.url_varchar+'"><h2 id="firstHeading" class="firstHeading">'+element.name_varchar+'</h2></a>'+
+	   	               '<div id="bodyContent">'+
+	   	               '<p>'+element.textSearchStandard+'</p>'+
+							'<p><a href="'+location.protocol + '//' + location.host + '/' +element.url_varchar + '/reservation">Reservation</a></p>'+ 
+	    	               '</div>'+
+	   	               '</div>' 
+	   	    });
+		     google.maps.event.addListener(marker, 'click', (function(marker, i) {
+		     	return function() {
+		        	infowindow.setContent(marker.info);
+		            infowindow.open(map, marker);
+		        }
+		     })(marker, i));
+		    bounds.extend(marker.getPosition());
+		});
+		map.setCenter(bounds.getCenter());
+		map.fitBounds(bounds);
+		//remove one zoom level to ensure no marker is on the edge.
+		map.setZoom(map.getZoom()-1); 
+		/*//set a minimum zoom 
+		 //if you got only 1 marker or all markers are on the same address map will be zoomed too much.
+		if(map.getZoom()> 10){
+		  map.setZoom(17);
+		} */ 
+    }
+    //]]>
+</script>

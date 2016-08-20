@@ -1,0 +1,124 @@
+<?php $contactss = $this->getContactCollection()?>
+<?php $numberContact = count($contactss)?>
+<div id="message"class="" style="display: none; margin-top: 8px;">
+				<blockquote class="">
+				</blockquote>
+			</div>
+<div class="panel-body">
+	<div class="panel-heading">
+				<?php echo $this->__('Salon Message')?>
+			</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<table id="dataTables-menu" class="table no-footer table-bordered">
+							<thead>
+								<tr role="row">
+									<th><?php echo $this->__('Name')?></th>
+									<th><?php echo $this->__('Email')?></th>
+									<th><?php echo $this->__('Subject')?></th>
+									<th><?php echo $this->__('Telephone')?></th>
+									<th><?php echo $this->__('Time')?></th>
+									<th><?php echo $this->__('Comment')?></th>
+									<th><?php echo $this->__('Read')?></th>
+									<th><?php echo $this->__('Delete')?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php $index = 0 ?>
+								<?php foreach ($contactss as $contacts):?>
+							
+								<tr  style = "<?php echo isset($contacts['style'])?$contacts['style']:''?>" title="<?php echo $contacts['entity_id'] ?>" class="gradeA <?php if (($index%2) == 0):?>old<?php else: ?>even<?php endif;?>">
+									<td class="sorting_1"><?php echo isset($contacts['contactname']) ? $contacts['contactname'] : '' ?></td>
+									<td class=""><?php echo isset($contacts['email']) ? $contacts['email'] : '' ?></td>
+									<td class=""><?php echo isset($contacts['subject']) ? $contacts['subject'] : '' ?></td>
+									<td class=""><?php echo isset($contacts['telephone']) ? $contacts['telephone'] :''?></td>
+									<td class=""><?php if(isset($contacts['create_date']) && $contacts['create_date'])  echo Mage::helper('salon')->niceTime($contacts['create_date'])   ?></td>
+									<td class=""><?php echo isset($contacts['comment']) ? $contacts['comment'] : ''?></td>
+									<td><a onclick="ajaxRead(this)" class="btn btn-default" href="javascript:;"><?php echo  Mage::helper('salon')->__('Read')?></a></td>
+									<td><a onclick="ajaxDelete(this)"  class="btn btn-default" href="javascript:;"><?php echo Mage::helper('salon')->__('Delete')?></a></td>
+								</tr>
+								<?php $index++ ?>
+							
+								<?php endforeach;?>
+							</tbody>
+						</table>
+						<div class="text-center">
+							<?php echo $this->getChildHtml('contact.pager')?>
+						</div>
+					</div>
+				</div>
+				<!-- /.row (nested) -->
+</div>
+<script type="text/javascript">
+//<![CDATA[
+        var urlRead = '<?php echo $this->helper('salon')->getUrl('admin/contact/ajaxread')?>';
+		function ajaxRead(arg)
+		{
+			var parentTr = $(arg).parent().parent();
+			openModal(parentTr);
+			var readText = $(arg).text();
+			var loadImg  = '<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'salore/adminhtml/add.gif';?>" />';
+			$(arg).html(loadImg);
+			$('#message').css("display", "none");
+			if($('#message-session') != null)
+			{
+				$('#message-session').remove();
+			}
+			$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+			$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+			var contactId = $(arg).parent().parent().attr('title');
+				jQuery.ajax({
+		    		type: "POST",
+		    		url: urlRead,
+		    		data: { id: contactId },
+		    		dataType: "json",
+		    	    success: function(data){
+		        	   if(data.status =="SUCCESS")
+		        	   {
+		        		   numMessage--;
+		        		   $('#num-message').html(numMessage);
+			        	   $(parentTr).css('opacity', 0.4);
+		        	   }
+		        	   $(arg).html(readText);
+					}
+				});
+		}
+		var urlDelete = '<?php echo $this->helper('salon')->getUrl('admin/contact/ajaxdelete')?>';
+		function ajaxDelete(arg)
+		{
+			$('#message').css("display", "none");
+			if($('#message-session') != null)
+			{
+				$('#message-session').remove();
+			}
+			$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+			$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+			var contactId = $(arg).parent().parent().attr('title');
+			if(confirm('Are you sure delete message ?'))
+			{
+				jQuery.ajax({
+		    		type: "POST",
+		    		url: urlDelete,
+		    		data: { id: contactId },
+		    		dataType: "json",
+		    	    success: function(data){
+		        	   if(data.status =="SUCCESS")
+		        	   {
+		        		   $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+		 					$('#message').find('blockquote').addClass('bg-success').html(data.message);   
+		        		   $(arg).parent().parent().remove();
+		        	   }
+		        	   else
+		        	   {
+		        		   $('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+		  					$('#message').find('blockquote').addClass('bg-danger').html(data.message); 
+		        	   }
+					}
+				});
+			} 
+		}
+	
+
+//]]>
+</script>
+		

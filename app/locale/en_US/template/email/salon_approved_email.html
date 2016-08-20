@@ -1,0 +1,60 @@
+<!--@subject Congratulation! Your salon {{var salon.salon_name}} is ready to live @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"htmlescape var=$salon.salon_name":"Salon Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var customer.email":"Customer Email",
+"htmlescape var=$shop.password":"Customer Password"}
+@-->
+
+<!--@styles
+body,td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; }
+@-->
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+<body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+<div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+<table cellspacing="0" cellpadding="0" border="0" height="100%" width="100%">
+        <tr>
+            <td align="center" valign="top" style="padding:20px 0 20px 0">
+                <!-- [ header starts here] -->
+                <table bgcolor="FFFFFF" cellspacing="0" cellpadding="10" border="0" width="650" style="border:1px solid #E0E0E0;">
+                    <tr>
+	                    <td valign="top" style="border-bottom:1px solid #E0E0E0;">
+	                        <a href="{{store url=""}}" style="color:#1E7EC8;"><img src="{{var logo_url}}" alt="{{var logo_alt}}" border="0"/></a>
+	                    </td>
+	                </tr>
+                    <tr>
+                        <td valign="top">
+                            <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+                            	<strong>Dear {{var salon.firstname}} {{var salon.lastname}} </strong> !.</strong>
+                            </p>
+                            <p>
+                            <h3>Congratulation! Your salon is active and live now.</h3>
+                            </p>
+                            <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+                            	<strong>Your salon url: <a href="{{var salon.salon_front_url}}">{{var salon.salon_front_url}}</a></strong>
+                            </p>
+                           <p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+								<strong>YOUR SALON ADMINISTRATION INFORMATION:</strong>
+							</p>
+							<p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+								<strong>Your Salon admin url: <a href="{{var salon.salon_admin_url}}">{{var salon.salon_admin_url}}</a></strong>
+							</p>
+							<p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+								<strong>Salon admin username: {{var salon.email}}</strong>
+							</p>
+							<p style="font-size:12px; line-height:16px; margin:0 0 16px 0;">
+								<strong>Salon admin password: {{var salon.password}}</strong>
+							</p>
+						 </td>
+                    </tr>
+	                <tr>
+	                    <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;"><center><p style="font-size:11px; margin:0;">Salore team.</strong></p></center></td>
+	                </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>

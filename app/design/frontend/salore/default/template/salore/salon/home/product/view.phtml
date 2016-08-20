@@ -1,0 +1,107 @@
+<?php $productObject = $this->getProduct();?>
+<div class="row product-wrapper">
+	<div class="col-sm-12">
+		<div class="page-title category-title">
+			<h1><?php echo $this->__('This should be Product').' <i class="fa fa-angle-right"></i> '.$productObject->getData('product_name')?></h1>
+		</div>
+	</div>
+	<div class="col-sm-6 image-collection">
+		<div class="product-img-box">
+			<div class="img-master text-center">
+				<?php $baseImage = $productObject->getData('base_image')?>
+				<img id="larger-product-image" alt="<?php echo $productObject->getData('product_name')?>" src="<?php echo isset($baseImage['url']) ? $baseImage['url'] : '' ?>"/>
+			</div>
+		</div>
+		<div class="img-collection img-more-view">
+			<h2><?php echo $this->__('Gallery')?></h2>
+			<ul class="product-image-thumbs list-unstyled pull-left" id="links">
+			<?php foreach($productObject->getData('images') as $thumb):?>
+				<?php if(isset($thumb['smallUrl'])):?>
+					<li class="pull-left"><a href="<?php echo isset($baseImage['url']) ? $baseImage['url'] : '' ?>" class="thumb-link"><img class="product-thumb" src="<?php echo $thumb['smallUrl']?>" alt="<?php echo $productObject->getData('product_name')?>"/></a></li>
+				<?php endif;?>
+			<?php endforeach;?>
+			</ul>
+		</div>
+	</div>
+	<div class="col-sm-6 product-detail">
+		<div class="product-name pull-left">
+			<h1 class="text-upper"><?php echo $productObject->getData('product_name')?></h1>
+		</div>
+		<div class="price-info pull-right">
+			<div class="price-box">
+				<h2 class="regular-price"><span class="price <?php echo $productObject->getData('special_price') ? 'line-through' : '' ?>"><?php echo Mage::helper('salon')->stringFormatToPrice($productObject->getData('price')) ?></span></h2>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div class="duration"><p><strong><?php echo $this->__('Duration: ')?></strong><?php echo $productObject->getData('duration'). ' minute'?></p></div>
+		<?php if($productObject->getData('special_price')):?>
+		<div class="special-price-box">
+			<p class="special-price"><strong><?php echo $this->__('Special Price: ')?></strong><?php echo Mage::helper('salon')->stringFormatToPrice($productObject->getData('special_price'))?></p>
+			<p class="from-date"><strong><?php echo $this->__('Special From Date: ')?></strong><?php echo Mage::helper('salon')->transformTimestampToDate($productObject->getData('special_from_date'))?></p>
+			<p class="to-date"><strong><?php echo $this->__('Special To Date: ')?></strong><?php echo Mage::helper('salon')->transformTimestampToDate($productObject->getData('special_to_date'))?></p>
+		</div>
+		<?php endif;?>
+		<div class="short-description clear-fix">
+			<div class="std">
+				<p><strong><?php echo $this->__('Short Description: ')?></strong> <?php echo $productObject->getData('short_description')?></p>
+			</div>
+		</div>
+		
+		<div class="reservation-group">
+			<button id="checkout" onclick="ajaxAddToCart(this,'add')" type="button" title="<?php echo $this->__('Add To Cart') ?>" class="btn nk-btn-default btn-cart" ><span><span><?php echo $this->__('Add To Cart') ?></span></span></button>
+		</div>
+	
+	</div>
+	<div class="col-sm-12 toggle-content tabs view-more">
+		<h2><?php echo $this->__('Description')?></h2>
+		<div class="description">
+			<?php echo $productObject->getData('description')?>
+		</div>
+	</div>
+</div>
+<script type= "text/javascript">
+//<![CDATA[
+	/* $('.product-thumb').on('click', function(event){
+		var src = $(this).attr('src');
+		src = src.replace('small', 'larger');
+		$('#larger-product-image').attr('src', src);
+		event.preventDefault();
+	}); */
+	document.getElementById('links').onclick = function (event) {
+	    event = event || window.event;
+	    var target = event.target || event.srcElement,
+	        link = target.src ? target.parentNode : target,
+	        options = {index: link, event: event},
+	        links = this.getElementsByTagName('a');
+	    blueimp.Gallery(links, options);
+	};
+//]]>
+</script>
+
+<script>
+var urlAddToCart = '<?php echo Mage::helper('salon')->getUrl('product/addToCart')?>';
+var miniLoading = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/salon/'.'default/'.'images/'.'mini_loading.gif' ?>';
+var url = window.location.pathname;
+var stuff = url.split('/');
+var id = stuff[stuff.length-1];
+var productname = '<?php echo $productObject->getData('product_name')?>';
+var price = '<?php echo $productObject->getData('special_price') ? $productObject->getData('special_price') : $productObject->getData('price')?>';
+var product = productname.substring(13);
+function ajaxAddToCart(params, type)
+{
+	jQuery.ajax({
+		type: "POST",
+		url: urlAddToCart,
+		data: {id: id, productname:product , price: price , type: type},
+		dataType: "json",
+	    success: function(data){
+	    	if(data.status =="SUCCESS")
+	    	{
+		    	window.location.href ="<?php echo Mage::getUrl('checkout/cart')?>"
+		    	//alert('Thanh Cong');
+	    	}
+			
+		}
+	}); 
+}
+</script>

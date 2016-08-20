@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<!-- Default view -->
+	<default>
+		<remove name="salon_home" />
+		<remove name="left" />
+		<reference name="root">
+			<reference name="head">
+				<action method="addItem"><type>skin_css</type><name>css/styles.css</name></action>
+				<action method="addItem"><type>skin_css</type><name>css/font-awesome.css</name></action>
+				<action method="addItem"><type>skin_js</type><name>js/metisMenu.js</name></action>
+				<action method="addItem"><type>skin_js</type><name>js/local.js</name></action>
+			</reference>
+		</reference>
+	</default>
+</layout>

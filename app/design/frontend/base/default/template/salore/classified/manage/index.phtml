@@ -1,0 +1,13 @@
+<div class="page-title">
+<?php $action = $this->getActionName()?>
+<h2><?php echo $this->__('Salon Classifed')?></h2>
+</div>
+<div class="action-row">
+	<a href="<?php echo $this->helper('salon')->getUrl('salon/classified')?>" class="btn btn-default">List</a> 
+	<a style="margin-left: 10px" href="<?php echo $this->helper('salon')->getUrl('salon/classified/new')?>" class="btn btn-default">Add New</a> 
+	<?php if($action === 'edit') :?>
+	<button <?php   echo $this->getDisable(); ?> type="submit" id="deleteall" style="margin-left: 10px" href="<?php echo $this->helper('salon')->getUrl('salon/classified/ajaxdelete')?>" class="btn btn-default">Deleted Selected</button>
+	<?php else :   ?>
+	<button <?php   echo $this->getDisables(); ?> type="submit" id="deleteall" style="margin-left: 10px" href="<?php echo $this->helper('salon')->getUrl('salon/classified/ajaxdelete')?>" class="btn btn-default">Deleted Selected</button>
+	<?php endif;?>
+</div>

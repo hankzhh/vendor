@@ -1,0 +1,202 @@
+.face-wrapper {
+	position: relative;
+}
+
+.btn-bonus em.lovest {
+	background: url("../images/sprite.png") -5px -54px no-repeat #8b9eb4;
+    border-radius: 50%;
+    display: block;
+    height: 40px;
+    transition: background-color 600ms ease-in-out 0s, background-position 600ms ease-in-out 0s;
+    width: 40px;
+    z-index: 99;
+}
+
+.btn-bonus em.lovest:hover {
+	background: url('../images/sprite.png') -5px -5px no-repeat #f1f2f6;	
+}
+ 
+.face-group {
+	position: relative;
+	margin-bottom: 4px;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.face-select:hover {
+	cursor: pointer;
+}
+
+.face-select {
+    float: left; 
+    width: 55%;
+    position: relative;
+}
+
+/* .face-group strong {
+    font-weight: normal;
+} */
+
+.face-count, .face-select em:last-child {
+	color:#ccc; 
+	font-size:11px;
+}
+
+img.logo-span {
+    border: 1px solid #ccc;
+    float: left; 
+    width: auto;
+    height: 44px;
+    /*width: 44px;*/
+}
+div.face-group div.salon-logo
+{
+	float: left;
+	width: 20%;
+}
+
+.face-select em:first-child, .face-like {
+	width: 12px;
+	display: inline-block;
+	font: 0/0 serif;
+	text-shadow: none;
+	color: transparent;
+	margin-bottom: -3px;		
+}
+
+.face-select em:first-child {
+	height: 10px;
+	background: url("../images/second-sprite.png") no-repeat scroll -220px -138px rgba(0, 0, 0, 0);	
+}
+
+.face-like {
+	height: 15px;
+	background: url("../images/second-sprite.png") no-repeat scroll -138px -170px rgba(0, 0, 0, 0);
+	margin-left: 6px;
+}
+
+.fbFeedbackContent {
+	min-height: 100px !important;
+}
+
+.box-collateral {
+	margin-bottom: 0px;
+}
+
+.thumbnail > a:hover {
+	opacity: 0.9;
+	-moz-opacity: 0.9;
+	-khtml-opacity: 0.9;
+	-webkit-opacity: 0.9;
+}
+
+.description-para {
+	padding: 9px; 
+	margin: 0px;
+	color: #666666;
+	/* height: 53px; */
+	overflow: hidden;
+	height: 90px;
+}
+
+.face-comment {
+	position: relative;
+	z-index: 0;
+}
+
+.box-collateral, .fb_iframe_widget, .fb_iframe_widget span, .fb_iframe_widget iframe, ._li .pluginSkinLight > div {
+	width: 100% !important;
+	margin: 0px !important;
+}
+
+.fbFeedbackContent {
+	min-height: 110px !important;
+}
+
+.item {
+	margin: 3px;
+	border-radius: 0px;
+	border: #e7e7e7 1px solid;
+	text-align: center;
+	margin-bottom: 15px;
+	padding: 9px 0px;
+	box-shadow: none;
+}
+
+.img-rounded {
+	border-top-left-radius: none;
+	border-top-right-radius: none;
+}
+
+.face-wrapper {
+	border-top: #e7e7e7 1px solid;
+}
+
+
+.face-group {
+    width: 100%;
+    position: relative;
+}
+
+.face-group p{
+	float: left;
+    text-align: center;
+    width: 100%;
+    margin: 0 0 5px;
+}
+
+.btn-bonus{
+	float: right; 
+	width: 20%;
+}
+
+.pseudo-class {
+	width: 50px;
+	height: 50px;
+}
+
+.col-sm-2 {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.img-represent {
+	border-radius: 4px;
+}
+
+@media screen and (min-width: 768px) {
+	#salon-slider-wrapper > div:first-child {
+		padding-left: 0;
+	}
+	
+	#salon-slider-wrapper > div:first-child .item {
+		margin-left:0;
+	}
+	
+	#salon-slider-wrapper > div:last-child {
+		padding-right: 0;
+	}
+	
+	#salon-slider-wrapper > div:last-child {
+		margin-right: 0;
+	}
+}
+
+#salon-content-wrapper {
+	margin-bottom: 15px;
+}
+
+.justified-gallery .caption {
+    text-shadow: 3px 1px 1px #333;
+}
+
+.category-name {
+	background: #f7f7f7; 
+	text-align: center; 
+	font-size: 20px;	
+	padding: 5px;
+}
+
+#salon-content-wrapper a:hover{
+	text-decoration: none;
+}

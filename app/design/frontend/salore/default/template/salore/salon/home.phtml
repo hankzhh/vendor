@@ -1,0 +1,22 @@
+<div class="row content">
+	<div class="col-sm-12">
+		<?php echo $this->getChildHtml('salon.menu')?>
+	</div>
+</div>
+<?php if($this->checkControllerNameAfterRenderHtml()):?>
+	<div class="row content">
+		<div class="col-sm-12">
+			<?php echo $this->getChildHtml('salon.banner')?>
+		</div>
+	</div>
+	<div class="row content">
+		<div class="col-sm-12">
+			<?php echo $this->getChildHtml('salon.service.list')?>
+		</div>
+	</div>
+	<div class="row content">
+		<div class="col-sm-12">
+			<?php echo $this->getChildHtml('salon.product')?>
+		</div>
+	</div>
+<?php endif;?>

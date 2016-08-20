@@ -1,0 +1,32 @@
+<?php $collection = $this->getServiceCollection()?>
+<?php $_odd = ''; ?>
+        <?php foreach ($collection as $service): ?>
+        <tr title="<?php echo isset($service['entity_id']) ? $service['entity_id'] : '' ?>">
+			<td class="text-center" style="width:50px">
+					<div style="line-height:70px; margin-left:10px" class="simple-checkbox">
+						<input class="noborder pselect" type="checkbox" onclick="inputSelect(this);"  id ="<?php echo $service['entity_id']; ?>" value="<?php echo $service['entity_id']; ?>" name="productBox[]" />
+						<label for="<?php echo $service['entity_id']; ?>">&nbsp</label>   
+					</div>
+				</td>
+			<td>
+				<img alt="" src="<?php echo  isset($service['thumbnail_image']['url']) ? $service['thumbnail_image']['url'] : $this->getSkinUrl('images/not-available.jpg');?>" width="75px" height="75px">
+			</td>
+			<td><span class="nobr"><?php echo isset($service['service_name']) ? $service['service_name'] : ''; ?></span></td>
+			<td><span class="nobr"><?php echo isset($service['price']) ? Mage::helper('salon')->stringFormatToPrice($service['price']) : ''; ?></span></td>
+			<td><span class="nobr"><?php echo isset($service['special_price']) ? Mage::helper('salon')->stringFormatToPrice($service['special_price']) : ''; ?></span></td>
+			<td><span class="nobr"><?php echo isset($service['update_at']) ? date('d-m-Y' , $service['update_at']) : '' ?></span></td>
+			<td><span class="nobr"><?php echo isset($service['duration']) ? $service['duration'] : '' ?>'</span></td>
+			<td>
+				<a class="edit btn btn-default" 
+					href="<?php echo $this->helper('salon')->getUrl('admin/service/edit'). "?sid={$service['entity_id']}";?>">
+					<?php echo $this->__("Edit");?>
+				</a>
+			</td>
+			<td>
+				<a class="service-delete btn btn-default" 
+					href="#" onclick="ajaxDelete(this)">
+					<?php echo $this->__("Delete");?>
+				</a>
+			</td>
+		</tr>
+<?php endforeach; ?>

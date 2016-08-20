@@ -1,0 +1,171 @@
+<?php 	
+//Mage::getSingleton('checkout/session')->unsSalonReservation();
+//Mage::getSingleton('checkout/session')->unsReservationComboArr();
+//print_r(Mage::getSingleton('checkout/session')->getData(reservation_combo_arr));
+$helper = $this->helper('salon');
+$_serviceCollection = $this->getServiceCollection();
+$timeOffed = $this->offTimeframebyStaff();
+?>
+<?php if(!$_serviceCollection):?>
+<h3>Our salon is not working at this day!</h3>
+<?php else:?>
+<div class="table" id="my-custom-table">
+	<?php foreach ($_serviceCollection as $service):?>
+		<?php $dateTime = $this->getDateTime();?>
+		<div>
+			<h3><?php echo $service->getServiceName() ?> (<?php echo $service->getDuration() . $this->__('&nbsp;minutes') ?>)</h3>
+		</div>
+		<?php $timeFrame = $this->getTimeFrame($service->getDuration(), $this->getWorkingTime())?>
+		<div class="time-frame">
+			<ul class="list-unstyled">
+				<?php $haftTimeFrame = ceil($timeFrame / 2)?>
+				<?php for($i = 1; $i <= $timeFrame; $i++):?>
+					<?php 
+						$timetpm = $dateTime->format('H:i');
+						$nextDate = new DateTime($timetpm);
+						$nextDate->modify( '+ '.$service->getDuration().' minutes');
+						$timeroot = $dateTime->format('H:i');
+						$timeFrameString = $dateTime->format('H:i').' - '. $nextDate->format('H:i');
+						$checkingData = $this->checkInfoBooked($service->getEntityId(), $timeFrameString);
+					?>
+					<?php if(!in_array($timeFrameString, $timeOffed)):?>
+						<li style="position: relative;<?php echo (in_array($timeFrameString, $timeOffed)) ? 'color: #e53f39' : ''?>" onclick="processBooking(this, event)" class="" id="<?php echo $this->getElementId($service, $i)?>" title="<?php echo $timeFrameString ?>">
+							<span class="time-duration"><?php echo $timeFrameString?></span>
+							<input type="hidden" id="<?php echo $this->getElementId($service, $i)?>-service-name" value="<?php echo $service->getServiceName()?>">
+							<input type="hidden" id="<?php echo $this->getElementId($service, $i)?>-service-price" value="<?php echo $service->getSpecialPrice() ? $service->getSpecialPrice() : $service->getPrice()?>">
+							<input type="hidden" id="<?php echo $this->getElementId($service, $i)?>-service-id" value="<?php echo $service->getEntityId()?>">
+						</li>
+					<?php endif;?>
+					<?php $dateTime->modify( '+ '.$service->getDuration().' minutes' ) ?>
+					<?php if (trim(substr($timeFrameString, strpos($timeFrameString, '-')+1)) == $this->getTimeEnd()) {
+						break;
+					}?>
+				<?php endfor;?>
+			</ul>
+		</div>
+		<div style="clear: both"></div>
+		<?php unset($dateTime)?>
+	<?php endforeach;?>
+	<div style="clear: both"></div>
+</div>	
+<?php endif;?>
+<script type="text/javascript">
+//<![CDATA[
+	function processBooking(arg, event)
+	{
+		var flag = true;
+		var params = {
+				power: $(arg),
+				serviceId: $('#search_service').val(),
+				dateSelected: $('#res-a-date').children('input').val(),
+				staffSelected: $('#choose-a-staff').val(),
+				messageEmptyCart: $('.reservation-list').children('li').first(),
+				checkoutWrap: $('#selected-item-wrapper'),
+				totalPriceWrap: $('#total-price-services'),
+				timeframe: $(arg).children('span').html(),
+				getAttrByEle: function(Ele, attr)
+				{
+					return $(Ele).attr(attr);
+				},
+				price: $(arg).children('input:nth-child(3)').attr('value'),
+				getServiceId:function(text)
+				{
+					var text = text.split("-");
+					return text[1];
+				},
+		};
+		if(params.power.hasClass('booked'))
+		{
+			return false;
+		}
+		$('span.time-duration').each(function(index, element){
+			if($(element).parent().hasClass('selected'))
+			{
+				if( $(element).html() == params.power.find('.time-duration').html())
+				{
+					if($(element).parent().hasClass(params.staffSelected))
+					{
+						//can be remove this timeframe?
+						flag = false;
+					}
+				}
+			}
+		});
+		
+		if(params.power.hasClass('selected'))
+		{
+			event.preventDefault();
+			//remove item on check out
+			/* var selectedElementId = params.getAttrByEle(params.power, 'id') + '-selected-item';
+			totalPrice = totalPrice - parseFloat(params.price);
+			refreshCheckout(params.messageEmptyCart, params); */
+		}
+		else
+		{
+			if(flag === false)
+			{
+				alert('This staff is not availabel! Please choose another staff!');
+				return false;
+			}
+			var idService = params.getAttrByEle(params.power, 'id')+'-selected-item';
+
+			var cartElement = $(document.createElement('div')).addClass('selected-item').attr('id',idService);
+
+			var serviceName = $(document.createElement('div')).html(params.getAttrByEle(params.power.children('input:nth-child(2)'), 'value'));
+
+			var serviceDate = $(document.createElement('div')).html(params.dateSelected);
+
+			var staffId = $(document.createElement('div')).html(params.staffSelected).css('display', 'none');
+			
+			var serviceTime = $(document.createElement('div')).html(params.power.children('span:nth-child(1)').html());
+			
+			var servicePrice = $(document.createElement('div')).html('Price:&nbsp$<span>'+params.getAttrByEle(params.power.children('input:nth-child(3)'), 'value')+'</span>.00');
+
+			var serviceClose = $(document.createElement('span')).addClass('close-icon close').html('<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>');
+
+			cartElement.append(serviceName, serviceDate, serviceTime, servicePrice, staffId, serviceClose);
+			totalPrice = totalPrice + parseFloat(params.price);
+			ajaxAddToCart(params, cartElement, 'add');
+
+			
+		}
+		$(serviceClose).click(function(e){
+
+			params.power = $(this).parent(),
+			params.dateSelected = $(this).parent().children('div:nth-child(2)').html(),
+			params.staffId = $(this).parent().children('div:nth-child(5)').html(),
+			params.timeframe = $(this).parent().children('div:nth-child(3)').html(),
+			params.price = $(this).parent().children('div:nth-child(4)').children('span').html(),
+			
+			totalPrice = totalPrice - parseFloat(params.price);
+			e.stopPropagation();
+			refreshCheckout(params.messageEmptyCart, params);
+		});
+		
+	}
+	
+	//save reservation have selected when load page
+	(function(){
+		var reservationList = $('#selected-item-wrapper').children();
+		var i=0;
+		var dateValue = $('#res-a-date').data('date');
+		var staffValue = $('#choose-a-staff').val();
+		for( i=0; i < reservationList.length; i++)
+		{
+			
+			var reservationDate = $(reservationList[i]).children('div:nth-child(2)').html();
+			var reservationStaff = $(reservationList[i]).children('div:nth-child(5)').html();
+			if($(reservationList[i]).is('div'))
+			{
+				if(reservationDate === dateValue)
+				{
+					var liTarget = $(reservationList[i]).attr('id').replace('-selected-item', '');
+					if(reservationStaff === staffValue)
+					$('#'+liTarget).addClass('selected '+ reservationStaff);
+				}
+			}
+		}
+	})();
+	//remove li tag if have reservation
+//]]>
+</script>

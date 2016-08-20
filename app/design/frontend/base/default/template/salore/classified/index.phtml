@@ -1,0 +1,16 @@
+    <div id="tabbed_nav" class="tabbed_nav">
+        <div class="tabbed_area">
+            <ul class="tabs">
+                <li><a href="<?php echo $this->getMenuLinkByMode('list')?>" title='classifed-thumbs' class="tab <?php echo $this->checkClassifiedMode() ? 'active' : ''?>">List</a></li>
+                <li><a href="<?php echo $this->getMenuLinkByMode('grid')?>" title='classifed-gallery' class="tab <?php echo !$this->checkClassifiedMode() ? 'active' : ''?>">Grid</a></li>
+            </ul>
+        <?php if($this->checkClassifiedMode()):?>
+       		<?php echo $this->getChildHtml('classifed.thumbs')?>
+       	<?php else:?>
+       		<?php echo $this->getChildHtml('classifed.gallery')?>
+       	<?php endif;?>
+       	
+        </div><!--end .tabbed_area-->
+    </div><!--End tabbed_nav-->
+
+

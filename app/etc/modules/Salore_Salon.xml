@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Salore_Salon>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Salore_Salon>
+    </modules>
+</config> 

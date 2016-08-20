@@ -1,0 +1,161 @@
+<?php   $formData = $this->getSessionFormData()?>
+<div class="">
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="col-sm-8 col-sm-offset-2 <?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+	<div class="register-wrapper col-sm-4 col-sm-offset-2">
+		<div class="page-title">
+		    <h2><?php echo $this->__('Register A New Salon') ?></h2>
+		    <hr/>
+		</div>
+		<form role="form" action="<?php echo Mage::getUrl('*/*/save') ?>" method="post" id="new-salon-form"  enctype="multipart/form-data" >
+		        <ul class="list-unstyled">
+	                <li class="form-group">
+	                	<label for="firstname" class="control-label"><em>*</em><?php echo $this->__('First Name') ?></label>
+		               	<input required data-bv-notempty-message="The first name is required"  type="text" name="firstname" id="firstname" value="<?php echo isset($formData['firstname']) ? $formData['firstname'] : ''?>" class="form-control required-entry" />
+	            	</li>
+	            	<li class="form-group">
+	                	<label for="lastname" class="control-label"><em>*</em><?php echo $this->__('Last Name') ?></label>
+	 					<input type="text" name="lastname" id="lastname" value="<?php echo isset($formData['lastname']) ? $formData['lastname'] : ''?>" class="form-control required-entry"/>
+		            </li>
+	            	<li class="form-group">
+	                	<label for="email" class="control-label"><em>*</em><?php echo $this->__('Email') ?></label>
+ 						<input data-bv-emailaddress-message="The value is not a valid email address"  type="email" name="email" id="email" value="<?php echo isset($formData['email']) ? $formData['email'] : ''?>" class="form-control required-entry"/>
+	            	</li>
+	            	<li class="form-group">
+	                	<label for="salon_url" class="control-label"><em>*</em><?php echo $this->__('Salon Url') ?></label>
+ 						<input type="text" name="salon_url" id="salon_url" value="<?php echo isset($formData['salon_url']) ? $formData['salon_url'] : ''?>" class="form-control required-entry"/>
+	            	</>
+	            	<li class="form-group">
+	                	<label for="salon_name" class="control-label"><em>*</em><?php echo $this->__('Salon Name') ?></label>
+ 						<input type="text" name="salon_name" id="salon_name" value="<?php echo isset($formData['salon_name']) ? $formData['salon_url'] : ''?>" class="form-control required-entry"/>
+	            	</>
+	            	<li class="form-group">
+	                	<label for="salon_address" class="control-label"><em>*</em><?php echo $this->__('Salon Address') ?></label>
+						<input type="text" name="address" id="salon_address" value="<?php echo isset($formData['address']) ? $formData['address'] : ''?>" class="form-control required-entry"/>
+	            	</li>
+	            	<li class="form-group">
+	                	<label for="city" class="control-label"><em>*</em><?php echo $this->__('City') ?></label>
+						<input type="text" name="city" id="city" value="<?php echo isset($formData['city']) ? $formData['city'] : ''?>" class="form-control required-entry"/>
+	            	</li>
+	            	<li class="form-group">
+	                	<label for="region_id" class="control-label"><em>*</em><?php echo $this->__('State/Province') ?></label>
+						<select name="region_id" id="region_id" value="" class="form-control required-entry" defaultvalue="0"/>
+						<?php $regionCollection = $this->getRegionsByCountryId('US')?>
+							<option><?php echo $this->__('Please select region, state or province')?></option>
+							<?php foreach ($regionCollection as $region):?>
+								<option value="<?php echo $region->getRegionId()?>" 
+								<?php 
+								 if(isset($formData) && !empty($formData))
+								 {
+									echo ($region->getRegionId() == $formData['region_id']) ? 'selected="selected"' : '';
+								 }
+								?>
+								><?php echo $region->getName()?></option>
+							<?php endforeach;?>
+						</select>
+	            	</li>
+	            	<li class="form-group">
+	                	<label for="postcode" class="control-label"><em>*</em><?php echo $this->__('Zip/Postal Code') ?></label>
+						<input type="text"  name="postcode" id="postcode" value="<?php echo isset($formData['postcode']) ? $formData['postcode'] : ''?>" class="form-control required-entry"/>
+	            	</li>
+	            	<li class="form-group">
+	                	<label for="telephone" class="control-label"><em>*</em><?php echo $this->__('Phone Number') ?></label>
+						<input type="text"  name="telephone" id="telephone" value="<?php echo isset($formData['telephone']) ? $formData['telephone'] : ''?>" class="form-control required-entry"/>
+	            	</li>
+	            	<button data-action="save-customer-address" type="submit" title="<?php echo $this->__('Create New') ?>" class="button btn btn-primary"><span><span><?php echo $this->__('Create New') ?></span></span></button>
+		        </ul>
+		</form>
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+    $('#new-salon-form').bootstrapValidator({
+        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+        	firstname: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('First name is required') ?>'
+                    }
+                }
+            },
+            lastname: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Last name is required') ?>'
+                    }
+                }
+            },
+            salon_url: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Salon url name is required') ?>'
+                    }
+                }
+            },
+            email: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Email is required') ?>'
+                    },
+                    emailAddress: {
+                        message: '<?php echo $this->__('Email is not a valid. Ex: youname@yourdomain.com') ?>'
+                    }
+                }
+            },
+            postcode: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Postcode is required') ?>'
+                    }
+                 
+                }
+            },
+            city: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('City is required') ?>'
+                    }
+                 
+                }
+            },
+            salon_name: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Salon Name is required') ?>'
+                    }
+                 
+                }
+            },
+            address: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Address is required') ?>'
+                    }
+                 
+                }
+            },
+            telephone: {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Phone Number is required') ?>'
+                    }
+                 
+                }
+            }
+        }
+    });
+});
+</script>
+	

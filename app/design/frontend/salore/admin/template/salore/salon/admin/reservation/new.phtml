@@ -1,0 +1,107 @@
+<?php $reservation = $this->getReservation();?>
+<div class="panel-heading"><?php echo $this->__('Create a new reservation')?></div>
+<div class="col-sm-12">
+	<form class="form-horizontal" role="form" action="<?php echo Mage::helper('salon')->getUrl('admin/reservation/save')?>" method="post">
+		<div class="form-group">
+			<label for="customer_name" class="col-sm-2 control-label"><?php echo $this->__('Customer Email:')?></label>
+	        <div class="col-sm-10">
+	          	<?php $customers = $this->getCustomerCollection()?>
+	        	<select class="form-control" id="customer_id" name="customer_id">
+					<?php foreach($customers as $customer):?>
+						<option value="<?php echo $customer->getData('entity_id')?>" <?php ($customer->getData('entity_id') == $reservation->getData('customer_id')) ? 'selected' : ''?>><?php echo $customer->getData('email')?></option>
+					<?php endforeach;?>	        	
+	        	</select>
+	        </div>
+		</div>
+		<div class="form-group">
+			<label for="service-id" class="col-sm-2 control-label"><?php echo $this->__('Service Name:')?></label>
+	        <div class="col-sm-10">
+	        	<select class="form-control" id="service-id" name="service_id">
+	        		<?php $services = $this->getServiceCollection()?>
+					<?php foreach($services as $service):?>
+						<option value="<?php echo $service->getData('entity_id')?>" <?php echo ($service->getData('entity_id') == $reservation->getData('service_id')) ? 'selected' : ''?>><?php echo $service->getData('service_name')?></option>
+					<?php endforeach;?>	        	
+	        	</select>
+	        </div>
+		</div>
+		<div class="form-group">
+			<label for="date-booking" class="col-sm-2 control-label"><?php echo $this->__('Date Booking:')?></label>
+	        <div id="pick-a-date" class="input-group date col-sm-3" style="padding: 0px 15px" data-date-format="dd-mm-yyyy" data-date="<?php echo Mage::helper('salon')->getCurrentDate()?>">
+				<input id="date-booking" style="margin: 0" readonly class="datepicker form-control" type="text" value="<?php echo $reservation->getData('date_booking') ? $reservation->getData('date_booking') : Mage::helper('salon')->getCurrentDate()?>" name="date_booking" />
+				<span class="input-group-addon add-on">
+					<i class="glyphicon glyphicon-calendar icon-calendar"></i>
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="res-staff" class="col-sm-2 control-label"><?php echo $this->__('Staff:')?></label>
+	        <div class="col-sm-10">
+	        <?php $staffs = $this->getStaffCollection()?>
+	        	<select class="form-control" id="res-staff" name="staff_id">
+					<?php foreach($staffs as $staff):?>
+						<option value="<?php echo $staff->getData('entity_id')?>" <?php ($staff->getData('entity_id') == $reservation->getData('staff_id')) ? 'selected' : ''?>><?php echo $staff->getData('name')?></option>
+					<?php endforeach;?>	        	
+	        	</select>
+	        </div>
+		</div>
+		<div id="timeframe-wrap">
+			<?php echo $this->getChildHtml('reservation_render')?>
+		</div>
+		<div class="form-group">
+	        <div class="col-sm-offset-2 col-sm-10">
+	          	<div class="checkbox">
+			        <label>
+			          <input type="checkbox" name="confirm"> <?php echo $this->__('Confirm')?>
+			        </label>
+				</div>
+	        </div>
+        </div>
+		
+		<input type="hidden" class="form-control" id="reservation_id" name="id" value="<?php echo $reservation->getData('entity_id')?>">
+		
+		<div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default"><?php echo $this->__('Save')?></button>
+        </div>
+      </div>
+	</form>
+</div>
+<script type= "text/javascript">
+//<![CDATA[
+    //disble date of past
+		var nowTemp = new Date();
+	    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+	    $('#pick-a-date').datepicker({
+	    	onRender: function(date) {
+	        	return date.valueOf() < now.valueOf() ? 'disabled' : '';
+			}
+		});       
+     
+           $(function () {
+			var datePicker = $('.date').datepicker().on('changeDate', function(ev){
+				datePicker.hide();
+				renderTimeframe();
+			}).data('datepicker');
+		});
+   		
+   		//ajax render time frame
+   		$('#service-id, #res-staff').on('change', function(){renderTimeframe()});
+   		var renderTimeframe = function()
+   		{
+			var params = {
+						serviceId: $('#service-id').val(),
+						dateSelected: $('#date-booking').val(),
+						staffId: $('#res-staff').val(),
+					};
+			$.ajax({
+				url: '<?php echo Mage::helper('salon')->getUrl('admin/reservation/rendertimeframeoption')?>',
+				data: params,
+				type: 'POST',
+				success: function(response)
+				{
+					$('#timeframe-wrap').html(response);
+				}
+			});
+   	   	}
+	//]]>
+</script>

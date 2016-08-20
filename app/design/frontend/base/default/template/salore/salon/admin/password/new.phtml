@@ -1,0 +1,87 @@
+<div class="row">	
+ <div class="col-lg-12">
+ <div class="menu-wrapper">
+  	<div class="panel-heading">
+			<?php echo $this->__('Salon Change Password')?>
+	</div>
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+	<div class="login-panel panel panel-default" style="margin-top:20px">
+		<div class="panel-body">
+			<form method="post" class="form-horizontal" role="form" id="salon-admin-login-form" action="<?php echo $this->getActionUrl() ?>">
+				<fieldset>
+					<div class="form-group">
+						<label for="salon_name" class="col-sm-2 control-label"><em>*</em><?php echo $this->__('Email')?></label>
+						<div class="col-sm-4">
+							<input class="form-control" value="<?php echo $this->getEmail() ? $this->getEmail() : ''?>" placeholder="E-mail" name="login[username]" type="email" autofocus disabled>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="salon_name" class="col-sm-2 control-label"><em>*</em><?php echo $this->__('Current Password')?></label>
+						<div class="col-sm-4">
+							<input class="form-control" placeholder="Current Password" name="current_password" type="password" value="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="salon_name" class="col-sm-2 control-label"><em>*</em><?php echo $this->__('New Password')?></label>
+						<div class="col-sm-4">
+							<input class="form-control" placeholder="New Password" name="password" type="password" value="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="salon_name" class="col-sm-2 control-label"><em>*</em><?php echo $this->__('Confirm New Password')?></label>
+						<div class="col-sm-4">
+							<input class="form-control" placeholder="Confirm New Password" name="confirmation" type="password" value="">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-4 col-sm-offset-2">
+							<button type="submit" class="btn btn-custom-primary btn-lg btn-block btn-login">
+								<i class="fa fa-arrow-circle-o-right"></i> Submit
+							</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+ </div>
+</div>
+</div>
+<script>
+$(document).ready(function() {
+    $('#salon-admin-login-form').bootstrapValidator({
+        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+        	'login[username]': {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Email is required') ?>'
+                    },
+                    emailAddress: {
+                        message: '<?php echo $this->__('Email is not a valid. Ex: youname@yourdomain.com') ?>'
+                    }
+                }
+            },
+            'login[password]': {
+                validators: {
+                    notEmpty: {
+                        message: '<?php echo $this->__('Password is required') ?>'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

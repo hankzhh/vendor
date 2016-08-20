@@ -1,0 +1,30 @@
+<?php $service = $this->getFirstService()?>
+<?php $timeOffed = $this->offTimeframebyStaff();?>
+<?php $timeFrame = $this->getTimeFrame($service->getDuration(), $this->getWorkingTime())?>
+<?php $dateTime = $this->getDateTime();?>
+<?php $timeFrame = $this->getTimeFrame($service->getDuration(), $this->getWorkingTime())?>
+<div class="form-group">
+	<label for="time-frame" class="col-sm-2 control-label"><?php echo $this->__('Timeframe:')?></label>
+    <div class="col-sm-10">
+    	<select class="form-control" id="time-frame" name="time_frame">
+	<?php $haftTimeFrame = ceil($timeFrame / 2)?>
+	<?php for($i = 1; $i <= $timeFrame; $i++):?>
+		<?php 
+			$timetpm = $dateTime->format('H:i');
+			$nextDate = new DateTime($timetpm);
+			$nextDate->modify( '+ '.$service->getDuration().' minutes');
+			$timeroot = $dateTime->format('H:i');
+			$timeFrameString = $dateTime->format('H:i').' - '. $nextDate->format('H:i');
+			$checkingData = $this->checkInfoBooked($service->getEntityId(), $timeFrameString);
+		?>
+		<?php if(!in_array($timeFrameString, $timeOffed)):?>
+			<option value="<?php echo $timeFrameString?>"><?php echo $timeFrameString?></option>
+		<?php endif;?>
+		<?php $dateTime->modify( '+ '.$service->getDuration().' minutes' ) ?>
+		<?php if (trim(substr($timeFrameString, strpos($timeFrameString, '-')+1)) == $this->getTimeEnd()) {
+			break;
+		}?>
+	<?php endfor;?>
+		</select>
+	</div>
+</div>

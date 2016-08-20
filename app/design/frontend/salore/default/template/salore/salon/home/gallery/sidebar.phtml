@@ -1,0 +1,29 @@
+<?php $galleryCollection = $this->getGallery();?>
+<?php $numberGallery = count($galleryCollection)?>
+<?php if (isset($numberGallery) && $numberGallery) :?>
+<div  class="box gallery-sidebar">
+	<h4><?php echo $this->__('Salon Gallery')?></h4>
+    <div>
+     	<div class="gallery-wrapper">
+     		<?php foreach($galleryCollection as $gallery):?>
+     			<a class="fancybox" href="<?php echo $gallery->getLargerUrl() ? $gallery->getLargerUrl() : ''?>" data-gallery="">
+     				<img alt="gallery" src="<?php echo $gallery->getSmallUrl() ? $gallery->getSmallUrl() : ''?>">
+     			</a>
+     		<?php endforeach;?>
+     	</div> 		
+    </div>
+</div>
+<?php else : ?>
+<div style="display: none" class="box gallery-sidebar">
+	<h4><?php echo $this->__('Salon Gallery')?></h4>
+    <div>
+     	<div class="gallery-wrapper">
+     		<?php foreach($galleryCollection as $gallery):?>
+     			<a class="fancybox" href="<?php echo $gallery->getLargerUrl() ? $gallery->getLargerUrl() : ''?>" data-gallery="">
+     				<img alt="gallery" src="<?php echo $gallery->getSmallUrl() ? $gallery->getSmallUrl() : ''?>">
+     			</a>
+     		<?php endforeach;?>
+     	</div> 		
+    </div>
+</div>
+<?php endif;?>

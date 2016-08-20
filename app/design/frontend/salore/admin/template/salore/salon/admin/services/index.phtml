@@ -1,0 +1,8 @@
+<div class="panel-heading">
+	<?php echo $this->__('Salon Service')?>
+</div>
+<div class="action-row">
+		<a href="<?php echo $this->helper('salon')->getUrl('admin/service')?>" class="btn btn-default">List</a> 
+		<a style="margin-left: 10px" href="<?php echo $this->helper('salon')->getUrl('admin/service/new')?>" class="btn btn-default">Add New</a>
+		<a  <?php echo $this->getDisables(); ?> style="margin-left: 9px;" href="#" class="btn btn-default" id="deleteall"><?php echo Mage::helper('salon')->__('Delete selected')?></a>
+</div>

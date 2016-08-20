@@ -1,0 +1,19 @@
+<?php $navigation = $this->prepareMenu()?>
+<?php if(!empty($navigation)):?>
+	<nav id="nav-wrapper" class="page-header-container">
+ 		<div class="navigation-wrapper nav-search">
+	 		<ul class="nav nav-tabs" role="tablist">
+	 		<?php foreach($navigation as $mode => $href):?>
+	 			<li <?php echo $this->checkActive($mode)?>>
+			       	<a class="menu-link" href="<?php echo $href ?>">
+			       		<span class="nav-search"></span>
+			           <span><?php echo ucfirst($mode) ?></span>
+			       	</a>
+			    </li>
+	 		<?php endforeach;?>
+	       	</ul>
+	    </div>
+  	</nav>
+<div class="clear-fix"></div>
+<?php endif;?>
+

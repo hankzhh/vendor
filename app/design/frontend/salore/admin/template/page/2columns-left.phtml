@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <?php echo $this->getChildHtml('head') ?>
+  </head>
+  <body class="layout-2cols-left">
+  	<div id="wrapper">
+  		<?php echo $this->getChildHtml('header') ?>
+	    <div id="page-wrapper">
+	    	<?php echo $this->getChildHtml('breadcrumbs') ?>
+	      	<div class="row">
+	      		<?php if ( $this->getChildHtml('left') ) :?>
+	      			<div class="col-md-2 side-bar">
+	      				<?php echo $this->getChildHtml('left') ?>
+	      			</div>
+	      			<div class="col-md-10 content">
+	      				<?php echo $this->getChildHtml('content') ?>
+	      			</div>
+	      		<?php else: ?>
+	      				<?php echo $this->getChildHtml('content') ?>
+	      		<?php endif; ?>
+	      	</div>
+	    </div>
+	    <?php echo $this->getChildHtml('footer') ?>
+  	</div>
+  </body>
+</html>

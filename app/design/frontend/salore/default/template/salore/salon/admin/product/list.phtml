@@ -1,0 +1,122 @@
+<div class="content-wrapper">
+	<?php echo $this->getMessagesBlock()->getGroupedHtml()?>
+	<?php $collection = $this->getProductCollectionFromMongo()?>
+	<?php echo $this->getChildHtml('salon_admin_product_header')?>
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+		<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+			<div id="message-session" class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+				<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+					<?php echo $sessionMessageArr['message']?>
+				</blockquote>
+			</div>
+		<?php endif;?>
+		<div id="message"class="" style="display: none">
+			<blockquote class="">
+			</blockquote>
+		</div>
+	
+		<div class="page-title">
+			<table cellspacing="0" style="width: 100%">
+				<tr>
+					<td style="float: right;">
+					</td>
+					<td style="float: right; margin-right: 10px; display: none"
+						id="btn-delete">
+						<p>
+							<button type="button"
+								title="<?php echo $this->__('Delete Product') ?>"
+								class="button btn-cart" id="buttonHidden">
+								<span><span><?php echo $this->__('Delete Product') ?></span></span>
+							</button>
+						</p>
+					</td>
+				</tr>
+			</table>
+		</div>
+	<?php if($this->checkProductExist($collection)): ?>
+	<table class="table table-hover" >
+		<thead>
+			<tr class="active">
+				<th><?php echo $this->__('Image') ?></th>
+				<th><?php echo $this->__('Title') ?></th>
+				<th><?php echo $this->__('Price') ?></th>
+				<th><?php echo $this->__('Special Price') ?></th>
+				<th><span class="nobr"><?php echo $this->__('Edit') ?></span></th>
+				<th><span class="nobr"><?php echo $this->__('Delete') ?></span></th>
+			</tr>
+		</thead>
+		<tbody>
+	        <?php $_odd = ''; ?>
+	       <?php foreach ($collection as $product): ?>
+	        <tr title="<?php echo isset($product['entity_id']) ? $product['entity_id'] : '' ?>">
+				<td>
+					<img alt="" src="<?php echo  isset($product['image_product']) ? $product['image_product'] : $this->getSkinUrl('images/not-available.jpg');?>" width="75px" height="75px">
+				</td>
+		
+				<td><span class="nobr"><?php echo isset($product['product_name']) ? $product['product_name'] : ''?></span></td>
+				<td><span class="nobr"><?php echo isset($product['price']) ? Mage::helper('salon')->stringFormatToPrice($product['price']) : ''; ?></span></td>
+				<td><span class="nobr"><?php echo isset($product['speacial_price']) ? Mage::helper('salon')->stringFormatToPrice($product['speacial_price']) : ''; ?></span></td>
+				<td>
+					<a class="edit" 
+						href="<?php echo $this->helper('salon')->getUrl('admin/product/edit'). "?sid={$product['entity_id']}";?>">
+						<?php echo $this->__("Edit");?>
+					</a>
+				</td>
+				<td>
+					<a class="service-delete" 
+						href="#" onclick="ajaxDelete(this)">
+						<?php echo $this->__("Delete");?>
+					</a>
+				</td>
+			</tr>
+	        <?php endforeach; ?>
+	    </tbody>
+	</table>
+	<div class="text-center">
+		<?php echo $this->getChildHtml('product.pager')?>
+	</div>
+	<?php else: ?>
+	<p><?php echo $this->__('The collection is empty.'); ?></p>
+	<?php endif; ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var urlDelete = '<?php echo $this->helper('salon')->getUrl('admin/product/ajaxdelete')?>';
+   
+    function ajaxDelete(arg)
+    {
+    	$('#message').css("display", "none");
+    	if($('#message-session') != null)
+    	{
+    		$('#message-session').remove();
+    	}
+    	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+    	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+    	var serviceId = $(arg).parent().parent().attr('title');
+    	var serviceTitle = $(arg).parent().parent().children().children('span').html();
+    	var r = confirm('['+serviceTitle+'] Are you sure want to delete ' + serviceTitle +' service?');
+    	if (r == true)
+    	  {
+    		jQuery.ajax({
+        		type: "POST",
+        		url: urlDelete,
+        		data: { id: serviceId },
+        		dataType: "json",
+        	    success: function(data){
+            	    if(data.status === 'SUCCESS')
+            	    {
+            	    	$(arg).parent().parent().remove();
+            	    	$('#message').addClass('animated bounceInDown text-success').css("display", "block");
+    					$('#message').find('blockquote').addClass('bg-success').html(data.message);
+                	}
+            	    else
+            	    {
+            	    	$('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+    					$('#message').find('blockquote').addClass('bg-danger').html(data.message);        
+                	}
+    			},
+    		}); 
+    	  }   	
+    }
+//]]>
+</script>

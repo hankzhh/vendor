@@ -1,0 +1,24 @@
+<?php $postArr = $this->getPostsByCategory()?>
+<div id="classifed-gallery" class="tabbed-content">
+	<?php $i = 4; $total = count($postArr);?>
+	<?php foreach($postArr as $post):?>
+		<?php if($i % 4 === 0):?>
+  		 	<div class="row">
+  		<?php endif;?>
+		<div class="col-sm-3">
+    		<div class="thumbnail item">
+    			<div class="img-box">
+    				<a href="<?php echo isset($post['entity_id']) ? Mage::getUrl().'classified/view/?id='.$post['entity_id'] : '#'?>"><img class="" alt="gallery" src="<?php echo isset($post['base_image']['url']) ? $post['base_image']['url'] : ''?>"/></a>
+    			</div>
+    			<p class="post-name"><a href="<?php echo isset($post['entity_id']) ? Mage::getUrl().'classified/view/?id='.$post['entity_id'] : '#'?>"><?php echo isset($post['title']) ? $post['title'] : ''?></a></p>
+    			<?php echo $post['description']?>
+    		</div>
+    	</div>
+    	<?php if((($i + 1) % 4 === 0) || ($total + 3 == $i)):?>
+  			</div>
+  		<?php endif;?>
+  		<?php $i++?>
+	<?php endforeach;?>
+	<?php echo $this->getChildHtml('classified.post.pager')?>
+</div>
+

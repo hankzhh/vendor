@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<default>
+		<remove name="breadcrumbs"/>
+		<reference name="header">
+            <block type="core/template" name="top.search" as="topSearch" template="catalogsearch/form.mini.phtml"/>
+        </reference>
+		<reference name="root">
+			<action method="setTemplate">
+				<template>page/1column.phtml</template>
+			</action>
+		</reference>
+	</default>
+    <salon_admin_contact_index>
+		<reference name="content">
+			<block type="salon/admin_contact_list" name="salon.message" template="salore/salon/admin/message/message.phtml"/>
+		</reference>
+	</salon_admin_contact_index>
+	<salon_admin_product_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_product_list" name="salon.admin.product.list" template="salore/salon/admin/product/list.phtml">
+				<!-- <block type="salon/admin_product_list" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/> -->
+				<block type="page/html" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/>
+			</block>
+			<block type="page/html" template="salore/salon/admin/deleteCheckbox.phtml" name="salore.delete.checkbox.ajax" alias="salore_delete_checkbox"/>
+		</reference>
+	</salon_admin_product_index>
+	<salon_admin_product_new>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_product_new" name="salon.admin.product.new" template="salore/salon/admin/product/new.phtml">
+				<block type="salon/admin_product_list" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_product_new>
+	<salon_admin_product_edit>
+		<reference name="head">
+			<!-- <action method="addItem"><type>skin_js</type><name>js/jquery-ui.min.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/jquery-ui.min.css</name></action> -->
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_product_new" name="salon.admin.product.new" template="salore/salon/admin/product/new.phtml">
+				<block type="page/html" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_product_edit>
+		<salon_admin_product_sort>
+		 <block type="salon/admin_sort_ajax_product" template="salore/salon/admin/sort/product/list.phtml" name="salon_product_ajax_sort" alias="salore_salon_ajax_sort" output="toHtml"/>
+	</salon_admin_product_sort>
+	<!-- ADMIN -->
+	<salon_admin_login_index>
+		<reference name="root">
+            <action method="setTemplate">
+              <template>page/login.phtml</template>
+            </action>
+        </reference>
+        <reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/bootstrapValidator.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_login" name="salon.admin.login" template="salore/salon/admin/login.phtml"/>
+		</reference>
+	</salon_admin_login_index>
+	<salon_admin_salon_setting>
+		<reference name="content">
+			<block type="salon/admin_salon_setting" name="salon.admin.salon.setting" template="salore/salon/admin/salon/setting.phtml"/>
+		</reference>
+	</salon_admin_salon_setting>
+	<salon_admin_banner_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_banner_banner" name="salon.admin.banner.banner" template="salore/salon/admin/banner/banner.phtml"/>
+		</reference>
+	</salon_admin_banner_index>
+	<salon_admin_menu_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_menu_list" name="salon.admin.menu.list" template="salore/salon/admin/menu/list.phtml"/>
+		</reference>
+	</salon_admin_menu_index>
+	
+	<salon_admin_service_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_services_list" name="salon.admin.services.list" template="salore/salon/admin/services/list.phtml">
+				<!-- <block type="salon/admin_services_list" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/> -->
+				<block type="page/html" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/>
+			</block>
+			<block type="page/html" template="salore/salon/admin/deleteCheckbox.phtml" name="salore.delete.checkbox.ajax" alias="salore_delete_checkbox"/>
+		</reference>
+	</salon_admin_service_index>
+	<salon_admin_service_new>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_services_new" name="salon.admin.services.new" template="salore/salon/admin/services/new.phtml">
+				<block type="salon/admin_services_list" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_service_new>
+	<salon_admin_service_edit>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+			<!-- <action method="addItem"><type>skin_js</type><name>js/jquery-ui.min.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/jquery-ui.min.css</name></action> -->
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_services_new" name="salon.admin.services.new" template="salore/salon/admin/services/new.phtml">
+				<block type="page/html" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_service_edit>
+	<salon_admin_service_sort>
+		 <block type="salon/admin_sort_ajax_service" template="salore/salon/admin/sort/service/list.phtml" name="salon_service_ajax_sort" alias="salore_salon_service_ajax_sort" output="toHtml"/>
+	</salon_admin_service_sort>
+	<salon_admin_gallery_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_gallery_gallery" name="salon.admin.gallery.gallery" template="salore/salon/admin/gallery/gallery.phtml"/>
+		</reference>
+	</salon_admin_gallery_index>
+	<salon_admin_reservation_index>
+		<reference name="content">
+			<block type="salon/admin_reservation_list" name="salon.admin.reservation.list" template="salore/salon/admin/reservation/list.phtml"/>
+		</reference>
+	</salon_admin_reservation_index>
+	<salon_admin_reservation_new>
+		<reference name="content">
+			<block type="salon/admin_reservation_new" name="salon.admin.reservation.new" template="salore/salon/admin/reservation/new.phtml">
+				<block type="salon/admin_reservation_render_timeframe" name="salon.admin.reservation.render" as="reservation_render" template="salore/salon/admin/reservation/render/timeframe.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_reservation_new>
+		<salon_admin_reservation_sort>
+		 <block type="salon/admin_sort_ajax_reservation" template="salore/salon/admin/sort/reservation/list.phtml" name="salon_reservation_ajax_sort" alias="salore_salon_reservation_ajax_sort" output="toHtml"/>
+	</salon_admin_reservation_sort>
+	<salon_admin_theme_index>
+		<reference name="content">
+			<block type="salon/admin_theme_list" name="salon.admin.theme.list" template="salore/salon/admin/theme/list.phtml"/>
+		</reference>
+	</salon_admin_theme_index>
+	<salon_admin_password_index>
+		<reference name="content">
+			<block type="salon/admin_password_new" name="salon.admin.password.new" template="salore/salon/admin/password/new.phtml"/>
+		</reference>
+	</salon_admin_password_index>
+	<salon_admin_menu_edit>
+		<reference name="content">
+			<block type="salon/admin_menu_new" name="salon.admin.password.new" template="salore/salon/admin/menu/new.phtml"/>
+		</reference>
+	</salon_admin_menu_edit>
+	<salon_admin_menu_new>
+		<reference name="content">
+			<block type="salon/admin_menu_new" name="salon.admin.password.new" template="salore/salon/admin/menu/new.phtml"/>
+		</reference>
+	</salon_admin_menu_new>
+	<salon_admin_page_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_page_list" name="salon_page_list" template="salore/salon/admin/page/list.phtml"/>
+		</reference>
+	</salon_admin_page_index>
+	<salon_admin_page_new>
+		<reference name="content">
+			<block type="salon/admin_page_new" name="salon_page_new" template="salore/salon/admin/page/new.phtml"/>
+		</reference>
+	</salon_admin_page_new>
+	<salon_admin_page_edit>
+		<reference name="content">
+			<block type="salon/admin_page_new" name="salon_page_new" template="salore/salon/admin/page/new.phtml"/>
+		</reference>
+	</salon_admin_page_edit>
+	<salon_admin_footer_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_footer_footer" name="admin.footer.management" template="salore/salon/admin/footer/list.phtml"/>
+		</reference>
+	</salon_admin_footer_index>
+	<salon_admin_footer_new>
+		<reference name="content">
+			<block type="salon/admin_footer_footer" name="admin.footer.new" template="salore/salon/admin/footer/new.phtml"/>
+		</reference>
+	</salon_admin_footer_new>
+	<salon_admin_footer_edit>
+		<reference name="content">
+			<block type="salon/admin_footer_footer" name="admin.footer.edit" template="salore/salon/admin/footer/new.phtml"/>
+		</reference>
+	</salon_admin_footer_edit>
+	<salon_admin_staff_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_staff_list" name="salon.admin.staff.list" template="salore/salon/admin/staff/list.phtml">
+				<block type="salon/admin_staff_list" name="salon.admin.staff.header" as="salon_admin_staff_header" template="salore/salon/admin/staff/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_staff_index>
+	<salon_admin_staff_new>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_staff_new" name="salon.admin.staff.new" template="salore/salon/admin/staff/new.phtml">
+				<block type="salon/admin_staff_list" name="salon.admin.staff.header" as="salon_admin_staff_header" template="salore/salon/admin/staff/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_staff_new>
+	<salon_admin_staff_edit>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_staff_new" name="salon.admin.staff.new" template="salore/salon/admin/staff/new.phtml">
+				<block type="salon/admin_staff_list" name="salon.admin.staff.header" as="salon_admin_staff_header" template="salore/salon/admin/staff/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_staff_edit>
+	<salon_admin_order_index>
+		<reference name="content">
+			<block type="salon/admin_order_order" name="salon.admin.order" template="salore/salon/admin/order/order.phtml">
+			</block>
+		</reference>
+	</salon_admin_order_index>
+	<salon_admin_customer_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_customer_list" name="salon.admin.customer.list" template="salore/salon/admin/customer/list.phtml">
+				<block type="salon/admin_customer_list" name="salon.admin.customer.header" as="salon_admin_customer_header" template="salore/salon/admin/customer/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_customer_index>
+	<salon_admin_customer_new>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_customer_new" name="salon.admin.customer.new" template="salore/salon/admin/customer/new.phtml">
+				<block type="salon/admin_customer_list" name="salon.admin.customer.header" as="salon_admin_customer_header" template="salore/salon/admin/customer/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_customer_new>
+	<salon_admin_customer_edit>
+		<reference name="head">
+			<!-- <action method="addItem"><type>skin_js</type><name>js/jquery-ui.min.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/jquery-ui.min.css</name></action> -->
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_customer_new" name="salon.admin.customer.new" template="salore/salon/admin/customer/new.phtml">
+				<block type="salon/admin_customer_list" name="salon.admin.customer.header" as="salon_admin_customer_header" template="salore/salon/admin/customer/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_customer_edit>
+	<salon_admin_profile_index>
+		<reference name="content">
+			<block type="salon/admin_profile_view" name="salon.admin.salon.setting" template="salore/salon/admin/user/profile.phtml"/>
+		</reference>
+	</salon_admin_profile_index>
+	<salon_admin_domain_setting>
+		<reference name="content">
+			<block type="salon/admin_domain_setting" name="salon.admin.domain.setting" template="salore/salon/admin/domain/setting.phtml"/>
+		</reference>
+	</salon_admin_domain_setting>
+</layout>

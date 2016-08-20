@@ -1,0 +1,38 @@
+.img-master {
+	 width: 100%;
+	 max-height: 450px; 
+	 overflow: hidden;
+}
+
+.product-img-box {
+	 border: #e7e7e7 1px solid; 
+	 padding: 7px;
+}
+
+.product-image-thumbs {
+	max-height: 80px; 
+	overflow: hidden; 
+	border: 1px solid rgb(231, 231, 231); 
+	padding: 5px;
+}
+
+.thumb-link {
+	display: block;
+	height: 68px;
+	margin-bottom: 10px;
+	margin-right: 5px; 
+	overflow: hidden;  
+	width: 79px;
+}
+
+.service-thumb, .product-thumb  {
+	width: inherit;
+}
+
+.price {
+	color: #ff0000;
+}
+
+.line-through {
+	text-decoration: line-through;
+}

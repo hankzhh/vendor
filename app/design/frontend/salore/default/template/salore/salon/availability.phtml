@@ -1,0 +1,89 @@
+<?php $services = $this->getServices();
+		$staffs = $this->getStaffs();
+?>
+<div class="box availability">
+	<h4><?php echo $this->__('Availability checking')?></h4>
+	<div>
+		<form role="form">
+		      <div class="form-group">
+		        <label for="pick-a-date">Pick a date</label>
+				<div class="input-group date" id="pick-a-date" data-date-format="dd-mm-yyyy" data-date="<?php echo $this->getCurrentDate()?>">
+					<input type="text" readonly="" value="<?php echo Mage::helper('salon')->getCurrentDate()?>" class="form-control"/>
+					<span class="input-group-addon add-on">
+						<i class="glyphicon glyphicon-calendar icon-calendar"></i>
+					</span>
+				</div>
+		      </div>
+		      <div class="form-group">
+		        <label for="select-service">Select service</label>
+		        <select class="form-control selectpicker" id="service">
+		        	<?php foreach ($services as $service ):?>
+		        	<option value="<?php echo $service->getData('entity_id')?>"><?php echo $service->getData('service_name')?></option>
+		        	<?php endforeach;?>
+		        </select>
+		      </div>
+		      <div class="form-group">
+		      	<label for="select-service">Select staff</label>
+		      	<select class="form-control selectpicker" id="check-staff">
+		      		<?php foreach($staffs as $staff):?>
+		      			<option value="<?php echo $staff->getData('entity_id')?>"><?php echo $staff->getData('name') ?></option>
+		      		<?php endforeach;?>
+		      	</select>
+		      </div>
+		      <button class="btn btn-default power-checking" type="submit">Checking</button>
+	    </form>
+	</div>
+	<script type="text/javascript">
+		$(function () {
+			var datePicker = $('#pick-a-date').datepicker().on('changeDate', function(ev){
+				datePicker.hide();
+			}).data('datepicker');
+		});
+
+		//disble date of past
+		var nowTemp = new Date();
+	    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+	    $('#pick-a-date').datepicker({
+	    	onRender: function(date) {
+	        	return date.valueOf() < now.valueOf() ? 'disabled' : '';
+			}
+		});
+		
+		var imgAjxLoading = '<?php echo $this->getSkinUrl('images/res-loading.gif')?>';
+		var urlChecking = '<?php echo Mage::helper('salon')->getUrl('home/checking')?>';
+		jQuery(function($){
+			$('.power-checking').on('click', function(event){
+				if($('.text-danger'))
+				{
+					$('.text-danger').parent().remove();
+				}
+				$(this).parent().append('<img src="'+imgAjxLoading+'" style="width: 30px"/>');
+				var param = {
+						serviceId : $('#service').val(),
+						dateSelected : $('#pick-a-date').children('input').val(),
+						staffId: $('#check-staff').val(),
+				};
+				var serviceId = $('#service').val();
+				var dateSelected = $('#pick-a-date').children('input').val();
+				$.ajax({
+					url: urlChecking,
+					dataType: "json",
+					type: "POST",
+					data: param,
+					success: function(response){
+						$('.power-checking').parent().find('img').remove();
+						if(response.status === 'available')
+						{
+							window.location.href = '<?php echo Mage::helper('salon')->getUrl('reservation')?>' + '?serviceId=' + param.serviceId + '&dateSelected=' + param.dateSelected + '&staffId=' + param.staffId;
+						}
+						else
+						{
+							$('.power-checking').parent().append('<h5>'+response.message+'</h5>');
+						}
+					},
+				});
+				event.preventDefault();
+			});
+		});
+	</script>
+</div>

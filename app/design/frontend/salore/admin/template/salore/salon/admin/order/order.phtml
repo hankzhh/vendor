@@ -1,0 +1,105 @@
+<?php echo $this->getMessagesBlock()->getGroupedHtml()?>
+<?php $collection = $this->getOrderCollection() ?>
+<?php $numCollection = count($collection)?>
+<div class="panel-heading"><?php echo $this->__('Salon Order  Management') ?></div>  
+<?php if($numCollection <=0 ) : ?>
+<?php 	echo $this->__('There is still no any Item') ?>
+<?php else : ?>
+<table class="data-table table table-bordered" id="my-custom-table">
+	<thead>
+		<tr>
+			<th><?php echo $this->__('Order Id') ?></th>
+			<th><?php echo $this->__('Product Name') ?></th>
+			<th><?php echo $this->__('Customer Id') ?></th>
+			<th><?php echo $this->__('Customer Name') ?></th>
+			<th><?php echo $this->__('Customer Email') ?></th>
+			<th><?php echo $this->__('Price') ?></th>
+			<th><?php echo $this->__('Quantity') ?></th>
+			<th><?php echo $this->__('Subtotal') ?></th>
+			<th><?php echo $this->__('Status') ?></th>
+			<th><span class="nobr"><?php echo $this->__('Confirm') ?></span></th>
+			<th><span class="nobr"><?php echo $this->__('Delete') ?></span></th>
+		</tr>
+	</thead>
+	<tbody>
+        <?php foreach ($collection as $order): ?>
+        <tr title="<?php echo $order->getEntityId()?>">
+			<td><span class="nobr"><?php echo $order->getOrderId() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getProductName() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getCustomerId() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getCustomerName() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getCustomerEmail() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getPrice() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getQty() ?></span></td>
+			<td><span class="nobr"><?php echo $order->getSubtotal() ?></span></td>
+			<td><span class="nobr status-column"><?php echo $order->getStatus() ?></span></td>
+			<td>
+				<a class="product-confirm" href="#">
+					<?php echo $this->__("Confirm");?>
+				</a>
+			</td>
+			<td>
+				<a class="product-delete" href="#">
+					<?php echo $this->__("Delete");?>
+				</a>
+			</td>
+		</tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif;?>
+<script type="text/javascript">
+//<![CDATA[
+	jQuery(function($){
+		$('.product-confirm').on('click',function(){
+			var target = $(this).parent().parent();
+			var r = confirm("Are you sure?");
+			if(r == true)
+			{
+				$.ajax({
+					type: "post",
+					url: "<?php echo Mage::helper('salon')->getUrl('admin/reservation/confirm');?>",
+					dataType: "json",
+					data: {'id': target.attr('title'), 'type': 'product_order'},
+					success: function(response){
+						if(response.status == 'SUCCESS')
+						{
+							target.find('span.status-column').text('complete');
+							target.css('background','#f9f9f9');
+						}
+						else
+						{
+							alert(response.message);
+						}
+					}
+				});
+			}
+		});
+		$('.product-delete').on('click', function(){
+			var target = $(this).parent().parent();
+			var r = confirm("Are you sure?");
+			if(r == true)
+			{
+				$.ajax({
+					type: "post",
+					url: "<?php echo Mage::helper('salon')->getUrl('admin/reservation/delete');?>",
+					dataType: "json",
+					data: {'id': target.attr('title'), 'type': 'product_order'},
+					success: function(response){
+						if(response.status == 'SUCCESS')
+						{
+							target.remove();
+						}
+						else
+						{
+							alert(response.message);
+						}
+					}
+				});
+			}
+		});
+	});
+//]]>
+</script>
+
+

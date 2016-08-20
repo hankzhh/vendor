@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <salore module="salon">
+            <title>Salore</title>
+            <sort_order>75</sort_order>
+            <depends>
+                <module>Salore_Salon</module>
+            </depends>
+            <children>
+                <classified_ad translate="title" module="salon">
+                   <title>Classified Ads</title>
+                   <children>
+                    <category translate="title" module="classified">
+                        <title>Category</title>
+                        <action>classified_admin/adminhtml_category/index</action>
+                    </category>
+
+                    <posts translate="title" module="classified">
+                        <title>Posts</title>
+                        <sort_order>3</sort_order>
+                        <action>classified_admin/adminhtml_posts/index</action>
+                    </posts>
+                </children>
+                <sort_order>20</sort_order>
+            </classified_ad>
+
+        </children>
+
+    </salore>
+</menu>
+
+<acl>
+    <resources>
+        <all>
+            <title>Salore Ads</title>
+        </all>
+        <admin>
+            <children>
+                <system>
+                    <children>
+                        <config>
+                            <children>
+                                <salon translate="title">
+                                    <title>Salore - Ads settings</title>
+                                    <sort_order>100</sort_order>
+                                </salon>
+                            </children>
+                        </config>
+                    </children>
+                </system>
+            </children>
+        </admin>
+    </resources>
+</acl>
+</config>

@@ -1,0 +1,116 @@
+server {
+	server_name "~^(?!www\.).*" ;
+	listen 0.0.0.0:80;
+	
+	root	/home/ubuntu/salore/www/magento/;
+	index    index.php;
+
+	location / {
+		index index.html index.php;
+		try_files $uri $uri/ @handler;
+		expires 30d;
+	}
+
+    location ~ ^\/(app|includes|lib|media/downloadable|pkginfo|report/config.xml|var)/ { internal; }
+    location /var/export/ { internal; }
+    location /. { return 404; }
+    location @handler { rewrite / /index.php; }
+    location ~* .php/ { rewrite ^(.*.php)/ $1 last; }
+
+    location ~*  \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        #try_files $uri @img_proxy;
+        access_log        off;
+        log_not_found     off;
+        expires           360d;
+    }
+
+	location /nginx_status {
+        # Turn on stats
+        stub_status on;
+        access_log   off;
+        # only allow access from 192.168.1.5 #
+        #allow 192.168.1.5;
+        #deny all;
+	}
+	
+	location ~ /\. {
+       access_log off;
+       log_not_found off;
+       deny all;
+    }
+
+    ## Dynamics Robots.txt
+    location /robots.txt {
+        rewrite ^\/robots.txt /robots_txt.php last;
+    }
+
+	location ~* .php$ {
+		if (!-e $request_filename) { rewrite / /index.php last; }
+		expires 30d;
+		
+		#fastcgi_pass unix:/var/run/nginx/php-fastcgi.sock;
+		#fastcgi_pass unix:/var/run/php5-fpm.sock;
+		include fastcgi_params;
+		
+		proxy_redirect off;
+		fastcgi_pass 127.0.0.1:9001;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+		#fastcgi_buffer_size 32k;
+		fastcgi_buffer_size 128k;
+		#fastcgi_buffers 8 16k;
+		fastcgi_buffers 256 16k;
+
+		fastcgi_connect_timeout 300;
+		fastcgi_send_timeout 300;
+		fastcgi_read_timeout 300;
+
+		#fastcgi_read_timeout 600s;
+		#fastcgi_cache_valid 200 60m;
+		fastcgi_param MAGE_RUN_CODE default;
+		fastcgi_param PHP_VALUE "upload_max_filesize = 5M \n post_max_size=6M \n memory_limit=2048M \n max_execution_time=18000 \n";
+		#fastcgi_param MAGE_RUN_TYPE store;
+
+		#error_page  404  http://$host/search/?q=$1?;
+		#fastcgi_intercept_errors on;
+		}
+}
+
+        <cache>
+            <backend>Cm_Cache_Backend_Redis</backend>
+            <backend_options>
+                <server>10.147.134.144</server> &lt;!&ndash; or absolute path to unix socket &ndash;&gt;
+                <port>6379</port>
+                <persistent></persistent> &lt;!&ndash; Specify unique string to enable persistent connections. E.g.: sess-db0; bugs with phpredis and php-fpm are known: https://github.com/nicolasff/phpredis/issues/70 &ndash;&gt;
+                <database>1</database> &lt;!&ndash; Redis database number; protection against accidental data loss is improved by not sharing databases &ndash;&gt;
+                <password></password> &lt;!&ndash; Specify if your Redis server requires authentication &ndash;&gt;
+                <force_standalone>0</force_standalone>  &lt;!&ndash; 0 for phpredis, 1 for standalone PHP &ndash;&gt;
+                <connect_retries>1</connect_retries>    &lt;!&ndash; Reduces errors due to random connection failures; a value of 1 will not retry after the first failure &ndash;&gt;
+                <read_timeout>10</read_timeout>         &lt;!&ndash; Set read timeout duration; phpredis does not currently support setting read timeouts &ndash;&gt;
+                <automatic_cleaning_factor>0</automatic_cleaning_factor> &lt;!&ndash; Disabled by default &ndash;&gt;
+                <compress_data>1</compress_data>  &lt;!&ndash; 0-9 for compression level, recommended: 0 or 1 &ndash;&gt;
+                <compress_tags>1</compress_tags>  &lt;!&ndash; 0-9 for compression level, recommended: 0 or 1 &ndash;&gt;
+                <compress_threshold>20480</compress_threshold>  &lt;!&ndash; Strings below this size will not be compressed &ndash;&gt;
+                <compression_lib>gzip</compression_lib> &lt;!&ndash; Supports gzip, lzf, lz4 (as l4z) and snappy &ndash;&gt;
+                <use_lua>0</use_lua> &lt;!&ndash; Set to 1 if Lua scripts should be used for some operations &ndash;&gt;
+            </backend_options>
+        </cache>
+        <session_save><![CDATA[db]]></session_save>
+        <redis_session>                       &lt;!&ndash; All options seen here are the defaults &ndash;&gt;
+            <server>10.147.134.144</server> &lt;!&ndash; or absolute path to unix socket &ndash;&gt;
+            <port>6379</port>
+            <password></password>             &lt;!&ndash; Specify if your Redis server requires authentication &ndash;&gt;
+            <timeout>2.5</timeout>            &lt;!&ndash; This is the Redis connection timeout, not the locking timeout &ndash;&gt;
+            <persistent></persistent>         &lt;!&ndash; Specify unique string to enable persistent connections. E.g.: sess-db0; bugs with phpredis and php-fpm are known: https://github.com/nicolasff/phpredis/issues/70 &ndash;&gt;
+            <db>2</db>                        &lt;!&ndash; Redis database number; protection from accidental loss is improved by using a unique DB number for sessions &ndash;&gt;
+            <compression_threshold>2048</compression_threshold>  &lt;!&ndash; Set to 0 to disable compression (recommended when suhosin.session.encrypt=on); known bug with strings over 64k: https://github.com/colinmollenhour/Cm_Cache_Backend_Redis/issues/18 &ndash;&gt;
+            <compression_lib>gzip</compression_lib>              &lt;!&ndash; gzip, lzf, lz4 or snappy &ndash;&gt;
+            <log_level>1</log_level>               &lt;!&ndash; 0 (emergency: system is unusable), 4 (warning; additional information, recommended), 5 (notice: normal but significant condition), 6 (info: informational messages), 7 (debug: the most information for development/testing) &ndash;&gt;
+            <max_concurrency>6</max_concurrency>                 &lt;!&ndash; maximum number of processes that can wait for a lock on one session; for large production clusters, set this to at least 10% of the number of PHP processes &ndash;&gt;
+            <break_after_frontend>5</break_after_frontend>       &lt;!&ndash; seconds to wait for a session lock in the frontend; not as critical as admin &ndash;&gt;
+            <break_after_adminhtml>30</break_after_adminhtml>
+            <first_lifetime>600</first_lifetime>                 &lt;!&ndash; Lifetime of session for non-bots on the first write. 0 to disable &ndash;&gt;
+            <bot_first_lifetime>60</bot_first_lifetime>          &lt;!&ndash; Lifetime of session for bots on the first write. 0 to disable &ndash;&gt;
+            <bot_lifetime>7200</bot_lifetime>                    &lt;!&ndash; Lifetime of session for bots on subsequent writes. 0 to disable &ndash;&gt;
+            <disable_locking>0</disable_locking>                 &lt;!&ndash; Disable session locking entirely. &ndash;&gt;
+        </redis_session>

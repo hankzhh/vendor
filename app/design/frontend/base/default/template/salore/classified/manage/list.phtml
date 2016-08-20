@@ -1,0 +1,126 @@
+<?php echo $this->getMessagesBlock()->getGroupedHtml()?>
+<?php $collection = $this->getClassifedCollection()?>
+<?php echo $this->getChild('customer_classified_header' )->setData('disables' , $this->getDisable())->toHtml()?>
+<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div id="message-session" style="margin-top: 15px" class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+	<div id="message"class="" style="display: none">
+		<blockquote class="">
+		</blockquote>
+	</div>
+<table id="my-custom-table" style="margin-top: 15px;"   class="table table-hover">
+	<thead>
+		<tr class="active">
+			<th class="center fixed-width-center">
+			     <div style="float: left; position: relative; top: 4px;" class="simple-checkbox">
+			      <input class="noborder" type="checkbox" id="selectedall" />
+			       <label for="selectedall">&nbsp</label>
+			     </div>
+			 </th>
+			<th><?php echo $this->__('Image') ?></th>
+			<th><?php echo $this->__('Title') ?></th>
+			<th><?php echo $this->__('Create') ?></th>
+			<th><?php echo $this->__('Status') ?></th>
+			<th><span class="nobr"><?php echo $this->__('Edit') ?></span></th>
+			<th><span class="nobr"><?php echo $this->__('Delete') ?></span></th>
+		</tr>
+	</thead>
+	<tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($collection as $classifed): ?>
+        <tr title="<?php echo $classifed->getEntityId()?>">
+			 <td class="text-center" style="width:50px">
+			     <div style="float:left" class="simple-checkbox">
+			      <input class="noborder pselect" type="checkbox" onclick="inputSelect(this);"  id ="<?php echo $classifed['entity_id']; ?>" value="<?php echo $classifed['entity_id']; ?>" name="classifedcheck[]" />
+			      <label for="<?php echo $classifed['entity_id']; ?>">&nbsp</label>   
+			     </div>
+			  </td>
+			<td>
+			<img src="<?php echo !is_null($classifed->getThumbnailImage()['url'])  ? $classifed->getThumbnailImage()['url'] : Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB).'skin/'.'frontend/'.'salore/'.'default/'.'images/'.'not-available.jpg'?>" style="width:135px; height:130px;"/>
+			</td>
+			<td><span class="nobr"><?php echo $classifed->getTitle() ? $classifed->getTitle() : ''; ?></span></td>
+			<td class=""><?php if(!is_null($classifed->getCreateDate()) && $classifed->getCreateDate())  echo Mage::helper('salon')->niceTime($classifed->getCreateDate())   ?></td>	
+			<td><span class="nobr">
+			<?php if(Mage::getModel('core/date')->date('d-m-y') >= $classifed->getExpiredDate()) : ?>
+				<?php echo "Expired";?>
+				<?php else : ?>
+				<?php echo "Expired in ". $classifed->getExpiredDate()?>
+			<?php endif;?>
+			<td>
+			<a class="edit" href="<?php echo $this->helper('salon')->getUrl('salon/classified/edit'). "?id={$classifed->getEntityId()}";?>">
+			    <?php echo $this->__("Edit");?>
+			</a>
+			</td>
+			<td>
+				<a class="classifed-delete" 
+					href="#" onclick="ajaxDelete(this)">
+					<?php echo $this->__("Delete");?>
+				</a>
+			</td>
+		</tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div id="salore_pagination" class="text-center">
+	<?php echo $this->getChildHtml('classified.pager')?>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+   var urlDelete = '<?php echo $this->helper('salon')->getUrl('salon/classified/ajaxdelete')?>';
+    var urlIndex = '<?php echo Mage::getUrl('salon/classified/index') ?>';
+    var name = 'classified';
+    function ajaxDelete(arg) {
+    	$('#message').css("display", "none");
+    	if($('#message-session') != null)
+    	{
+    		$('#message-session').remove();
+    	}
+    	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+    	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+    	var postsId = $(arg).parent().parent().attr('title');
+    
+    	var postsTitle = $(arg).parent().parent().children().children('span').html();
+    	var r = confirm('['+postsTitle+'] Are you sure want to delete ' + postsTitle +' posts?');
+    	if (r == true) {
+
+    		jQuery.ajax({
+        		type: "POST",
+        		url: urlDelete,
+        		data: { id: postsId, p:<?php echo $this->pageNum;?> },
+        		dataType: "json",
+        	    success: function(data){
+            	    if( data.status === 'SUCCESS') {
+						var table = $(arg).parent().parent().parent();
+            	    	
+            	    	$('#message').addClass('animated bounceInDown text-success').css("display", "block");
+    					$('#message').find('blockquote').addClass('bg-success').html(data.message);
+
+						if( $(table).find('tr').length === 1 ) {
+
+							$('#salore_pagination').html('');
+
+							window.location.href = urlIndex;
+
+						} else {
+
+								$(arg).parent().parent().remove();
+    							$('#salore_pagination').html(data.pagination);
+						}
+						
+                	} else {
+            	    	$('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+    					$('#message').find('blockquote').addClass('bg-danger').html(data.message);        
+                	}
+    			},
+    		}); 
+    	}   	
+    }
+//]]>
+</script>

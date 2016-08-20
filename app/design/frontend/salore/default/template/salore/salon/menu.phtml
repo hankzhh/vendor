@@ -1,0 +1,44 @@
+<?php
+/**
+ * @see Salore_Salon_Block_Salon_Menu
+ */
+$menuCollection = $this->getMenuCollection ();
+?>
+<div class="salon-menu-wrapper">
+	<ul class="links nav navbar-nav navbar-left salon-menu-list"
+		<?php if($this->getName()): ?> id="<?php echo $this->getName() ?>"
+		<?php endif;?>>
+		<li>
+			<a href="<?php echo Mage::helper ('salon')->getUrl('/')?>"	title="<?php if($this->getName()): ?> id="<?php echo $this->getName() ?>"<?php endif;?>">
+				<span class="glyphicon glyphicon-home salon-home-icon"></span>
+			</a>
+		</li>
+	    <?php foreach ($menuCollection as $menuItem):?>
+    	<li>
+	    	<a class="menu-link" href="<?php echo Mage::helper ('salon')->getUrl($menuItem->getData('path'))?>" title="<?php echo $menuItem->getData('title')?>"><?php echo trim($menuItem->getData('title'))?></a>
+    	</li>
+	    <?php endforeach;?>
+	</ul>
+</div>
+<script type= "text/javascript">
+//<![CDATA[
+           jQuery( document ).ready(function( $ ) {
+               jQuery('a[href$="'+window.location.href+'"]').addClass("active");
+               
+                if(localStorage.getItem("session") != null)
+             	{
+                	jQuery('.salon-menu-list li').removeClass("active");
+             		jQuery('a[href$="'+localStorage.getItem("session")+'"]').addClass('active');
+             		localStorage.removeItem("session");
+             	}  
+            	jQuery('.menu-link').click(function(event){
+	   				localStorage.setItem("session", this);
+	            }); 
+			});
+//]]>
+</script>
+<style>
+	.active{
+		background: #ccc;
+	}
+</style>

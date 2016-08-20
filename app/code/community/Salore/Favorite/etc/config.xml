@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Salore_Favorite>
+            <version>1.0.0</version>
+        </Salore_Favorite>
+    </modules>
+    <global>
+        <models>
+            <favorite>
+                <class>Salore_Favorite_Model</class>
+                <resourceModel>favorite_resource</resourceModel>
+            </favorite>
+            <favorite_resource>
+                <class>Salore_Favorite_Model_Resource</class>
+                <deprecatedNode>favorite_mysql4</deprecatedNode>
+                <entities>
+                    <favorite>
+                        <table>favorite</table>
+                    </favorite>
+                </entities>
+            </favorite_resource>
+        </models>
+        <helpers>
+            <favorite>
+                <class>Salore_Favorite_Helper</class>
+            </favorite>
+        </helpers>
+        <blocks>
+            <favorite>
+                <class>Salore_Favorite_Block</class>
+            </favorite>
+        </blocks>
+    </global>
+    <frontend>
+        <routers>
+            <favorite>
+                <use>standard</use>
+                <args>
+                    <module>Salore_Favorite</module>
+                    <frontName>favorite</frontName>
+                </args>
+            </favorite>
+        </routers>
+    </frontend>
+</config>

@@ -1,0 +1,162 @@
+<?php $footerCollection = $this->getFooter()?>
+<div class="footer-wrapper content-wrapper">
+	<div class="panel-heading"><?php echo $this->__('Footer Management')?></div>
+	<p>
+		<div class="btn-group">
+			<span class="input-group-btn">
+	    		<span onclick= "javascript:window.location.href='<?php echo Mage::helper('salon')->getUrl('admin/footer/new' );?> '" class="btn btn-default">
+	    			<?php echo $this->__('Add New Block')?>
+	    		</span>
+			</span>
+	  	</div>
+	</p>
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+		<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div id="message-session" class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+		<?php endif;?>
+		<div id="message"class="" style="display: none">
+				<blockquote class="">
+				</blockquote>
+			</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-12">
+				<table id="dataTables-menu" class="table no-footer">
+					<thead>
+						<tr role="row">
+							<th><?php echo $this->__('Title')?></th>
+							<th><?php echo $this->__('Action')?></th>
+							<th><?php echo $this->__('Edit')?></th>
+							<th><?php echo $this->__('Delete')?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php $index = 0 ?>
+						<?php foreach ($footerCollection as $footer):?>
+						<tr title="<?php echo $footer->getData('entity_id')?>" class="gradeA <?php if (($index%2) == 0):?>old<?php else: ?>even<?php endif;?> <?php echo $footer->getSystem() ? 'disabled' : ''?>">
+							<td class="sorting_1"><?php echo $footer->getData('title')?></td>
+							<td class=" ">
+								<div class="btn-group btn-toggle"> 
+							    	<button class="btn btn-sm btn-default power <?php echo ((int)$footer->getData('active') == 1 ) ? 'active btn-primary' : ''?>">ON</button>
+							    	<button class="btn btn-sm btn-default power <?php echo ((int)$footer->getData('active') == 0) ? 'active btn-primary' : ''?>">OFF</button>
+							  	</div>
+							</td>
+							<td><a style="color: #c79800" href="<?php echo Mage::helper('salon')->getUrl('admin/footer/edit') . '?id=' . $footer->getData('entity_id') ?>">Edit</a></td>
+							<td><a onclick="ajaxDelete(this)"  style="color: #c79800" href="#">Delete</a></td>
+						</tr>
+						<?php $index++ ?>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- /.row (nested) -->
+	</div>
+</div>
+
+<script type="text/javascript">
+$('.power').click(function(event){
+	$('#message').css("display", "none");
+	if($('#message-session') != null)
+	{
+		$('#message-session').remove();
+	}
+	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+	var button = this;
+	var footerId = $(this).parent().parent().parent().attr('title');
+	var active = $(this).html();
+	var urlActive = '<?php echo $this->helper('salon')->getUrl('admin/footer/ajaxactive')?>';
+	var str = $(this).attr('class');
+	var classArr = str.split(" ");
+	var checkActive = null;
+	classArr.forEach(function(item){
+		if(item === 'active')
+		{
+			checkActive = item;
+		}
+	});
+	if(checkActive == null)
+	{
+		///ajax is here
+		jQuery.ajax({
+    		type: "POST",
+    		url: urlActive,
+    		data: { id: footerId , active : active },
+    		dataType: "json",
+    	    success: function(data){
+        	    if(data.status === 'SUCCESS')
+        	    {
+            	    $(button).addClass('active btn-primary');
+					if(active === 'ON')
+					{
+						$(button).next().removeClass('active btn-primary');
+					}
+					else
+					{
+						$(button).prev().removeClass('active btn-primary');
+					}   
+					$('#message').addClass('animated bounceInDown text-success').css("display", "block");
+					$('#message').find('blockquote').addClass('bg-success').html(data.message);
+            	}
+        	    else
+        	    {
+        	    	$('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+					$('#message').find('blockquote').addClass('bg-danger').html(data.message);            	     
+            	}
+			},
+		}); 
+	}
+	else
+	{
+		return false;
+	}
+}); 
+
+
+var urlDelete = '<?php echo $this->helper('salon')->getUrl('admin/footer/ajaxdelete')?>';
+function ajaxDelete(arg)
+{
+	if($(arg).parent().parent().hasClass('disabled'))
+	{
+		alert("Can't not delete this block because it belong to system!");
+		return;
+	}
+	$('#message').css("display", "none");
+	if($('#message-session') != null)
+	{
+		$('#message-session').remove();
+	}
+	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+	var footerId = $(arg).parent().parent().attr('title');
+	var footerTitle = $(arg).parent().parent().children().first().html();
+	var r = confirm('['+footerTitle+'] Are you sure remove ' + footerTitle + ' menu?');
+	if (r == true)
+	  {
+		jQuery.ajax({
+    		type: "POST",
+    		url: urlDelete,
+    		data: { id: footerId },
+    		dataType: "json",
+    	    success: function(data){
+        	    if(data.status === 'SUCCESS')
+        	    {
+        	    	 $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+ 					$('#message').find('blockquote').addClass('bg-success').html(data.message);    
+        	    	$(arg).parent().parent().remove();
+            	}
+        	    else
+        	    {
+        	    	 $('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+  					$('#message').find('blockquote').addClass('bg-danger').html(data.message); 
+            	}
+			},
+		}); 
+	  }   	
+}
+</script>

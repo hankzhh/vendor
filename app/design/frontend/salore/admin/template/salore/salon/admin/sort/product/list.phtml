@@ -1,0 +1,30 @@
+<?php $collection = $this->getProductCollectionFromMongo(); ?>
+<?php $_odd = ''; ?>
+<?php foreach ($collection as $product): ?>
+<tr
+	title="<?php echo isset($product['entity_id']) ? $product['entity_id'] : '' ?>">
+	<td class="text-center" style="width: 50px">
+		<div style="line-height:70px; margin-left:10px" class="simple-checkbox">
+			<input class="noborder pselect" type="checkbox"
+				onclick="inputSelect(this);"
+				id="<?php echo $product['entity_id']; ?>"
+				value="<?php echo $product['entity_id']; ?>" name="productBox[]" />
+			<label for="<?php echo $product['entity_id']; ?>">&nbsp</label>
+		</div>
+	</td>
+	<td><img alt=""
+		src="<?php echo  isset($product['thumbnail_image']['url']) ? $product['thumbnail_image']['url'] : $this->getSkinUrl('images/not-available.jpg');?>"
+		width="75px" height="75px"></td>
+
+	<td><span class="nobr"><?php echo isset($product['product_name']) ? $product['product_name'] : ''?></span></td>
+	<td><span class="nobr"><?php echo isset($product['price']) ? Mage::helper('salon')->stringFormatToPrice($product['price']) : ''; ?></span></td>
+	<td><span class="nobr"><?php echo isset($product['speacial_price']) ? Mage::helper('salon')->stringFormatToPrice($product['speacial_price']) : ''; ?></span></td>
+	<td><a class="edit btn btn-default"
+		href="<?php echo $this->helper('salon')->getUrl('admin/product/edit'). "?sid={$product['entity_id']}";?>">
+						<?php echo $this->__("Edit");?>
+					</a></td>
+	<td><a class="product-delete btn btn-default" href="#" onclick="ajaxDelete(this)">
+						<?php echo $this->__("Delete");?>
+					</a></td>
+</tr>
+<?php endforeach; ?>

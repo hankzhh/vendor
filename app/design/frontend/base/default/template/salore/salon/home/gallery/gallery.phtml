@@ -1,0 +1,31 @@
+<?php $galleryObj = $this->getGallery() ?>
+<div class="panel panel-gallery panel-danger">
+    <div class="panel-body">
+     	<div class="gallery-wrapper">
+     		<?php foreach ($galleryObj as $gallery):?>
+     			<a class="fancybox-thumb" rel="fancybox-thumb" href="<?php echo $gallery->getLargerUrl() ? $gallery->getLargerUrl() : ''?>">
+     				<img alt="gallery" src="<?php echo $gallery->getSmallUrl() ? $gallery->getSmallUrl() : ''?>">
+     			</a>
+     		<?php endforeach;?>
+     	</div> 		
+    </div>
+</div>
+<script type= "text/javascript">
+//<![CDATA[\
+$(document).ready(function() {
+	$(".fancybox-thumb").fancybox({
+		prevEffect	: 'none',
+		nextEffect	: 'none',
+		helpers	: {
+			title	: {
+				type: 'outside'
+			},
+			thumbs	: {
+				width	: 50,
+				height	: 50
+			}
+		}
+	});
+});
+//]]>
+</script>

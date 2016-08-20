@@ -1,0 +1,76 @@
+<div class="col-md-4 nk-form-wrapper">
+	<div class="page-title">
+	    <h2><?php echo $this->__('Edit Account Information') ?></h2>
+	</div>
+	<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+	<form role="form" class="" action="<?php echo $this->getUrl('customer/account/editPost') ?>" method="post" id="form-validate" autocomplete="off">
+	    <div class="fieldset">
+	        <?php echo $this->getBlockHtml('formkey')?>
+	        <h2 class="legend"><?php echo $this->__('Account Information') ?></h2>
+	        
+	        <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getCustomer())->toHtml() ?>
+	        <div class="form-group">
+				<label class="control-label" for="email" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+				<input type="text" name="email" id="email" value="<?php echo $this->escapeHtml($this->getCustomer()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="form-control required-entry validate-email" />
+			</div>
+			
+			<?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+	        <?php if ($_dob->isEnabled()): ?>
+	            <div><?php echo $_dob->setDate($this->getCustomer()->getDob())->toHtml() ?></div>
+	        <?php endif ?>
+	        <?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
+	        <?php if ($_taxvat->isEnabled()): ?>
+	            <div><?php echo $_taxvat->setTaxvat($this->getCustomer()->getTaxvat())->toHtml() ?></div>
+	        <?php endif ?>
+	        <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+	        <?php if ($_gender->isEnabled()): ?>
+	            <div><?php echo $_gender->setGender($this->getCustomer()->getGender())->toHtml() ?></div>
+	        <?php endif ?>
+			 <div class="form-group">
+			      <div class="checkbox">
+			        <label>
+			          <input type="checkbox" name="change_password" id="change_password" value="1" onclick="setPasswordForm(this.checked)" title="<?php echo $this->__('Change Password') ?>"<?php if($this->getCustomer()->getChangePassword()==1): ?> checked="checked"<?php endif; ?>/> 
+			          <?php echo $this->__('Change Password') ?>
+			        </label>
+			      </div>
+			</div>
+	    </div>
+	    <div class="fieldset" style="display:none;">
+	        <h2 class="legend"><?php echo $this->__('Change Password') ?></h2>
+	        <div class="form-group">
+				<label for="current_password" class="control-label required"><em>*</em><?php echo $this->__('Current Password') ?></label>
+				<!-- This is a dummy hidden field to trick firefox from auto filling the password -->
+				<input type="text" class="form-control no-display hidden" name="dummy" id="dummy" />
+				<input type="password" title="<?php echo $this->__('Current Password') ?>" class="form-control" name="current_password" id="current_password" />
+			</div>
+			
+			<div class="form-group">
+				<label for="password" class="required control-label"><em>*</em><?php echo $this->__('New Password') ?></label>
+				<input type="password" title="<?php echo $this->__('New Password') ?>" class="form-control validate-password" name="password" id="password" />
+			</div>
+	        
+			<div class="form-group">
+				<label for="confirmation" class="required control-label"><em>*</em><?php echo $this->__('Confirm New Password') ?></label>
+				<input type="password" title="<?php echo $this->__('Confirm New Password') ?>" class="form-control validate-cpassword" name="confirmation" id="confirmation" />
+			</div>
+			<div class="form-group">
+	        	<p class="required"><?php //echo $this->__('* Required Fields') ?></p>
+	        	<button type="button" class="btn btn-link" onclick="window.location='<?php echo $this->escapeUrl($this->getBackUrl()) ?>';"><small>&laquo; </small><?php echo $this->__('Back') ?></button>
+	        	<button type="submit" title="<?php echo $this->__('Save') ?>" class="btn nk-btn-default"><?php echo $this->__('Save') ?></button>
+	    	</div>
+	    </div>
+	</form>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+    var dataForm = new VarienForm('form-validate', true);
+    function setPasswordForm(arg){
+    	$('#current_password').parent().parent().toggle();
+    }
+
+    <?php if($this->getCustomer()->getChangePassword()): ?>
+        setPasswordForm(true);
+    <?php endif; ?>
+//]]>
+</script>

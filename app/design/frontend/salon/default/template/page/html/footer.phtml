@@ -1,0 +1,67 @@
+<?php $salon = Mage::registry('currentsalon') ?>
+<?php $helper = Mage::helper('salon') ?>
+<?php $footerCollection = Mage::getModel('salon/footer')->getCollection()?>
+<div class="row">
+	<div class="footer">
+		<div class="container">
+			<?php $footerArr = Mage::helper('salon')->getFooterAfterParseToArr()?>
+			<?php if(isset($footerArr) && !empty($footerArr)):?>
+			<?php $columnClass = 'col-sm-'.floor(12 / count($footerArr));?>
+				<?php for($i = 0; $i < count($footerArr); $i++):?>
+					<div class="footer-section ">
+					<div class="<?php echo $columnClass?>">
+						<h3 class="footer-header"><?php echo $footerArr[$i]['title']?></h3>
+						<ul class="list-unstyled">
+							<?php foreach ($footerArr[$i]['content'] as $content):?>
+								<?php if(!isset($content['active'])):?>
+									<li><a href="<?php echo isset($content['link']) ? $content['link'] : '#'?>"><?php echo isset($content['item']) ? $content['item'] : ''?></a></li>
+								<?php endif;?>
+							<?php endforeach;?>
+						</ul>
+					</div>	
+					</div>	
+				<?php endfor;?>
+			<?php else:?>
+			<div class="col-md-4">
+				<div class="footer-section ">
+					<h3 class="footer-header">Opening Hours</h3>
+					<ul>
+					    <li><a href="#" class="footer-link">Monday 09:00 - 18:00</a></li>
+					    <li><a href="#" class="footer-link">Tuesday 09:00 - 18:00</a></li>
+					    <li><a href="#" class="footer-link">Wednesday 07:00 - 21:00</a></li>
+					    <li><a href="#" class="footer-link">Thursday 07:30 - 20:30</a></li>
+					    <li><a href="#" class="footer-link">Friday 09:30 - 20:30</a></li>
+					    <li><a href="#" class="footer-link">Saturday closed</a></li>
+					    <li><a href="#" class="footer-link">Sunday closed</a></li>
+				    </ul>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="footer-section ">
+					<h3 class="footer-header">Help</h3>
+					<ul>
+					    <li><a href="/" class="footer-link ">Blog</a></li>
+					    <li><a href="/" class="footer-link ">How we work</a></li>
+					    <li><a href="/" class="footer-link ">FAQ</a></li>
+				    </ul>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="footer-section ">
+					<h3 class="footer-header"><?php echo $salon->getData('salon_name') ?></h3>
+					<ul>
+					    <li><a href="/" class="footer-link ">About</a></li>
+					    <li><a href="/" class="footer-link ">Careers</a></li>
+					    <li><a href="/" class="footer-link ">Contact</a></li>
+					    <li><a href="/" class="footer-link ">Partner program</a></li>
+					    <li><a href="/" class="footer-link ">Sitemap</a></li>
+				    </ul>
+				</div>
+			</div>
+			<?php endif;?>
+		</div>
+		<div class="container text-center">
+			© Copyright <?php echo $salon->getData('salon_name') ?>. All Rights Reserved. Powered by <a href="<?php echo Mage::getBaseUrl()?>"><?php echo $helper->__('Salore')?></a>
+		</div>
+	</div>
+</div>

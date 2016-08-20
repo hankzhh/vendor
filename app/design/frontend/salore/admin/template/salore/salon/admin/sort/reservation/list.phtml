@@ -1,0 +1,23 @@
+<?php $collection = $this->getReservationCollection();?>
+        <?php $_odd = ''; ?>
+        <?php foreach ($collection as $reservation): ?>
+<tr
+	title="<?php echo isset($reservation['entity_id']) ? $reservation['entity_id'] : ''?>">
+	<td><span class="nobr"><?php echo isset($reservation['order_id']) ? $reservation['order_id'] : ''?></span></td>
+	<td><span class="nobr"><?php echo isset($reservation['customer_name']) ? $reservation['customer_name'] : '' ?></span></td>
+	<td><span class="nobr"><?php echo isset($reservation['service_name']) ? $reservation['service_name'] : ''  ?></span></td>
+	<td><span class="nobr"><?php echo isset($reservation['date_booking']) ? $reservation['date_booking'] : '' ?></span></td>
+	<td><span class="nobr"><?php echo isset($reservation['staff_id']) ? $this->getStaffNameById($reservation['staff_id']) : ''  ?></span></td>
+	<td><span class="nobr"><?php echo isset($reservation['time_frame']) ? $reservation['time_frame'] : '' ?></span></td>
+	<td><span class="nobr status-column"><?php echo isset($reservation['status']) ? $reservation['status'] : '' ?></span></td>
+	<td><span class="nobr"><?php echo isset($reservation['subtotal']) ? Mage::helper('salon')->stringFormatToPrice($reservation['subtotal']) : '' ?></span></td>
+	<td><a class="reservation-confirm btn btn-default" href="#">
+					<?php echo $this->__("Confirm");?>
+				</a></td>
+	<td><a class="reservation-delete btn btn-default" href="#">
+					<?php echo $this->__("Delete");?>
+				</a></td>
+</tr>
+<?php endforeach; ?>
+
+

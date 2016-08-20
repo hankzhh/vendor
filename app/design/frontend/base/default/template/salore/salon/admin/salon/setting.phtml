@@ -1,0 +1,102 @@
+<?php
+		$salon = $this->getSalon();
+?>
+<div class="settings-wapper content-wrapper">
+		<div class="panel-heading"><?php echo $this->__('Salon setting')?></div>
+		<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+	<div class="col-sm-6 form-wrapper">
+		<form role="form" action="<?php   echo Mage::helper('salon')->getUrl('admin/setting/save')?>" method="post" id="form-setting"  enctype="multipart/form-data" class="form-horizontal">
+		    <div class="form-group">
+				<label for="salon_name" class="control-label"><em>*</em><?php echo $this->__('Salon Name') ?></label>
+				<input type="text" name="salon_name" id="salon_name" value="<?php echo $salon->getSalonName() ? $salon->getSalonName() : ''?>" title="<?php echo $this->__('Salon Name') ?>" class="form-control required-entry" required/>
+			</div>
+			<div class="form-group">
+                	<label for="category" class="control-label"><em>*</em><?php echo $this->__('salon Category') ?></label>
+					<select name="category" id="category" value="" class="form-control "/>
+					<?php $categoryCollection = $this->getCategoryMongo()?>
+						<option value=""><?php echo $this->__('Please select salon category')?></option>
+						<?php foreach ($categoryCollection as $category):?>
+							<option value="<?php echo $category->getEntityId()?>" 
+							<?php $id = $salon->getCategory();
+									if(isset($id) && $id)
+									{
+										echo ($category->getEntityId() == $id) ? 'selected="selected"' : ''; 
+									}
+							?>
+							><?php echo $category->getCategoryName()?></option>
+						<?php endforeach;?>
+					</select>
+            	</div>
+			<div class="form-group">
+				<label for="img_represent" class="control-label"><?php echo $this->__('Represent Image') ?></label>
+				<input style="height: 33px;" type="file" accept="image/*" name="img_represent" id="img_represent"  title="<?php echo $this->__('Image Represent') ?>" class=""/>
+			</div>
+			<div class="form-group">
+				<?php if($salon->getImgRepresent()) :?>
+				<img  alt="img_represent" src="<?php echo $salon->getImgRepresent() ? $salon->getImgRepresent() : '' ?>">
+				<?php else :?>
+				<img style="display:none;"  alt="img_represent" src="<?php echo $salon->getImgRepresent() ? $salon->getImgRepresent() : '' ?>">
+				<?php endif;?>
+			</div>
+			<div class="form-group">
+				<label for="salon_logo" class="control-label"><?php echo $this->__('Salon Logo')?></label>
+				<input style="height: 33px;" type="file" id="salon_logo" accept="image/*" title="file" name="salon_logo">
+			</div>
+			<div class="form-group">
+				<?php if($salon->getLogo()) : ?>
+				<img style="float:left" alt="salon_logo" src="<?php echo $salon->getLogo() ? $salon->getLogo() : ''?>">
+				<?php else :?>
+				<img style="float:left; display:none;" alt="salon_logo" src="<?php echo $salon->getLogo() ? $salon->getLogo() : ''?>">
+				<?php endif;?>
+			</div>
+			<div class="form-group">
+				<label for="salon_description" class="control-label"><em>*</em><?php echo $this->__('Salon Description') ?></label>
+				<textarea rows="5" class="form-control required-entry"  name="salon_description" id="salon_description" required><?php echo $salon->getSalonDescription() ? $salon->getSalonDescription() : ''?></textarea>
+			</div>
+			<div class="form-group">
+				<label name="workingtime" class="control-label"><em>*</em><?php echo $this->__('Working Time:') ?></label>
+			<table id="workingtime" name="workingtime" class="table no-footer">
+				<?php $workingtime = $salon->getWorkingtime()?>
+				<thead>
+					<tr role="row">
+						<th><?php echo $this->__('Day')?></th>
+						<th><?php echo $this->__('Time Start')?></th>
+						<th><?php echo $this->__('Time End')?></th>
+						<th><?php echo $this->__('Off')?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if(isset($workingtime) && $workingtime) :?>
+					<?php foreach ($workingtime  as $key => $value):?>
+						<tr>
+						<td class>
+							<label ><?php echo $key?></label>
+						</td>
+								<td class="timestart">
+									<input class="form-control" value="<?php echo isset($value['timestart']) ? $value['timestart'] :'07:00' ?>"  name="days[<?php echo $key?>][timestart]" type="text"  />
+								</td>
+								<td class="timeend">
+									<input class="form-control" value="<?php echo isset($value['timeend']) ? $value['timeend'] : '18:00'?>"  name="days[<?php echo $key?>][timeend]" type="text"  />
+								</td>
+								<td class="off">
+									<input class="form-control" <?php echo  isset($value['off']) ? "checked" : ''?>  name="days[<?php echo $key?>][off]" type="checkbox">
+								</td>
+					</tr>
+				<?php endforeach;?>
+				<?php endif;?>
+				</tbody>
+			</table>	
+		</div>
+			<div class="form-group">
+				<button type="submit" title="<?php echo $this->__('Save') ?>" style="width: 99px" class="btn btn-default btn-save-information btn"><span><span><?php echo $this->__('Save') ?></span></span></button>
+			</div>
+		</form>
+	</div>
+</div>

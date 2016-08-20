@@ -1,0 +1,216 @@
+<?php $serviceArr = $this->getServicefromMongo();?>
+<?php $specialToDate = ($serviceArr->getSpecialToDate() ? Mage::getModel('core/date')->date('d-m-Y', $serviceArr->getSpecialToDate()) : date("d-m-Y"))?>
+<?php $specialFromDate = ($serviceArr->getSpecialFromDate() ? Mage::getModel('core/date')->date('d-m-Y', $serviceArr->getSpecialFromDate()) : date("d-m-Y"))?>
+<?php echo $this->getChildHtml('salon_admin_services_header')?>
+<div class="row">
+	<div class="col-sm-6">
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+		<div class="col-sm-offset-3 page-title">
+			<?php if($this->getActionName() == 'edit'):?> 
+				<h1> Edit Your Salon Service</h1>
+			<?php else: ?>
+			<?php $checked = true?>
+				<h1>Add New Your Salon Service</h1>
+			<?php endif; ?>
+		</div>
+		<form class="form-horizontal" role="form" action="<?php echo $this->getActionForForm() ?>" method="post" id="form-validate" enctype="multipart/form-data">
+		    <?php echo $this->getBlockHtml('formkey')?>
+			<ul class="form-list list-unstyled row">
+				<li class="form-group">
+					<label for="title-content" class="col-sm-3 control-label"><em>*</em><?php echo $this->__('Title') ?></label>
+					<div class="col-sm-9" id="tit"> 
+						<input type="text" name="title" id="title-content" title="<?php echo $this->__('Title') ?>" placeholder="<?php echo $this->__('Insert title') ?>"class="form-control required-entry" value="<?php echo $serviceArr->getServiceName() ? $serviceArr->getServiceName() : '' ?>" required/>
+					</div>
+				</li>
+				<li class="form-group">
+					<label for="price" class="col-sm-3 control-label"><em>*</em><?php echo $this->__('Price') ?></label>
+					<div id="price" class="col-sm-9">
+						<input type="number" value="<?php echo $serviceArr->getPrice() ? $serviceArr->getPrice() : '' ?>" name="price" class="form-control required-entry validate-number" required/>
+					</div>
+				</li>
+				<li class="control form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+					    <div class="checkbox">
+						    <label>
+						    	<input type="checkbox" name="add_special_price" id="add_special_price" value="1" onclick="addSpecialPrice(this.checked)" title="<?php echo $this->__('Add Special Price') ?>"/> 
+						    	<?php echo $this->__('Add Special Price') ?>
+						    </label>
+						</div>
+		    		</div>
+			    </li>
+			    <div class="fieldset" style="display:none;">
+					<li class="form-group">
+						<label for="special_price" class="col-sm-3 control-label"><?php echo $this->__('Special Price') ?></label>
+						<div id="special_price" class="col-sm-9">
+							<input type="number" value="<?php echo $serviceArr->getSpecialPrice() ? $serviceArr->getSpecialPrice() : '' ?>" name="special_price" class="form-control" />
+						</div>
+					</li>
+					<li class="form-group">
+						<label class="col-sm-3 control-label" for="special_from_date"><?php echo $this->__('Special From Date') ?></label>
+						<div class="input-group date col-sm-9" style="padding: 0px 15px" data-date-format="dd-mm-yyyy" data-date="<?php echo Mage::helper('salon')->getCurrentDate()?>">
+							<input id="special_from_date" style="margin: 0" readonly class="datepicker form-control" type="text" value="<?php echo $specialFromDate ?>" name="special_from_date" />
+							<span class="input-group-addon add-on">
+								<i class="glyphicon glyphicon-calendar icon-calendar"></i>
+							</span>
+						</div>
+					</li>
+					<li class="form-group">
+						<label class="col-sm-3 control-label" for="special_to_date"><?php echo $this->__('Special to Date') ?></label>
+						<div class="input-group date col-sm-9" style="padding: 0px 15px" data-date-format="dd-mm-yyyy" data-date="<?php echo Mage::helper('salon')->getCurrentDate()?>">
+							<input id="special_to_date" readonly style="margin: 0" class="datepicker form-control" type="text" value="<?php echo $specialToDate ?>" name="special_to_date"/>
+							<span class="input-group-addon add-on">
+								<i class="glyphicon glyphicon-calendar icon-calendar"></i>
+							</span>
+						</div>
+					</li>
+				</div>
+				<li class="form-group">
+					<label class="col-sm-3 control-label" for="duration"><em>*</em><?php echo $this->__('Duration') ?></label>
+					<div id="duration" class="col-sm-9">
+						<input type="number" value="<?php echo $serviceArr->getDuration() ? $serviceArr->getDuration() : '' ?>" name="duration" class="required-entry validate-number form-control" required/>
+					</div>
+				</li>
+				<li class="form-group"> 
+					<label class="col-sm-3 control-label" for="short_description"><em>*</em><?php echo $this->__('Short Description') ?></label>
+					<div class="col-sm-9 short-description" id="sh-description">
+						<textarea rows="5" id="short_description" name="short_description" rows="5" cols="10" class="form-control required-entry"><?php echo $serviceArr->getShortDescription() ? $serviceArr->getShortDescription() : '' ?></textarea>
+					</div>
+				</li>
+				<li class="form-group">
+				<label class="col-sm-3 control-label" for="description"><em>*</em><?php echo $this->__('Description') ?></label>
+					<div class="col-sm-9" id="des">
+						<textarea rows="5" id="description" name="description" rows="10" cols="10" class="form-control required-entry"><?php echo $serviceArr->getDescription() ? $serviceArr->getDescription() : '' ?> </textarea>
+					</div>
+				</li>
+				<li class="form-group">
+					   <label class="col-sm-3 control-label" for="img_service"><?php echo $this->__('Service Image') ?></label>
+					   <div class="col-sm-9">
+					   	<input type="file" accept="image/*" name="img_service" id="img_service"  title="<?php echo $this->__('Image Service') ?>" />
+					   </div>
+				</li>
+				<li class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<div class="checkbox">
+            				<label>
+            					  <input type="checkbox" name="display" <?php echo (isset($checked) || ($serviceArr->getDisplay() == 1)) ? 'checked="checked"' : ''?>> <?php echo $this->__('Display on home page')?>
+           					 </label>
+        				  </div>
+					</div>
+				</li>
+				<li class="form-group">
+					   	<input type="hidden"name="sid" id="service_id" value="<?php echo $serviceArr->getEntityId() ? $serviceArr->getEntityId() : '' ?>" />
+				</li>
+				<li class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button  type="submit"
+							title="<?php echo $this->__('Save Service') ?>" class="btn btn-default btn-save-information">
+							<?php echo $this->__('Save Service') ?>
+						</button>
+					</div>
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>
+<script type= "text/javascript">
+//<![CDATA[
+           $(function () {
+			var datePicker = $('.date').datepicker().on('changeDate', function(ev){
+				datePicker.hide();
+			}).data('datepicker');
+		});
+	function addSpecialPrice(arg){
+		$('div.fieldset').toggle();
+	};
+
+	$(document).ready(function() {
+	    $('#form-validate').bootstrapValidator({
+	        // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+	        feedbackIcons: {
+	            valid: 'glyphicon glyphicon-ok',
+	            invalid: 'glyphicon glyphicon-remove',
+	            validating: 'glyphicon glyphicon-refresh'
+	        },
+	        fields: {
+	        	title: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Title is required') ?>'
+	                    },
+	                   
+	                }
+	            },
+	            price: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Price is required') ?>'
+	                    },
+	                  
+	                }
+	            },
+	            special_price: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Special_price is required') ?>'
+	                    }
+	                }
+	            },
+	            special_from_date: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Special_from_date is required') ?>'
+	                    }
+	                    
+	                }
+	            },
+	            special_to_date: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Special_to_date is required') ?>'
+	                    }
+	                 
+	                }
+	            },
+	            duration: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Duration is required') ?>'
+	                    }
+	                 
+	                }
+	            },
+	            short_description: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Short_description is required') ?>'
+	                    }
+	                 
+	                }
+	            },
+	            description: {
+	                validators: {
+	                    notEmpty: {
+	                        message: '<?php echo $this->__('Description is required') ?>'
+	                    }
+	                 
+	                }
+	            }
+	        }
+	    });
+	});
+	//]]>
+</script>
+
+
+
+
+
+
+

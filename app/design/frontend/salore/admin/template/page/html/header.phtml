@@ -1,0 +1,194 @@
+<?php
+$contacts = Mage::helper('salon')->getContact();
+$salon = Mage::registry ( 'currentsalon' );
+$adminUrl = Mage::helper ( 'salon' )->getUrl ( 'admin' );
+$helper = $this->helper('salon');
+?>
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-static-top admin-nav" role="navigation"
+	style="margin-bottom: 0">
+	<div class="navbar-header ">
+		<button type="button" class="navbar-toggle" data-toggle="collapse"
+			data-target=".navbar-collapse">
+			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+			<span class="icon-bar"></span> <span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="<?php echo $adminUrl ?>"><?php echo ucfirst($salon->getData('salon_url')).' Admin'?></a>
+	</div>
+	<!-- /.navbar-header -->
+	<!-- START SEARCH BAR -->
+		<div class="col-sm-4">
+			<?php echo $this->getChildHtml('topSearch')?>
+		</div>
+	<!-- END SEARCH BAR -->
+	<ul class="nav navbar-top-links navbar-right">
+		<li class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+				<i class="fa fa-envelope fa-fw"></i>
+					<?php echo $this->__('Messages')?> (<span id="num-message"><?php echo is_array($contacts) ? count($contacts) : '0'  ?></span>)
+				<i class="fa fa-caret-down"></i>
+			</a>
+			<ul class="dropdown-menu dropdown-messages">
+				<?php if(isset($contacts) && $contacts):?>
+				<?php foreach ($contacts as $contact):?>
+				<li><a href="#" id="<?php echo $contact['entity_id']?>" onclick="openModal(this)">
+						<div>
+							<strong><?php echo isset($contact['contactname']) ? $contact['contactname'] : '' ?></strong> <span class="pull-right text-muted">
+								<em><?php echo  Mage::helper('salon')->niceTime($contact['create_date']) ? Mage::helper('salon')->niceTime($contact['create_date']) : ''  ?></em>
+							</span>
+						</div>
+						<div><?php echo isset($contact['subject'] )? $contact['subject'] : '' ?></div>
+				</a></li>
+				<li class="divider"></li>
+				<?php endforeach;?>
+				<?php endif;?>
+				<li><a class="text-center" href="<?php echo Mage::helper('salon')->getUrl('admin/contact')?>"> <strong>Read All Messages</strong>
+						<i class="fa fa-angle-right"></i>
+				</a></li>
+			</ul>
+		</li>
+		<!-- /.dropdown-messages -->
+		<li class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+				<i class="fa fa-user fa-fw"></i>
+				<?php echo $helper->getCurrentUserName() ?>
+				<i class="fa fa-caret-down"></i>
+			</a>
+			<ul class="dropdown-menu dropdown-user">
+				<li><a href="<?php echo Mage::helper('salon')->getUrl('admin/profile')?>"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+				<li><a href="<?php echo  Mage::helper ('salon')->getUrl('admin/password')?>"><i class="fa fa-gear fa-fw"></i> Change password</a></li>
+				<li class="divider"></li>
+				<li><a href="<?php echo Mage::helper ('salon')->getUrl('admin/logout') ?>"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+				</li>
+			</ul>
+		</li><!-- /.dropdown-user -->
+		<!-- /.dropdown -->
+	</ul>
+	<!-- /.navbar-top-links -->
+
+	<div class="navbar-default sidebar" role="navigation">
+		<div class="sidebar-nav navbar-collapse">
+			<ul class="nav" id="side-menu">
+				<li>
+					<a href="<?php echo $adminUrl ?>">
+						<i class="fa fa-dashboard fa-fw"></i><?php echo $this->__('Dashboard')?></a>
+				</li>
+				<li>
+					<a href="<?php echo  Mage::helper ('salon')->getUrl('admin/salon')?>">
+						<i class="fa fa-th fa-fw"></i><?php echo $this->__('Salon management')?><span class="fa arrow"></span>
+					</a>
+					<ul class="nav nav-second-level">
+						<li><a <?php echo $helper->getActivePageClass('admin/salon/setting') ?>  href="<?php echo  Mage::helper ('salon')->getUrl('admin/salon/setting')?>"><?php echo $this->__('Salon setting')?><?php echo $helper->getActivePageArrow('admin/salon/setting')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/service') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/service')?>"><?php echo $this->__('Services')?><?php echo $helper->getActivePageArrow('admin/service')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/product') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/product')?>"><?php echo $this->__('Products')?><?php echo $helper->getActivePageArrow('admin/product')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/gallery') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/gallery')?>"><?php echo $this->__('Gallery')?><?php echo $helper->getActivePageArrow('admin/gallery')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/banner') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/banner')?>"><?php echo $this->__('Banners')?><?php echo $helper->getActivePageArrow('admin/banner')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/reservation') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/reservation')?>"><?php echo $this->__('Reservation')?><?php echo $helper->getActivePageArrow('admin/reservation')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/menu') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/menu')?>"><?php echo $this->__('Menu')?><?php echo $helper->getActivePageArrow('admin/menu')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/contact') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/contact')?>"><?php echo $this->__('Messages')?><?php echo $helper->getActivePageArrow('admin/contact')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/staff') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/staff')?>"><?php echo $this->__('Staffs')?><?php echo $helper->getActivePageArrow('admin/staff')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/page') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/page')?>"><?php echo $this->__('Static Page')?><?php echo $helper->getActivePageArrow('admin/page')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/footer') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/footer')?>"><?php echo $this->__('Footer')?><?php echo $helper->getActivePageArrow('admin/footer')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/theme') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/theme')?>"><?php echo $this->__('Themes')?><?php echo $helper->getActivePageArrow('admin/theme')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/order') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/order')?>"><?php echo $this->__('Orders')?><?php echo $helper->getActivePageArrow('admin/order')?></a></li>
+						<li><a <?php echo $helper->getActivePageClass('admin/customer') ?> href="<?php echo  Mage::helper ('salon')->getUrl('admin/customer')?>"><?php echo $this->__('Customers')?><?php echo $helper->getActivePageArrow('admin/customer')?></a></li>
+					</ul> <!-- /.nav-second-level -->
+				</li>
+				<li>
+					<a href="<?php echo  Mage::helper ('salon')->getUrl('admin/system')?>">
+						<i class="fa fa-cog fa-fw"></i><?php echo $this->__('System')?><span class="fa arrow"></span>
+					</a>
+					<ul class="nav nav-second-level">
+						<!--  <li><a href="<?php //echo  Mage::helper ('salon')->getUrl('admin/system/setting')?>">General setting</a></li>-->
+						<li><a href="<?php echo  Mage::helper ('salon')->getUrl('admin/domain/setting')?>">Domain Setting</a></li>
+						<li><a href="<?php echo  Mage::helper ('salon')->getUrl('admin/profile')?>">User Profile</a></li>
+						<li><a href="<?php echo  Mage::helper ('salon')->getUrl('admin/password')?>">Change password</a></li>
+						<li><a href="<?php echo  Mage::helper ('salon')->getUrl('admin/logout')?>">Logout</a></li>
+					</ul> <!-- /.nav-second-level -->
+				</li>
+			</ul>
+		</div>
+		<!-- /.sidebar-collapse -->
+	</div>
+	<!-- /.navbar-static-side -->
+	
+	<!-- Button trigger modal -->
+
+<!-- Modal -->
+
+</nav>
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+      	<p class="mess-name"><strong><?php echo $this->__('Name: ')?></strong></p>
+      	<p class="mess-email"><strong><?php echo $this->__('Email: ')?></strong></p>
+      	<p class="mess-phone"><strong><?php echo $this->__('Telephone: ')?></strong></p>
+      	<strong><?php echo $this->__('Comment: ')?></strong>
+        <p class="mess-content"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+	var urlGetMessage = '<?php echo Mage::helper('salon')->getUrl('admin/contact/ajaxGetMessage')?>';
+	var miniLoading = '<?php echo $this->getSkinUrl('images/mini_loading.gif')?>';
+	var numMessage = parseFloat($('#num-message').html());
+	function openModal(arg)
+	{
+		var messId = null; 
+		if($(arg).is('tr'))
+		{
+			messId = $(arg).attr('title');
+		}
+		else
+		{
+			messId = $(arg).attr('id');
+		}
+		$('.modal-body').find('span').remove();
+		$.ajax({
+			url: urlGetMessage,
+			type: 'post',
+			dataType: 'json',
+			data: {id: messId},
+			success: function(response)
+			{
+				if(response.status == 'SUCCESS')
+				{
+					$('.mess-name').append('<span>' + response.contactname + '</span>');
+					$('.mess-email').append('<span>' + response.email + '</span>');
+					$('.mess-phone').append('<span>' + response.telephone + '</span>');
+					$('.modal-title').html(response.subject);
+					$('.mess-content').html( response.subject );
+					$('#myModal').modal({show:true});
+					if($(arg).parent().is('li'))
+					{
+						$(arg).parent().remove();
+						if($('tr[title='+messId+']'))
+						{
+							$('tr[title='+messId+']').css('opacity', '0.4');
+						}
+						if(response.allow_sub != null)
+						{
+							numMessage--;
+							$('#num-message').html(numMessage);
+						}
+					}			
+				}
+				else
+				{
+					alert(response.message);
+				}
+			}		
+		});
+		
+	}
+</script>

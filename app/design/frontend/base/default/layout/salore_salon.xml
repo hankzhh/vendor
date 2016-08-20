@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<default>
+		<remove name="catalog.compare.sidebar"/>
+		<remove name="sale.reorder.sidebar"/>
+		<remove name="right.reports.product.viewed"/>
+		<remove name="right.permanent.callout"/>
+		<remove name="cart_sidebar"/>
+		<remove name="right.poll"/>
+		<reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+            <reference name="header">
+        	<block type="salon/salon_menu" name="salon.menu" as="menuLinks" template="page/template/links.phtml"/>
+        </reference>
+	</default>
+	<salon_cart_index translate="label">
+        <label>Shopping Cart</label>
+        <!-- Mage_Checkout -->
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="checkout/cart" name="checkout.cart">
+                <action method="setCartTemplate"><value>checkout/cart.phtml</value></action>
+                <action method="setEmptyTemplate"><value>checkout/cart/noItems.phtml</value></action>
+                <action method="chooseTemplate"/>
+                <action method="addItemRender"><type>simple</type><block>checkout/cart_item_renderer</block><template>checkout/cart/item/default.phtml</template></action>
+                <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>checkout/cart/item/default.phtml</template></action>
+                <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>checkout/cart/item/default.phtml</template></action>
+                <block type="core/text_list" name="checkout.cart.top_methods" as="top_methods" translate="label">
+                    <label>Payment Methods Before Checkout Button</label>
+                    <block type="checkout/onepage_link" name="checkout.cart.methods.onepage" template="checkout/onepage/link.phtml"/>
+                </block>
+
+                <block type="page/html_wrapper" name="checkout.cart.form.before" as="form_before" translate="label">
+                    <label>Shopping Cart Form Before</label>
+                </block>
+
+                <block type="core/text_list" name="checkout.cart.methods" as="methods" translate="label">
+                    <label>Payment Methods After Checkout Button</label>
+                    <block type="checkout/onepage_link" name="checkout.cart.methods.onepage" template="checkout/onepage/link.phtml"/>
+                    <block type="checkout/multishipping_link" name="checkout.cart.methods.multishipping" template="checkout/multishipping/link.phtml"/>
+                </block>
+
+                <!-- <block type="checkout/cart_coupon" name="checkout.cart.coupon" as="coupon" template="checkout/cart/coupon.phtml"/> -->
+                <block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping" template="checkout/cart/shipping.phtml"/>
+                <block type="checkout/cart_crosssell" name="checkout.cart.crosssell" as="crosssell" template="checkout/cart/crosssell.phtml"/>
+
+                <block type="checkout/cart_totals" name="checkout.cart.totals" as="totals" template="checkout/cart/totals.phtml"/>
+            </block>
+        </reference>
+    </salon_cart_index>
+    <salon_admin_contact_index>
+		<reference name="content">
+			<block type="salon/admin_contact_list" name="salon.message" template="salore/salon/admin/message/message.phtml">
+			</block>
+		</reference>
+	
+	</salon_admin_contact_index>
+    <salon_onepage_index translate="label">
+        <label>One Page Checkout</label>
+        <remove name="left"/>
+
+        <reference name="root">
+            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+        </reference>
+        <reference name="right">
+            <action method="unsetChildren"></action>
+            <block type="page/html_wrapper" name="checkout.progress.wrapper" translate="label">
+                <label>Checkout Progress Wrapper</label>
+                <action method="setElementId"><value>checkout-progress-wrapper</value></action>
+                <block type="checkout/onepage_progress" name="checkout.progress" before="-" template="checkout/onepage/progress.phtml">
+                    <block type="checkout/onepage_progress" name="billing.progress" template="checkout/onepage/progress/billing.phtml"></block>
+                    <block type="checkout/onepage_progress" name="shipping.progress" template="checkout/onepage/progress/shipping.phtml"></block>
+                    <block type="checkout/onepage_progress" name="shippingmethod.progress" template="checkout/onepage/progress/shipping_method.phtml"></block>
+                    <block type="checkout/onepage_progress" name="payment.progress" template="checkout/onepage/progress/payment.phtml"></block>
+                </block>
+            </block>
+        </reference>
+        <reference name="content">
+            <block type="checkout/onepage" name="checkout.onepage" template="checkout/onepage.phtml">
+                <block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="checkout/onepage/login.phtml">
+                    <block type="page/html_wrapper" name="checkout.onepage.login.before" as="login_before" translate="label">
+                        <label>Login/Registration Before</label>
+                        <action method="setMayBeInvisible"><value>1</value></action>
+                    </block>
+                </block>
+                <block type="checkout/onepage_billing" name="checkout.onepage.billing" as="billing" template="checkout/onepage/billing.phtml"/>
+                <block type="checkout/onepage_shipping" name="checkout.onepage.shipping" as="shipping" template="checkout/onepage/shipping.phtml"/>
+                <block type="checkout/onepage_shipping_method" name="checkout.onepage.shipping_method" as="shipping_method" template="checkout/onepage/shipping_method.phtml">
+                    <block type="checkout/onepage_shipping_method_available" name="checkout.onepage.shipping_method.available" as="available" template="checkout/onepage/shipping_method/available.phtml"/>
+                    <block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
+                </block>
+                <block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="checkout/onepage/payment.phtml">
+                    <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/info.phtml">
+                        <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
+                    </block>
+                </block>
+                <block type="checkout/onepage_review" name="checkout.onepage.review" as="review" template="checkout/onepage/review.phtml"/>
+            </block>
+        </reference>
+    </salon_onepage_index>
+    <!-- <salon_contact_index>
+		<reference name="content">
+			<block type="salon/salon_contact" name="salon.contact" template="salore/salon/home/contacts/form.phtml"/>
+		</reference>
+	</salon_contact_index> --> 
+	<salon_service_index>
+		<reference name="content">
+			<block type="salon/service_list" name="salon.service" template="salore/salon/home/service/list.phtml"/>
+		</reference>
+	</salon_service_index>
+	<salon_product_index>
+		<reference name="content">
+			<block type="salon/product_list" name="salon.product" template="salore/salon/home/product/list.phtml"/>
+		</reference>
+	</salon_product_index>
+	<salon_product_view>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="salon/product_list" name="salon.product" template="salore/salon/home/product/view.phtml"/>
+        </reference>
+    </salon_product_view>
+	<salon_admin_product_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_product_list" name="salon.admin.product.list" template="salore/salon/admin/product/list.phtml">
+				<block type="salon/admin_product_list" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_product_index>
+	<salon_admin_product_new>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_product_new" name="salon.admin.product.new" template="salore/salon/admin/product/new.phtml">
+				<block type="salon/admin_product_list" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_product_new>
+	<salon_admin_product_edit>
+		<reference name="head">
+			<!-- <action method="addItem"><type>skin_js</type><name>js/jquery-ui.min.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/jquery-ui.min.css</name></action> -->
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_product_new" name="salon.admin.product.new" template="salore/salon/admin/product/new.phtml">
+				<block type="salon/admin_product_list" name="salon.admin.product.header" as="salon_admin_product_header" template="salore/salon/admin/product/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_product_edit>
+	
+	<salon_contact_index translate="label">
+        <label>Contact Us Form</label>
+        <reference name="head">
+            <action method="setTitle" translate="title" module="contacts"><title>Contact Us</title></action>
+        	<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+        </reference>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+            <action method="setHeaderTitle" translate="title" module="contacts"><title>Contact Us</title></action>
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="contactForm" template="salore/salon/home/contacts/form.phtml"/>
+        </reference>
+    </salon_contact_index>
+	<salon_index_index>
+		<reference name="head">
+			<action method="addCss">
+				<stylesheet>css/index.css</stylesheet>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="salon/salon_index" name="salon.index" template="salore/salon/index.phtml"/>
+		</reference>
+	</salon_index_index>
+	<salon_new_index>
+		<reference name="content">
+			<block type="salon/register_new" name="salon_new" template="salore/salon/register/new.phtml"/>
+		</reference>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/bootstrapValidator.css</name></action>
+		</reference>
+	</salon_new_index>
+	<salon_new_success>
+		<reference name="content">
+			<block type="salon/register_success" name="salon_register_success" template="salore/salon/register/success.phtml"/>
+		</reference>
+	</salon_new_success>
+	<salon_login_index>
+		<reference name="root">
+            <action method="setTemplate">
+                <template>page/1column-salon-login.phtml</template>
+            </action>
+        </reference>
+		<remove name="salon_home" />
+		<reference name="content">
+			<block type="salon/register_new" name="salon_login" template="salore/salon/login.phtml"/>
+		</reference>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/bootstrapValidator.css</name></action>
+		</reference>
+	</salon_login_index>
+	<!-- ADMIN -->
+	<salon_admin_login_index>
+		<reference name="root">
+            <action method="setTemplate">
+                <template>page/login.phtml</template>
+            </action>
+        </reference>
+        <reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/bootstrapValidator.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_login" name="salon.admin.login" template="salore/salon/admin/login.phtml"/>
+		</reference>
+	</salon_admin_login_index>
+	<salon_admin_salon_setting>
+		<reference name="content">
+			<block type="salon/admin_salon_setting" name="salon.admin.salon.setting" template="salore/salon/admin/salon/setting.phtml"/>
+		</reference>
+	</salon_admin_salon_setting>
+	<salon_admin_banner_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_banner_banner" name="salon.admin.banner.banner" template="salore/salon/admin/banner/banner.phtml"/>
+		</reference>
+	</salon_admin_banner_index>
+	<salon_admin_menu_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_menu_list" name="salon.admin.menu.list" template="salore/salon/admin/menu/list.phtml"/>
+		</reference>
+	</salon_admin_menu_index>
+	
+	<!-- FRONTEND -->
+	<salon_home_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/fancybox/jquery.fancybox-buttons.css</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/fancybox/jquery.fancybox-thumbs.css</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/fancybox/jquery.fancybox.css</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/reservation.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox-buttons.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox-media.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox-thumbs.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox.pack.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.mousewheel-3.0.6.pack.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/salon_home" name="salon_home" template="salore/salon/home.phtml">
+				<block type="salon/salon_banner" name="salon_salon_banner" as="salon.banner" template="salore/salon/banner.phtml"/>
+				<block type="salon/salon_availability" name="salon_salon_availability" as="salon.availability" template="salore/salon/availability.phtml"/>
+				<block type="salon/service_list" name="salon_service_list" as="salon.service.list" template="salore/salon/home/service/list.phtml"/>
+				<block type="salon/product_list" name="salon.product" template="salore/salon/home/product/list.phtml"/>
+	
+			</block>
+		</reference>
+	</salon_home_index>
+	<salon_home_pending>
+		<reference name="content">
+			<block type="salon/salon_pending" name="salon_salon_pending" template="salore/salon/home/pending.phtml"/>
+		</reference>
+	</salon_home_pending>
+	<salon_gallery_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/galleryfront.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.mousewheel-3.0.6.pack.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/fancybox/jquery.fancybox.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox.pack.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/fancybox/jquery.fancybox-buttons.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox-buttons.js</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox-media.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/fancybox/jquery.fancybox-thumbs.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/fancybox/jquery.fancybox-thumbs.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/gallery_gallery" name="salon.gallery" template="salore/salon/home/gallery/gallery.phtml"/>
+		</reference>
+	</salon_gallery_index>
+	<salon_admin_service_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_services_list" name="salon.admin.services.list" template="salore/salon/admin/services/list.phtml">
+				<block type="salon/admin_services_list" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_service_index>
+	<salon_admin_service_new>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_services_new" name="salon.admin.services.new" template="salore/salon/admin/services/new.phtml">
+				<block type="salon/admin_services_list" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_service_new>
+	<salon_admin_service_edit>
+		<reference name="head">
+			<!-- <action method="addItem"><type>skin_js</type><name>js/jquery-ui.min.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/jquery-ui.min.css</name></action> -->
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_services_new" name="salon.admin.services.new" template="salore/salon/admin/services/new.phtml">
+				<block type="salon/admin_services_list" name="salon.admin.services.header" as="salon_admin_services_header" template="salore/salon/admin/services/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_service_edit>
+	<salon_admin_gallery_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/gallery.css</stylesheet></action>
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_gallery_gallery" name="salon.admin.gallery.gallery" template="salore/salon/admin/gallery/gallery.phtml"/>
+		</reference>
+	</salon_admin_gallery_index>
+	<salon_admin_reservation_index>
+		<reference name="content">
+			<block type="salon/admin_reservation_list" name="salon.admin.reservation.list" template="salore/salon/admin/reservation/list.phtml"/>
+		</reference>
+	</salon_admin_reservation_index>
+	<salon_admin_theme_index>
+		<reference name="content">
+			<block type="salon/admin_theme_list" name="salon.admin.theme.list" template="salore/salon/admin/theme/list.phtml"/>
+		</reference>
+	</salon_admin_theme_index>
+	<salon_admin_password_index>
+		<reference name="content">
+			<block type="salon/admin_password_new" name="salon.admin.password.new" template="salore/salon/admin/password/new.phtml"/>
+		</reference>
+	</salon_admin_password_index>
+	<salon_admin_menu_edit>
+		<reference name="content">
+			<block type="salon/admin_menu_new" name="salon.admin.password.new" template="salore/salon/admin/menu/new.phtml"/>
+		</reference>
+	</salon_admin_menu_edit>
+	<salon_admin_menu_new>
+		<reference name="content">
+			<block type="salon/admin_menu_new" name="salon.admin.password.new" template="salore/salon/admin/menu/new.phtml"/>
+		</reference>
+	</salon_admin_menu_new>
+	<salon_reservation_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/reservation.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/reservation_form" name="reservation.form" template="salore/salon/home/reservation/form.phtml">
+				<block type="salon/reservation_form_list" name="reservation.list" template="salore/salon/home/reservation/form/list.phtml"/>
+			</block>
+		</reference>
+	</salon_reservation_index>
+	<salon_admin_page_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_page_list" name="salon_page_list" template="salore/salon/admin/page/list.phtml"/>
+		</reference>
+	</salon_admin_page_index>
+	<salon_admin_page_new>
+		<reference name="content">
+			<block type="salon/admin_page_new" name="salon_page_new" template="salore/salon/admin/page/new.phtml"/>
+		</reference>
+	</salon_admin_page_new>
+	<salon_admin_page_edit>
+		<reference name="content">
+			<block type="salon/admin_page_new" name="salon_page_new" template="salore/salon/admin/page/new.phtml"/>
+		</reference>
+	</salon_admin_page_edit>
+	<salon_admin_footer_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_footer_footer" name="admin.footer.management" template="salore/salon/admin/footer/list.phtml"/>
+		</reference>
+	</salon_admin_footer_index>
+	<salon_admin_footer_new>
+		<reference name="content">
+			<block type="salon/admin_footer_footer" name="admin.footer.new" template="salore/salon/admin/footer/new.phtml"/>
+		</reference>
+	</salon_admin_footer_new>
+	<salon_admin_footer_edit>
+		<reference name="content">
+			<block type="salon/admin_footer_footer" name="admin.footer.edit" template="salore/salon/admin/footer/new.phtml"/>
+		</reference>
+	</salon_admin_footer_edit>
+	<salon_service_view>
+		<reference name="content">
+			<block type="salon/service_view" name="salon.service.view" template="salore/salon/home/service/view.phtml"/>
+		</reference>
+	</salon_service_view>
+	<salon_admin_staff_index>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/animate.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_staff_list" name="salon.admin.staff.list" template="salore/salon/admin/staff/list.phtml">
+				<block type="salon/admin_staff_list" name="salon.admin.staff.header" as="salon_admin_staff_header" template="salore/salon/admin/staff/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_staff_index>
+	<salon_admin_staff_new>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>js/datepicker.js</name></action>
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+			<action method="addItem"><type>skin_js</type><name>js/bootstrapValidator.js</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_staff_new" name="salon.admin.staff.new" template="salore/salon/admin/staff/new.phtml">
+				<block type="salon/admin_staff_list" name="salon.admin.staff.header" as="salon_admin_staff_header" template="salore/salon/admin/staff/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_staff_new>
+	<salon_admin_staff_edit>
+		<reference name="head">
+			<action method="addItem"><type>skin_css</type><name>css/datepicker.css</name></action>
+		</reference>
+		<reference name="content">
+			<block type="salon/admin_staff_new" name="salon.admin.staff.new" template="salore/salon/admin/staff/new.phtml">
+				<block type="salon/admin_staff_list" name="salon.admin.staff.header" as="salon_admin_staff_header" template="salore/salon/admin/staff/index.phtml"/>
+			</block>
+		</reference>
+	</salon_admin_staff_edit>
+</layout>

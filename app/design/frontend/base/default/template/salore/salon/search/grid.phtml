@@ -1,0 +1,50 @@
+<?php $salonArr = $this->getSalonByList()?>
+<?php $_collectionSize = count($salonArr)?>
+<?php if(count($salonArr) > 0):?>
+	<div class="grid-content">
+	<?php $rowItem = 0 ?>
+	<?php $columnStt = 1?>
+	<?php $rowNumber = ceil($_collectionSize / 6);?>
+	<?php   for ($i = 0; $i < $_collectionSize; $i++): ?>
+		<?php if ($rowItem % $rowNumber == 0):?>
+			<div class="col-sm-2">
+		<?php endif;?>
+			<div class="thumbnail item">
+					<div class="img-box">
+		            	<a href="<?php echo isset($salonArr[$i]['url_varchar']) ? Mage::getUrl(Mage::helper('salon')->transportText($salonArr[$i]['url_varchar'])) : '#'?>">
+		            		<img class="img-rounded img-represent" src="<?php echo isset($salonArr[$i]['img_represent_varchar']) ? $salonArr[$i]['img_represent_varchar'] : $this->getSkinUrl('images/not-available.jpg') ?>">
+		            	</a>
+	            	</div>
+	            	<p class="description-para">
+	            		<?php 
+	            			echo isset($salonArr[$i]['description_varchar'])? Mage::helper('salon')->_substr($salonArr[$i]['description_varchar'], 120, 3) : '';  
+						?>
+	            	</p>
+	            	<div class="caption text-center face-wrapper">
+	            		<div class="face-group">
+	            			<img class="logo-span" src="<?php echo isset($salonArr[$i]['logo_varchar']) ? $salonArr[$i]['logo_varchar'] : $this->getSkinUrl('images/not-available.jpg') ?>" class="" >
+	            			<div class="face-select">
+	            				<p><strong><?php echo isset($salonArr[$i]['name_varchar']) ? $salonArr[$i]['name_varchar'] :'Salon'?></strong></p>
+	            			</div>
+	            			<div class="pseudo-class"></div>
+	            		</div>
+	            	</div>
+			</div>
+		<?php if((($rowItem + 1) % $rowNumber) == 0):?>
+			<?php if(($rowNumber > 1) && ($columnStt == $_collectionSize % 6) && (($rowItem + 1) % $columnStt == 0)){
+				 $rowNumber--;
+			}?>
+			<?php $columnStt++?>
+			</div>
+		<?php endif;?>
+		<?php $rowItem++?>
+	<?php endfor; ?>
+	</div>
+	<?php if(count($this->getSalonResultArr()) > $this->limit):?>
+		<div class="text-center">
+			<?php echo $this->getChildHtml('salon_search_pager'); ?>
+		</div>
+	<?php endif;?>
+<?php endif;?>
+
+

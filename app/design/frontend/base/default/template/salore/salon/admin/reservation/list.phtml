@@ -1,0 +1,61 @@
+<?php echo $this->getMessagesBlock()->getGroupedHtml()?>
+<?php $collection = $this->getReservationCollection() ?>
+<div class="panel-heading"><?php echo $this->__('Reservation Management') ?></div>
+<div class="page-title">
+</div>
+<?php if($this->checkReservationExist($collection)): ?>
+<table class="data-table table table-bordered" id="my-custom-table">
+	<!-- <col width="1" />
+	<col width="1" />
+	<col />
+	<col width="1" />
+	<col width="1" />
+	<col width="1" /> -->
+	<thead>
+		<tr>
+			<th><?php echo $this->__('Order Id') ?></th>
+			<th><?php echo $this->__('Customer Name') ?></th>
+			<th><?php echo $this->__('Service Name') ?></th>
+			<th><?php echo $this->__('Date Booking') ?></th>
+			<th><?php echo $this->__('Time Frame') ?></th>
+			<th><?php echo $this->__('Status') ?></th>
+			<th><?php echo $this->__('Subtotal') ?></th>
+			<th><span class="nobr"><?php echo $this->__('Confirm') ?></span></th>
+			<th><span class="nobr"><?php echo $this->__('Delete') ?></span></th>
+		</tr>
+	</thead>
+	<tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($collection as $reservation): ?>
+        <tr title ="<?php echo $reservation->getEntityId()?>">
+			<td><span class="nobr"><?php echo $reservation->getOrderId() ?></span></td>
+			<td><span class="nobr"><?php echo $reservation->getCustomerName() ?></span></td>
+			<td><span class="nobr"><?php echo $reservation->getServiceName() ?></span></td>
+			<td><span class="nobr"><?php echo $reservation->getDateBooking() ?></span></td>
+			<td><span class="nobr"><?php echo $reservation->getTimeFrame() ?></span></td>
+			<td><span class="nobr status-column"><?php echo $reservation->getStatus() ?></span></td>
+			<td><span class="nobr"><?php echo $reservation->getSubtotal() ?></span></td>
+			<td>
+				<a class="reservation-confirm" href="#">
+					<?php echo $this->__("Confirm");?>
+				</a>
+			</td>
+			<td>
+				<a class="reservation-delete" href="#">
+					<?php echo $this->__("Delete");?>
+				</a>
+			</td>
+		</tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?php else: ?>
+<p><?php echo $this->__('The collection is empty.'); ?></p>
+<?php endif; ?>
+
+<script type="text/javascript">
+//<![CDATA[
+//]]>
+</script>
+
+

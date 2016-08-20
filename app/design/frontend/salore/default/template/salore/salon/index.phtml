@@ -1,0 +1,31 @@
+<script type= "text/javascript">
+//<![CDATA[
+	$(function(){
+		$('#salon-content-wrapper').justifiedGallery({
+			rowHeight: 300,
+			maxRowHeight: 0,
+			margins: 15,
+			lastRow: 'nojustify',
+			fixedHeight: false,
+			captions: false,
+			randomize: false
+		});	
+    });
+//]]>
+</script>
+<?php $solrData = $this->getCategories() ?>
+<div class="page-title">
+	<h2><?php echo $this->__('Popular categories')?></h2>
+</div>
+<div id="salon-content-wrapper">
+	<?php if(isset($solrData['facet_counts']['facet_fields']['category_facet'])):?>
+		<?php foreach($solrData['facet_counts']['facet_fields']['category_facet'] as $categoryName):?>
+			<?php if(is_string($categoryName)):?>
+				<a href ="<?php echo  Mage::helper('salon')->getUrl('salon/category/view') .'id/'. Mage::helper('salon')->getCategoryByName($categoryName)->getData('entity_id') ?>"  title="<?php echo $categoryName?>">
+					<p class="category-name"><?php echo $categoryName?></p>
+					<img alt="<?php echo $categoryName?>" src="<?php echo Mage::helper('salon')->getCategoryByName($categoryName)->getData('img_path_resize')?>" />
+				</a>
+			<?php endif;?>
+		<?php endforeach;?>
+	<?php endif;?>
+</div>

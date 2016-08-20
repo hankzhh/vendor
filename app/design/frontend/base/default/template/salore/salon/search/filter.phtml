@@ -1,0 +1,44 @@
+<?php $filters = $this->getFilterData()?>
+<?php $filterQuery = $this->getFilterQuery(); ?>
+<div class="filter-search-result">
+	<?php if($this->isSelectedFacetActive()) : ?>
+	<div class="currently">
+		<h4 class="block-subtitle"><?php echo $this->__('Currently Salon by') ?></h4>
+		<ol class="list-unstyled">
+			<?php foreach($filterQuery as $key=>$values): ?>
+				<?php foreach($values as $v): ?>
+						<li>
+							<?php $face_key = substr($key, 0, strrpos($key, '_'))?>
+							<?php
+							$selectedFacetValue = $v;
+							?>
+							<span class=""><?php echo ucfirst($this->getFacetLabel($key)); ?>:</span>
+							<span class="value"><?php echo $this->facetFormat($selectedFacetValue) ?></span>
+							<a class="pull-right" title="<?php echo $this->__('Remove This Item') ?>" href="<?php echo $this->getRemoveFacesUrl($face_key, $v)?>" class="btn-remove"><?php //echo $this->__('Remove This Item') ?>
+								<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							</a>
+						</li>
+				<?php endforeach; ?>
+			<?php endforeach; ?>
+		</ol>
+	</div>
+	<div class="actions">
+	<a class="pull-right small" title="<?php echo $this->__('Clear all') ?>" href="<?php echo $this->getRemoveAllUrl()?>"><?php echo $this->__('Clear All') ?></a>
+	</div>
+	<?php endif; ?>
+	
+	<?php if (!empty($filters)):?>
+		<h2><?php echo $this->__('Narrow Results')?></h2>
+		<?php foreach ($filters as $facetKey => $facetItems):?>
+		<?php if (empty($facetItems)) continue; ?>
+		<h2><?php echo $this->getFacetLabel($facetKey)?></h2>
+		<ul class="list-unstyled">
+			<?php foreach ($facetItems as $facetItem => $count):?>
+			<?php $facetUrl = $this->getFacesUrl(array('fq' => array(substr($facetKey, 0, strrpos($facetKey, '_')) => $facetItem)));?>
+			<li><a href="<?php echo $facetUrl?>"><?php echo $facetItem?>(<?php echo $count?>)</a></li>
+			<?php endforeach;?>
+		</ul>
+		<hr />
+		<?php endforeach;?>
+	<?php endif;?>
+</div>

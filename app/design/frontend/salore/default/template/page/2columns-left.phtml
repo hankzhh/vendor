@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <?php echo $this->getChildHtml('head') ?>
+  </head>
+  <body class="layout-2cols-left">
+		<?php echo $this->getChildHtml('header') ?>
+	    <div class="container content-wrapper">
+	    	<?php echo $this->getChildHtml('breadcrumbs') ?>
+	    	<?php if(Mage::app()->getRequest()->getControllerName() === 'search' && Mage::app()->getRequest()->getParam('q')):?>
+	    		<div class="col-sm-12 search-result-title">
+	    			<p><?php echo $this->__('Search result for ') . Mage::app()->getRequest()->getParam('q')?></p>
+	    		</div>
+	    	<?php elseif (Mage::app()->getRequest()->getModuleName() === 'classified'):?>
+	    		<div class="page-title category-title">
+				    <h1><?php echo $this->__('Classified')?></h1>
+				</div>
+	    	<?php endif;?>
+	      	<div class="row">
+	      		<?php if ( $this->getChildHtml('left') ) :?>
+	      			<div class="col-md-3 side-bar">
+	      				<?php echo $this->getChildHtml('left') ?>
+	      			</div>
+	      			<div class="col-md-9 content">
+	      				<?php echo $this->getChildHtml('content') ?>
+	      			</div>
+	      		<?php else: ?>
+	      				<?php echo $this->getChildHtml('content') ?>
+	      		<?php endif; ?>
+	      	</div>
+	    </div>
+	    <?php echo $this->getChildHtml('footer') ?>
+	    <?php echo $this->getChildHtml('jsfooter') ?>
+  </body>
+</html>

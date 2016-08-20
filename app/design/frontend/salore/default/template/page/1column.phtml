@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <?php echo $this->getChildHtml('head') ?>
+  </head>
+  <body class="layout-1col">
+		<?php echo $this->getChildHtml('header') ?>
+	    <div class="container content">
+	    	<?php echo $this->getChildHtml('breadcrumbs') ?>
+	      	<?php echo $this->getChildHtml('content') ?>
+	    </div>
+	    <?php echo $this->getChildHtml('footer') ?>
+	    <?php echo $this->getChildHtml('jsfooter') ?>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<?php $galleryObj = $this->getValue('imgData')?>
+<div class="gallery-wrapper content-wrapper">
+	<div class="btn-group action-row">
+		<span class="input-group-btn">
+			<span class="btn btn-default btn-file">
+				<?php echo $this->__('Browse...')?>  
+				<input accept="image/*" value="" name="file[]" type="file" id="file" multiple required readonly/>
+			</span>
+		</span>
+	</div>
+	<table id="gallery-table" class="table no-footer">
+		<thead>
+			<tr role="row">
+				<th><?php echo $this->__('Image')?></th>
+				<th><?php echo $this->__('Thumb')?></th>
+				<th><?php echo $this->__('Base')?></th>
+				<th><?php echo $this->__('Action')?></th>
+			</tr>
+		</thead>
+ <tbody> 
+			<?php if( count($galleryObj ) > 0 ):?>
+				<?php foreach($galleryObj as $idImage => $gallery):?>
+					<tr class="saved" title="<?php echo $idImage; ?>">
+						<td>
+							<span>
+								<img style="width: 50px" alt="gallery" src="<?php echo $gallery['smallUrl']; ?>"/>
+								<input type="hidden" value="<?php echo $gallery['imgName']; ?>" name="images[<?php echo $idImage; ?>]"/>
+							</span>
+						</td>
+						<td>
+							<input class="form-control hyper-stone" name="thumbImg" value="<?php echo trim($idImage); ?>" type="radio" <?php echo strcmp( $this->getValue('thumbImg'), $idImage ) === 0 ? 'checked' : '' ?>/>
+						</td>
+						<td>
+							<input class="form-control hyper-stone" name="baseImg" value="<?php echo trim($idImage); ?>" type="radio" <?php echo strcmp( $this->getValue('baseImg'), $idImage ) === 0 ? 'checked' : '' ?>/>
+						</td>
+						<td>
+							<a class="btn btn-default power-delete" style="width: 77px; cursor:pointer"><?php echo $this->__('Delete')?></a>
+						</td>
+					</tr>
+				<?php endforeach;?>
+			<?php endif;?>
+	 </tbody> 
+	</table>
+</div>
+
+<script type="text/javascript">
+	var miniLoading = '<?php echo $this->getSkinUrl('images/mini_loading.gif') ?>';
+	var uploadurl = '<?php echo $this->getValue("uploadUrl")?>';
+	
+	var urlDelete = '<?php echo $this->getValue("deleteUrl") ?>';
+	Event.observe(window,'load',function(){
+		Event.observe($("file"),'change', function(){
+
+			var input = this;
+			numFiles = $("file").files ? $("file").files.length : 1;
+			var formdata = new FormData();
+			var img = [];
+			for( i=0; i< numFiles; i++)
+			{
+				(function(imgFile){
+					var filename = 'file_' + ((new Date()).getTime() + i);
+					var reader = new FileReader();
+					//var name = imgFile.name.replace(/\./,'_');
+					var name = imgFile.name;
+					reader.onloadend = function(e){
+
+					var TR = new Element ('tr',{'class':'upload','title':filename});
+
+		    		var TD = new Element ('td',{'id':filename}).update('<span><img src="'+e.target.result+'" style="width:50px" /></span><input type="hidden" name="images['+ name +']" value="'+ filename +'"/>');
+					TR.appendChild(TD);
+					var TD1 = new Element ('td');
+		    		var thumbImg = new Element('input',{'row':1, 'class':'fomr-control hyper-stone', 'type':'radio', 'name':'thumbImg','value':filename});
+		    		TD1.appendChild(thumbImg);
+		    	
+		    		TR.appendChild(TD1);
+
+		    		var TD2 = new Element ('td');
+
+		    		var baseImg = new Element('input',{'row':1, 'class':'fomr-control hyper-stone', 'type':'radio', 'name':'baseImg','value':filename});
+		    		TD2.appendChild(baseImg);
+		    	
+		    		TR.appendChild(TD2);
+		    	
+		    		var TD3 = new Element ('td');
+
+		    		var DELETE_A = new Element('a',{'class':"btn btn-default power-delete", 'style':'width:77px; cursor:pointer'}).update('Delete');
+		    		Event.observe(DELETE_A, 'click',function(){
+		    			var trEle = $(this).up(1);
+		    			//alert(trEle);
+		    			trEle.remove();
+		    		});
+		    	
+		    		TD3.appendChild(DELETE_A);
+		    	
+		    		TR.appendChild(TD3);
+
+		    		$('gallery-table').appendChild(TR);
+
+		    };
+		    reader.readAsDataURL(imgFile);
+
+
+
+		    formdata.append("file[]", imgFile);
+
+
+
+		 	})($("file").files[i]); // end each loop
+		 };
+
+	});
+		
+	$$('a.power-delete').each(function(item){
+		Event.observe(item, 'click', function(){
+
+			var trEle = $(this).up(1);
+			var removeImg = new Element('input',{'type':'hidden','name':'removeImg[]','value':trEle.title});
+	    	$('gallery-table').appendChild(removeImg);
+	    	trEle.remove();
+		});
+	});
+
+});
+</script>

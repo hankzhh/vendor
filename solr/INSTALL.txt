@@ -1,0 +1,14 @@
+----EVERY ACTIONS SHOULD BE TAKEN IN CURRENT FOLDER-----
+
+1. Download solr
+	wget http://www.us.apache.org/dist/lucene/solr/4.10.1/solr-4.10.1.tgz
+	tar -xvzf solr-4.10.1.tgz
+
+2. Make a backup of default solr
+	mv solr-4.10.1/example/solr solr-4.10.1/example/solrbk
+	
+3. Install salore package
+	cp -rf example/solr solr-4.10.1/example/
+	
+4. Start solr
+	sh solr.sh start

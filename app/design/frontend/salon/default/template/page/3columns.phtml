@@ -1,0 +1,24 @@
+<!doctype html>
+<html ng-app="yasoApp">
+  <head>
+    <?php echo $this->getChildHtml('head') ?>
+  </head>
+  <body>
+  	<?php echo $this->getChildHtml('header') ?>
+    <div class="container">
+    	<?php echo $this->getChildHtml('breadcrumbs') ?>
+    	<div class="row">
+	        <div class="col-md-3 sidebar">
+	        	<?php echo $this->getChildHtml('left') ?>
+	        </div>
+	        <div class="col-md-6 content">
+	        	<?php echo $this->getChildHtml('content') ?>
+	        </div>
+	        <div class="col-md-6 content">
+	        	<?php echo $this->getChildHtml('right') ?>
+	        </div>
+	      </div>
+	      <?php echo $this->getChildHtml('footer') ?>
+    </div>
+  </body>
+</html>

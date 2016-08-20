@@ -1,0 +1,11 @@
+<?php $page = $this->getPageContent()?>
+<?php if ($page):?>
+	<h1 class="page-title panel-heading" style="border-bottom: #ccc 1px solid">
+		<?php echo $page->getTitle() ?>
+	</h1>
+	<div class="content-wrap">
+		<?php echo $page->getContent() ?>
+	</div>
+	<?php else: ?>
+<div>This page is not exist!</div>';
+<?php endif;?>		

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<config>    
+    <tabs>
+        <salore translate="label" module="salon">
+            <label>Salore</label>
+            <sort_order>100</sort_order>
+        </salore>
+    </tabs>
+    <sections>
+        <salon translate="label" module="salon">
+            <label>Email Settings</label>
+            <tab>salore</tab>
+            <class>separator-top</class>
+            <frontend_type>text</frontend_type>
+            <sort_order>10</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <frontend_model>adminhtml/system_config_form</frontend_model>
+            <groups>
+                <!--GENERAL SETTING -->
+                <settings translate="label" module="salon">
+                    <label>Salon</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <frontend_model>adminhtml/system_config_form_fieldset</frontend_model>
+                    <fields>
+                        <salon_email translate="label comment" module="salon">
+                            <label>Sender Email</label>
+                            <comment>Enter Sender Email</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </salon_email>
+                        <salon_fullname translate="label comment" module="salon">
+                            <label>Sender Full Name</label>
+                            <comment>Enter Sender Full Name</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </salon_fullname>
+                         <remind_email_template translate="label">
+                            <label>Remind Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </remind_email_template>
+                        <salon_moderator translate="label comment" module="salon">
+                            <label>Moderator Emails</label>
+                            <comment>When new salon registered the system will send notification email to Moderators. Please enter moderator emails separated by comma.</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>21</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </salon_moderator>
+                    </fields>
+                </settings>
+             </groups>
+        </salon>
+    </sections>
+</config>
+                        

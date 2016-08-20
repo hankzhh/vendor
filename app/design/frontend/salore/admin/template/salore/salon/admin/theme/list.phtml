@@ -1,0 +1,36 @@
+<?php $package = $this->getDir();?>
+<?php $customerCurrentId = $this->getCustomerCurrentId()?>
+<?php $themeCurrent = $this->checkExistingThemeCurrent()?>
+<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>" style="margin-top: 15px">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+<div class="panel-heading"> <?php echo $this->__('Please select theme for your salon')?> </div>
+<div class="theme-title"> 
+	<form class="row text-center"action="<?php echo $this->getAction()?>" method="post" enctype="multipart/form-data" id="select-theme-form">
+		<?php foreach ($package as $theme):?>
+			<?php 
+				$srcArr = $this->getScreenshots($theme, 'salore');
+			?>
+		<div id="theme-list" class="col-sm-3">	
+			<div class="thumbnail" style="box-shadow: none; border-radius: 0px;">
+				<img alt="screenshoot" src="<?php echo isset($srcArr[0]) ? $srcArr[0] : $this->getSkinUrl('images/not-available.jpg') ?>" class="img-rounded">
+				<h1 style="margin: 0px; padding: 7px"><?php echo $theme?></h1>
+				<p>Theme description here</p>
+				<input name="theme" class="theme-field" type="radio" value="<?php echo $theme?>" <?php echo ($theme == $themeCurrent) ? 'checked="checked"' :  ''?>>
+			</div>
+		</div>
+		<?php endforeach;?>
+		<p class="col-sm-12 text-left">
+			<button id="theme-submit" type="submit" title="<?php echo $this->__('Save') ?>" class="btn btn-default btn-save-information">
+				<span><span><?php echo $this->__('Save') ?></span></span>
+			</button>
+		</p>
+	</form>
+</div>
+
+

@@ -1,0 +1,328 @@
+<?php $galleryObj = $this->getGallery()?>
+<?php $numGallery = count($galleryObj);?>
+<?php $flag = false;?>
+<div class="gallery-wrapper content-wrapper">
+	<div class="panel-heading"><?php echo $this->__('Salon gallery')?></div>
+		<div class="btn-group action-row">
+			<span class="input-group-btn">
+				<span class="btn btn-default btn-file">
+	    			<?php echo $this->__('Browse...')?>  
+	    			<input accept="image/*" value="" name="file" type="file" id="file" multiple required readonly/>
+	    		</span>
+	    		<span data-container="body" data-placement="right" data-toggle="popover" data-content="Press this button to save change" id="btn-save-collection" style="margin-left: 15px; width: 111px; background: #e0e0e0" class="btn btn-default">
+	    			<?php echo $this->__('Save change')?>
+	    		</span>
+			</span>
+	  	</div>
+	<div id="message"class="" style="display: none">
+				<blockquote class="">
+				</blockquote>
+	</div>
+	<p><?php echo $this->__('1. Click <b>Browse</b> button to choose images')?></p>
+	<p><?php echo $this->__('2. Then click <b>Save change</b>')?></p>
+	<?php if($flag === true) ?>
+	<p id="noncollection"><?php echo $this->__('There is still no any items')?></p>
+	<form method="post"  enctype="multipart/form-data"  class="gallery-form" id="gallery-form">
+		<table id="gallery-table" class="table no-footer table-bordered">
+			<thead>
+				<tr role="row">
+					<th><?php echo $this->__('Image')?></th>
+					<th><?php echo $this->__('Title')?></th>
+					<th><?php echo $this->__('Description')?></th>
+					<th><?php echo $this->__('Action')?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($galleryObj as $gallery):?>
+				<tr class="saved" title="<?php echo $gallery->getEntityId() ? $gallery->getEntityId()  :'' ?>">
+					<td>
+						<span>
+							<img style="width: 50px" alt="gallery" src="<?php echo $gallery->getSmallUrl() ?  $gallery->getSmallUrl() : '' ?>"/>
+						</span>
+					</td>
+					<td class="title">
+						<textarea class="form-control hyper-stone" rows="1"><?php echo $gallery->getTitle() ? $gallery->getTitle() : '' ?></textarea>
+					</td>
+					<td class="description">
+						<textarea class="form-control hyper-stone" rows="1"><?php echo $gallery->getDescription() ?  $gallery->getDescription() : '' ?></textarea>
+					</td>
+					<td>
+						<a class="btn btn-default power-delete" style="width: 77px"><?php echo $this->__('Delete')?></a>
+					</td>
+				</tr>
+				<?php endforeach;?>
+			</tbody>
+		</table>
+	</form>
+</div>
+
+<script type="text/javascript">
+var miniLoading = '<?php echo $this->getSkinUrl('images/mini_loading.gif') ?>';
+	jQuery(document).on('change', '.btn-file :file', function() {
+	  	var input = jQuery(this),
+	    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+	    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+	  	input.trigger('fileselect', [numFiles, label]);
+	});
+
+	var uploadurl = '<?php echo Mage::helper('salon')->getUrl('admin/gallery/upload')?>';
+	var urlSave = '<?php echo Mage::helper('salon')->getUrl('admin/gallery/save') ?>';
+	var urlDelete = '<?php echo Mage::helper('salon')->getUrl('admin/gallery/ajaxdelete') ?>';
+	jQuery(document).ready( function() {
+		$('span#btn-save-collection').attr('disabled', '');
+		jQuery('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+			 $('#btn-save-collection').popover('show').removeAttr('disabled');
+			var data = new FormData();
+			  $('#message').hide(); 
+			jQuery.each($(this)[0].files, function(i, file) {
+
+				var filename = 'file_' + (new Date()).getTime();
+				
+		    	data.append(filename, file);
+
+		    	var TR = $('<tr>', {class: "upload", title: filename});
+
+		    	var TD = $('<td>', {id:filename});
+		    	TD.append('<span><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'salore/adminhtml/add.gif';?>" /></span>');
+		    	TR.append(TD);
+		    	
+		    	var TD1 = $('<td>');
+		    	var TITLE_INPUT = $('<textarea>', {rows: "1", class: "form-control hyper-stone", placeholder: "Gallery title"}).val('Insert a title');
+		    	TD1.append(TITLE_INPUT);
+		    	TR.append(TD1);
+		    	$(TITLE_INPUT).bind({
+		    		focus: function(){
+					},
+					keyup: function(){
+						flag = true;
+					},
+					blur: function(){
+						var section = $(this).parent().parent().attr('class'); 
+						if( section !== 'upload' && section === 'saved' ){
+							ajxSaveBranch(this);
+						}
+					},
+			    });
+		    	var TD2 = $('<td>');
+		    	var DESCRIPTION_TEXTAREA = $('<textarea>', {rows: "1", class: "form-control required-entry hyper-stone"}).val('Inser a description');
+		    	TD2.append(DESCRIPTION_TEXTAREA);
+		    	TR.append(TD2);
+		    	$(DESCRIPTION_TEXTAREA).bind({
+		    		focus: function(){
+					},
+					keyup: function(){
+						flag = true;
+					},
+					blur: function(){
+						var section = $(this).parent().parent().attr('class'); 
+						if( section !== 'upload' && section === 'saved' ){
+							ajxSaveBranch(this);
+						}
+					},
+			    });
+		    	var TD3 = $('<td>');
+		    	var DELETE_A = $('<a>', {class: "btn btn-default power-delete"}).css("width", "77px").text('Delete').on('click', function(){
+		    		ajaxDelete($(this).parent().parent(), $(this));
+			    });
+			    TD3.append(DELETE_A);
+		    	TR.append(TD3);
+		    	$('#banner-table').show();
+				if($('#gallery-table').show())
+				{
+					$('#noncollection').remove();
+				}
+		    	var firstTR = $('#gallery-table > tbody:last tr:first');
+		    	if(firstTR.length > 0)
+		    	{
+		    		$('#gallery-table > tbody:last tr:first').before(TR);
+		    	}else{
+		    		$('#gallery-table > tbody:last').append(TR);
+			    }
+			   
+		 	});
+
+			//Start upload
+			jQuery.ajax({
+		    	  url: uploadurl,
+		    	  type: "POST",
+		    	  dataType: "json",
+		    	  data: data,
+		    	  processData: false,  // tell jQuery not to process the data
+		    	  contentType: false,   // tell jQuery not to set contentType
+		    	  success: function(response){
+		    		 
+		    		  $.each(response, function (key, data) {
+		    			    $('#'+key).html('<span><img style="width:50px" src="'+data.imgurl+'" /></span>');
+		    		  })
+		       	  }
+		    });
+	    });
+
+	    //save change
+		$('#btn-save-collection').click(function(){
+			var power = $(this);
+			 var trArr = $('#gallery-table').children('tbody').children('.upload');
+			 //var prepareDataArr = [];
+			 var prepareData = {};
+			 $.each(trArr, function(i, trEle){
+				var tdArr = $(trEle).children();
+				var childData = {};
+				$.each(tdArr, function(j, tdEle){
+					if(j == 0)
+					{
+						childData.src = $(tdEle).find('img').attr('src');
+					}
+					if(j == 1)
+					{
+						childData.title = $(tdEle).children().val();
+						//$(tdEle).children('textarea').addClass('hyper-stone');
+					}
+					if(j == 2)
+					{
+						childData.description = $(tdEle).children().val();
+						//$(tdEle).children('textarea').addClass('hyper-stone');
+					}  
+				});
+				var title = $(trEle).attr('title');
+				prepareData[title] = childData;
+			}); 
+			$('#message').hide();
+			$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+			$('#message').find('blockquote').removeClass('bg-danger bg-success');
+			if(!jQuery.isEmptyObject(prepareData))
+			{
+				power.attr('disabled', '');
+				power.html('');
+				power.append('<img src="'+miniLoading+'"/>');
+				$.ajax({
+					  url: urlSave,
+			    	  type: "POST",
+			    	  dataType: "json",
+			    	  data: {'params': prepareData},
+			    	  success: function(response){
+			    		  power.removeAttr('disabled');
+			  			  power.html('Save Change');
+			  			  power.find('img').remove();
+			  			  $('#message').css("display", "none");
+			    		  $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+						  $('#message').find('blockquote').addClass('bg-success').html(response.message);
+						  trArr.removeClass('upload');
+						  trArr.addClass('saved');
+						  power.attr('disabled', '');
+			       	  }
+				});
+			} 	
+		});	   
+
+		//delete 
+		$('.power-delete').click(function(){
+			var trEle = $(this).parent().parent();
+			var r = confirm('Are you sure delete this image?');
+			if (r == true)
+			{
+				ajaxDelete(trEle, $(this));
+			}
+		}); 
+
+		var ajaxDelete = function(trEle, btndel){
+			btndel.attr('disabled','');
+			btndel.html('');
+			btndel.append('<img src="'+miniLoading+'"/>');
+			$('#message').hide();
+			$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+			$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+			$.ajax({
+				  url: urlDelete,
+		    	  type: "POST",
+		    	  dataType: "json",
+		    	  data: {'id': trEle.attr('title'), 'src': trEle.find('img').attr('src')},
+		    	  success: function(response){
+		    		  btndel.removeAttr('disabled');
+		    		  btndel.find('img').remove();
+		    		  btndel.html('Delete');
+		    		  $('#message').show();
+			    	  if(response.status === 'UPLOAD')
+			    	  {
+			    		  trEle.remove();
+				    	  $('#message').hide();
+				    	  if($('.upload').length == 0)
+				    	  {
+								$('#btn-save-collection').attr('disabled','');
+								$('span#btn-save-collection').popover("hide");
+					      }
+				    	    
+				   	  }
+			    	  else if(response.status === 'SUCCESS')
+			    	  {
+			    		  $('#message').css("display", "none");
+			    		  trEle.remove();
+			    		  $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+						  $('#message').find('blockquote').addClass('bg-success').html(response.message);
+				      }
+			    	  else
+			    	  {
+			    		  $('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+						 $('#message').find('blockquote').addClass('bg-danger').html(response.message);            
+				      }
+				    	
+		       	  }
+			});
+		}
+
+		//save information in textarea
+		var branchLoading = '<?php echo $this->getSkinUrl('images/load-vertical.gif') ?>';
+		var flag = false;
+		var urlSaveBrand = '<?php echo Mage::helper('salon')->getUrl('admin/gallery/saveBranch')?>';
+		function saveBranch(branch){
+			
+		}
+		$('textarea.hyper-stone').bind({
+			focus: function(){
+			},
+			keyup: function(){
+				flag = true;
+			},
+			blur: function(){
+				ajxSaveBranch(this);
+			},
+		});
+		var ajxSaveBranch = function(branch){
+			var tdEle = $(branch).parent();
+			if(flag)
+			  {
+				$(branch).parent().append('<img src="'+branchLoading+'" />');
+				  var ajxparams = {
+						  id: $(branch).parent().parent().attr('title'),
+						  target: $(branch).parent().attr('class'),
+						  value: $(branch).val()
+					}; 
+			      $.ajax({
+			    	  url: urlSaveBrand,
+			    	  type: "POST",
+			    	  dataType: "json",
+			    	  data: ajxparams,
+			    	  success: function(response){
+				    	  tdEle.find('img').remove();
+				    	  flag = false;
+				      }
+			      });
+			  }
+			else
+			{
+			}
+		};
+	});
+	$( document ).ready(function() {
+		  var numBanner = $("#gallery-table > tbody > tr").length;
+			 if(numBanner  === 0)
+			 {
+				 $('#gallery-table').hide();
+				 <?php $flag = true;?>
+			}else{
+				    	$('#gallery-table').show();
+				    	 $('#noncollection').remove(); 
+			 } 
+	   
+		
+	});
+</script>

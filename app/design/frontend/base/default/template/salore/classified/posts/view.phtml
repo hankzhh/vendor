@@ -1,0 +1,56 @@
+<?php $postsObject = $this->getPosts()?>
+<div class="row posts-wrapper">
+	<div class="col-sm-12">
+		<div class="page-title category-title">
+			<h1><?php echo $this->__('Classified').' <i class="fa fa-angle-right"></i> '.$postsObject->getData('title')?></h1>
+		</div>
+	</div>
+	<div class="col-sm-6 image-collection">
+		<div class="product-img-box">
+			<div class="img-master text-center">
+				<?php $baseImage = $postsObject->getData('base_image')?>
+				<img id="larger-product-image" alt="<?php echo $postsObject->getData('title')?>" src="<?php echo isset($baseImage['url']) ? $baseImage['url'] : '' ?>"/>
+			</div>
+		</div>
+		<div class="img-collection img-more-view">
+			<h2><?php echo $this->__('Gallery')?></h2>
+			<ul class="product-image-thumbs list-unstyled pull-left" id="links">
+			<?php foreach($postsObject->getData('images') as $thumb):?>
+				<?php if(isset($thumb['smallUrl'])):?>
+					<li class="pull-left"><a href="<?php echo isset($thumb['smallUrl']) ? str_replace('/small', '/larger', $thumb['smallUrl']) : '#' ?>" class="thumb-link"><img class="posts-thumb" src="<?php echo isset($thumb['smallUrl']) ? $thumb['smallUrl'] : ''?>" alt="<?php echo $postsObject->getData('title')?>"/></a></li>
+				<?php endif;?>
+			<?php endforeach;?>
+			</ul>
+		</div>
+	</div>
+	<div class="col-sm-6 posts-detail">
+		<div class="product-name">
+			<h1 class="text-upper"><?php echo $postsObject->getData('title')?></h1>
+		</div>
+		<div class="is-specific"><strong><?php echo $postsObject->getData('is_specific') ? 'IS SPECIFIX' : '' ?></strong></div>
+		<div class="category-name"><strong><?php echo $this->__('Category Name: ')?></strong><?php echo $this->getCategoryName($postsObject->getData('category'))?></div>
+		<div class="expired-date"><strong><?php echo $this->__('Expired Date: ')?></strong><?php echo $postsObject->getData('expired_date')?></div>
+		<div class="description"><strong><?php echo $this->__('Description: ')?></strong><?php echo $postsObject->getData('description')?></div>
+	</div>
+	
+</div>
+<script type= "text/javascript">
+//<![CDATA[
+	/* $('.posts-thumb').on('click', function(event){
+		var src = $(this).attr('src');
+		src = src.replace('small/', '');
+		$('#larger-product-image').attr('src', src);
+		event.preventDefault();
+	}); */
+	document.getElementById('links').onclick = function (event) {
+	    event = event || window.event;
+	    var target = event.target || event.srcElement,
+	        link = target.src ? target.parentNode : target,
+	        options = {index: link, event: event},
+	        links = this.getElementsByTagName('a');
+	    blueimp.Gallery(links, options);
+	};
+//]]>
+</script>
+
+

@@ -1,0 +1,43 @@
+<?php $collection = $this->getMyReservationCollection();?>
+<div class="page-title">
+	<h3><?php echo $this->__('My Reservation') ?></h3>
+</div>
+
+<table class="data-table table table-bordered" id="my-custom-table">
+	<!-- <col width="1" />
+	<col width="1" />
+	<col />
+	<col width="1" />
+	<col width="1" />
+	<col width="1" /> -->
+	<thead>
+		<tr>
+			<th><?php echo $this->__('Salon Name') ?></th>
+			<th><?php echo $this->__('Service Name') ?></th>
+			<th><?php echo $this->__('Date Booking') ?></th>
+			<th><?php echo $this->__('Staff') ?></th>
+			<th><?php echo $this->__('Time Frame') ?></th>
+			<th><?php echo $this->__('Status') ?></th>
+			<th><?php echo $this->__('Subtotal') ?></th>
+		</tr>
+	</thead>
+	<tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($collection as $reservation): ?>
+        <tr>
+			<td><span class="nobr"><?php echo isset($reservation['salon_url']) ? Mage::helper('salon')->getSalonNameBySalonUrl($reservation['salon_url']) : '' ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['service_name']) ? $reservation['service_name'] : ''  ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['date_booking']) ? $reservation['date_booking'] : '' ?></span></td>
+			<td><span class="nobr"><?php echo (isset($reservation['staff_id']) && isset($reservation['salon_url'])) ? $this->getStaffName($reservation['staff_id'], $reservation['salon_url']) : ''  ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['time_frame']) ? $reservation['time_frame'] : '' ?></span></td>
+			<td><span class="nobr status-column"><?php echo isset($reservation['status']) ? $reservation['status'] : '' ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['subtotal']) ? Mage::helper('salon')->stringFormatToPrice($reservation['subtotal']) : '' ?></span></td>
+		</tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<div class="text-center">
+	<?php echo $this->getChildHtml('reservation_pager'); ?>
+</div>
+
+

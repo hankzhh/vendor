@@ -1,0 +1,202 @@
+<?php $footer = $this->getFooterObj();?>
+<div class="footer-wrapper content-wrapper">
+	<div class="panel-heading">
+			<?php if($this->getActionName() == 'edit'):?> 
+				<?php echo $this->__('Edit A Block')?>
+			<?php else: ?>
+				<?php echo $this->__('Add New A Block')?>
+			<?php endif; ?>
+	</div>
+	<div class="row">
+	<div class="col-sm-12">
+		<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+		<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+		<?php endif;?>
+		
+		<div class="col-sm-10 footer-wrapper" style="margin-top: 15px">
+			<form class="form-horizontal" role="form" action="<?php echo $this->getAction()?>" method="post" id="form-validate" enctype="multipart/form-data">
+				<div class="form-group">
+					<label for="title-content" class="col-sm-2 control-label"><?php echo $this->__('Title') ?><em>*</em></label>
+					<div class="col-sm-10">
+						<input value="<?php echo $footer->getTitle() ? $footer->getTitle() : ''?>" type="text" name="block[title]" id="title-content" title="<?php echo $this->__('Title') ?>" placeholder="<?php echo $this->__('Insert title') ?>"class="form-control required-entry" required/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="position" class="col-sm-2 control-label"><?php echo $this->__('Position') ?><em>*</em></label>
+					<div class="col-sm-10">
+						<input value="<?php echo $footer->getPosition() ? $footer->getPosition() : ''?>" type="number" name="block[position]" id="position" title="<?php echo $this->__('Title') ?>" placeholder="<?php echo $this->__('Insert position') ?>"class="form-control required-entry" required/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="title-content" class="col-sm-2 control-label"><?php echo $this->__('Content') ?><em>*</em></label>
+					<div class="col-sm-10">
+						<div class="col-sm-12" style="background: #f0f0f0; border: #ccc 1px solid">
+							<div class="child-wrap">
+								<?php if($footer->getSystem()):?>
+									<p><a class="text-info" href="<?php echo Mage::helper('salon')->getUrl('admin/salon/setting	')?>"><?php echo $this->__('If you want to change working time, please click here!')?></a></p>
+								<?php endif;?>
+								<div class="row">						
+									<div class="col-sm-4">
+										<label for="title-content"><?php echo $this->__('Item') ?><em>*</em></label>
+									</div>
+									<div class="col-sm-3">
+										<label for="link"><?php echo $this->__('Link') ?><em>*</em></label>
+									</div>
+									<div class="col-sm-3">
+										<label style="margin-top: 3px; margin-bottom: 5px"><?php echo $this->__('Active')?></label>
+									</div>
+									<div class="col-sm-2">
+										<label><?php echo $this->__('Action')?></label>
+									</div>
+								</div>
+							<?php if($footer->getContent() && is_array($footer->getContent()) && $footer->getContent()):?>
+								<?php $i = 0?>
+								<?php foreach($footer->getContent() as $row):?>
+								<div class="row <?php echo $footer->getSystem() ? 'disabled' : ''?>" title="<?php echo $i?>" style="<?php echo $i != 0 ? 'margin-top: 15px' : ''?>">						
+									<div class="col-sm-4">
+										<input value="<?php echo isset($row['item']) ? $row['item'] : ''?>" type="text" name="block[content][<?php echo $i?>][item]"  title="<?php echo $this->__('Item') ?>"class="form-control required-entry" required <?php echo $footer->getSystem() ? 'disabled' : ''?>/>
+									</div>
+									<div class="col-sm-3">
+										<select id="link" name="block[content][<?php echo $i?>][link]" class="form-control" <?php echo $footer->getSystem() ? 'disabled' : ''?>>
+											<option value="0"><?php echo $this->__('None')?></option>
+											<?php foreach (Mage::helper('salon')->getLinksForOption() as $link  => $page):?>
+											<option value="<?php echo $link?>" <?php echo (isset($row['link']) && $row['link'] == $link) ? 'selected="selected"' : ''?>><?php echo $page?></option>
+											<?php endforeach;?>					
+										</select>
+									</div>
+									<div class="checkbox col-sm-3" style="padding-top: 0px">
+									    <label style="margin-top: 7px">
+									      <input type="checkbox" name="block[content][<?php echo $i?>][active]" <?php echo isset($row['active']) ? 'checked' : ''?> <?php echo $footer->getSystem() ? 'disabled' : ''?>> <?php echo $this->__('Hide on frontend')?>
+									    </label>
+									</div>
+									<div class="col-sm-2">
+										<button type="button" class="btn btn-default btn-sm power-delete" style="margin-top: 3px">
+							  				<span class="glyphicon glyphicon-remove-circle"></span> <?php echo $this->__('Delete')?>
+										</button>
+									</div>
+								</div>
+								<?php $i++?>
+								<?php endforeach;?>
+							<?php else:?>
+								<div class="row" title="0">						
+									<div class="col-sm-4">
+										<input type="text" name="block[content][0][item]"  title="<?php echo $this->__('Children') ?>"class="form-control required-entry" required/>
+									</div>
+								
+									<div class="col-sm-3">
+										<select id="link" name="block[content][0][link]" class="form-control">
+											<option value="0"><?php echo $this->__('None')?></option>
+											<?php foreach (Mage::helper('salon')->getLinksForOption() as $link  => $page):?>
+											<option value="<?php echo $link?>"><?php echo $page?></option>
+											<?php endforeach;?>					
+										</select>
+									</div>
+									<div class="checkbox col-sm-3" style="padding-top: 0px">
+									    <label style="margin-top: 7px">
+									      <input type="checkbox" name="block[content][0][active]"> <?php echo $this->__('Hide on frontend')?>
+									    </label>
+									</div>
+									<div class="col-sm-2">
+										<button type="button" class="btn btn-default btn-sm power-delete" style="margin-top: 3px">
+							  				<span class="glyphicon glyphicon-remove-circle"></span> <?php echo $this->__('Delete')?>
+										</button>
+									</div>
+								</div>
+							<?php endif;?>
+							</div>
+							<div style="margin: 15px 0px">
+								<button type="button" class="btn btn-default btn-sm"  id="power-add-child">
+							  		<span class="glyphicon glyphicon-plus-sign"></span> <?php echo $this->__('Add New')?>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button id="submit" type="submit" 
+						title="<?php echo $this->__('Save footer') ?>" class="btn btn-default btn-save-information">
+						<?php echo $this->__('Save Change') ?>
+						</button>
+					</div>
+				</div>
+				<input type="hidden" value="<?php echo $footer->getEntityId() ? $footer->getEntityId() : '' ?>" name="block[id]"/>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+    var optionLink = new Array();
+    optionLink[0] = 'None';
+    var j = 0;
+    <?php if(is_array($footer->getContent()) && $footer->getContent()):?>
+    	var j = parseFloat('<?php echo count($footer->getContent())?>') - 1;
+    <?php endif;?>
+    <?php foreach (Mage::helper('salon')->getLinksForOption() as $link => $page):?>
+    optionLink['<?php echo $link?>'] = '<?php echo $page?>'; 	 
+    <?php endforeach;?>
+	jQuery(function($){
+		$('#power-add-child').css('cursor','pointer');
+		$('#power-add-child').on('click',function(event){
+			if($('.child-wrap').children('div:nth-child(2)').hasClass('disabled'))
+			{
+				return;
+			}
+			j = j + 1;
+			var divChildren = $('<div>', {class:'col-sm-4'});
+			var inputChildren = $('<input>', {class: 'form-control',  name: 'block[content]['+j+'][item]'}).attr('required','');
+			var divLink = $('<div>', {class:'col-sm-3'});
+			var inputLink = $('<select>', {class: 'form-control',  name: 'block[content]['+j+'][link]'});
+			for(var index in optionLink)
+			{
+				var optionLinks = $('<option>').html(optionLink[index]).val(index);
+					inputLink.append(optionLinks);
+			}
+			var divActive = $('<div>', {class:'checkbox col-sm-3'});
+			var labelActive = $('<label>').html('<input type="checkbox" name="block[content]['+j+'][active]"/>Hide on frontend');
+			divActive.append(labelActive);
+			
+			var divDelete = $('<div>', {class: 'col-sm-2'});
+			var buttonDelete = $('<button>', {class: 'btn btn-default btn-sm power-delete', type: 'button'}).html('<span class="glyphicon glyphicon-remove-circle"></span> Delete').on('click', function(){deleteRow($(this))});
+			divChildren.append(inputChildren);
+			divLink.append(inputLink);
+
+			divDelete.append(buttonDelete);
+			
+			var row = $('<div>', {class: 'row'}).css('margin-top', '15px').attr('title', j);
+			row.append(divChildren, divLink, divActive, divDelete);
+			$('.child-wrap').append(row);
+		});
+
+		$('.power-delete').on('click', function(){
+			if(!$(this).parent().parent().hasClass('disabled'))
+			{
+				deleteRow($(this));
+			}
+			else
+			{
+				alert("Can't delete this item because it's belong to system");
+			}
+		});
+    });
+    var deleteRow = function(btnDelete){
+        var r = confirm('Are you sure delete this item?');
+        if(r == true)
+        {
+        	btnDelete.parent().parent().remove();
+        }
+	};
+
+//]]>
+</script>

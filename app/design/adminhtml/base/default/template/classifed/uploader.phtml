@@ -1,0 +1,299 @@
+<?php $galleryObj = $this->getValue('imgData')?>
+<div class="gallery-wrapper content-wrapper">
+	<div class="btn-group action-row">
+		<span class="input-group-btn"> <span class="btn btn-default btn-file">
+	    			<?php echo $this->__('Browse...')?>  
+	    			<input accept="image/*" value="" name="file[]" type="file"
+				id="file" multiple required readonly />
+		</span>
+		</span>
+	</div>
+	<table id="gallery-table" class="table no-footer">
+		<thead>
+			<tr role="row">
+				<th><?php echo $this->__('Image')?></th>
+				<th><?php echo $this->__('Thumb')?></th>
+				<th><?php echo $this->__('Base')?></th>
+				<th><?php echo $this->__('Action')?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if( count($galleryObj ) > 0 ):?>
+				<?php foreach($galleryObj as $idImage => $gallery):?>
+				<tr class="saved" title="<?php echo $idImage; ?>">
+				<td><span> <img style="width: 50px" alt="gallery"
+						src="<?php echo $gallery['smallUrl']; ?>" /> <input type="hidden"
+						value="<?php echo $gallery['smallUrl']; ?>"
+						name="images['<?php echo $idImage; ?>']" />
+				</span></td>
+				<td class="thumb"><input class="form-control hyper-stone"
+					name="thumbImg" value="<?php echo trim($idImage); ?>" type="radio"
+					<?php echo strcmp( $this->getValue('thumbImg'), $idImage ) === 0 ? 'checked' : '' ?> />
+				</td>
+				<td class="base"><input class="form-control hyper-stone"
+					name="baseImg" value="<?php echo trim($idImage); ?>" type="radio"
+					<?php echo strcmp( $this->getValue('baseImg'), $idImage ) === 0 ? 'checked' : '' ?> />
+				</td>
+				<td><a class="btn btn-default power-delete" style="width: 77px"><?php echo $this->__('Delete')?></a>
+				</td>
+			</tr>
+				<?php endforeach;?>
+				<?php endif;?>
+			</tbody>
+	</table>
+</div>
+
+<script type="text/javascript">
+var miniLoading = '<?php echo $this->getSkinUrl('images/mini_loading.gif') ?>';
+	var uploadurl = '<?php echo $this->getValue("uploadUrl")?>';
+	var urlSave = '<?php echo $this->getValue("saveUrl") ?>';
+	var urlDelete = '<?php echo $this->getValue("deleteUrl") ?>';
+	jQuery(document).ready( function() {
+		$('span#btn-save-collection').attr('disabled', '');
+		jQuery('.btn-file :file').on('change', function() {
+
+			var input = jQuery(this),
+	    	numFiles = input.get(0).files ? input.get(0).files.length : 1,
+	    	label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+			$('#btn-save-collection').popover('show').removeAttr('disabled');
+			var data = new FormData();
+			$('#message').hide(); 
+			jQuery.each($(this)[0].files, function(i, file) {
+
+				( function( imgFile ) {
+					var filename = 'file_' + (new Date()).getTime();
+				
+		    		data.append(filename, imgFile);
+
+		    		var TR = $('<tr>', {class: "upload", title: filename});
+
+			    	var TD = $('<td>', {id:filename});
+			    	TD.append('<span><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'salore/adminhtml/add.gif';?>" /></span>');
+			    	
+			    	TR.append(TD);
+			    	
+			    	var TD1 = $('<td>');
+			    	var thumbImg = $('<input>', {rows: "1", class: "form-control hyper-stone", type:"radio", name:"thumbImg", value:filename});
+			    	TD1.append(thumbImg);
+			    	TR.append(TD1);
+			    	$(thumbImg).bind({
+			    		focus: function(){
+						},
+						keyup: function(){
+							flag = true;
+						},
+						blur: function(){
+							var section = $(this).parent().parent().attr('class'); 
+							if( section !== 'upload' && section === 'saved' ){
+								ajxSaveBranch(this);
+							}
+						},
+				    });
+			    	var TD2 = $('<td>');
+			    	var baseImg = $('<input>', {rows: "1", class: "form-control required-entry hyper-stone", type:"radio", name:"baseImg", value:filename});
+			    	TD2.append(baseImg);
+			    	TR.append(TD2);
+		    	$(baseImg).bind({
+		    		focus: function(){
+					},
+					keyup: function(){
+						flag = true;
+					},
+					blur: function(){
+						var section = $(this).parent().parent().attr('class'); 
+						if( section !== 'upload' && section === 'saved' ){
+							ajxSaveBranch(this);
+						}
+					},
+			    });
+		    	var TD3 = $('<td>');
+		    	var DELETE_A = $('<a>', {class: "btn btn-default power-delete"}).css({"width": "77px", "cursor":"pointer"}).text('Delete').on('click', function(){
+		    		ajaxDelete($(this).parent().parent(), $(this));
+			    });
+			    TD3.append(DELETE_A);
+		    	TR.append(TD3);
+		    	
+		    	var firstTR = $('#gallery-table > tbody:last tr:first');
+		    	if(firstTR.length > 0)
+		    	{
+		    		$('#gallery-table > tbody:last tr:first').before(TR);
+		    	}else{
+		    		$('#gallery-table > tbody:last').append(TR);
+			    }
+			   
+		 	})(file); // end each loop
+			});
+
+			//Start upload
+			jQuery.ajax({
+		    	  url: uploadurl,
+		    	  type: "POST",
+		    	  dataType: "json",
+		    	  data: data,
+		    	  processData: false,  // tell jQuery not to process the data
+		    	  contentType: false,   // tell jQuery not to set contentType
+		    	  success: function(response){
+		    		 
+		    		  $.each(response, function (key, data) {
+		    			    $('#'+key).html('<span><img style="width:50px" src="'+data.imgurl+'" /></span><input type="hidden" name="images['+$.trim(key)+']" value="'+data.imgurl+'"/>');
+		    		  })
+		       	  }
+		    });
+	    
+	});
+
+	    //save change
+		$('#btn-save-collection').click(function(){
+			var power = $(this);
+			 var trArr = $('#gallery-table').children('tbody').children('.upload');
+			 //var prepareDataArr = [];
+			 var prepareData = {};
+			 $.each(trArr, function(i, trEle){
+				var tdArr = $(trEle).children();
+				var childData = {};
+				$.each(tdArr, function(j, tdEle){
+					if(j == 0)
+					{
+						childData.src = $(tdEle).find('img').attr('src');
+					}
+					if(j == 1)
+					{
+						childData.title = $(tdEle).children().val();
+						//$(tdEle).children('textarea').addClass('hyper-stone');
+					}
+					if(j == 2)
+					{
+						childData.description = $(tdEle).children().val();
+						//$(tdEle).children('textarea').addClass('hyper-stone');
+					}  
+				});
+				var title = $(trEle).attr('title');
+				prepareData[title] = childData;
+			}); 
+			$('#message').hide();
+			$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+			$('#message').find('blockquote').removeClass('bg-danger bg-success');
+			if(!jQuery.isEmptyObject(prepareData))
+			{
+				power.attr('disabled', '');
+				power.html('');
+				power.append('<img src="'+miniLoading+'"/>');
+				$.ajax({
+					  url: urlSave,
+			    	  type: "POST",
+			    	  dataType: "json",
+			    	  data: {'params': prepareData},
+			    	  success: function(response){
+			    		  power.removeAttr('disabled');
+			  			  power.html('Save Change');
+			  			  power.find('img').remove();
+			  			  $('#message').css("display", "none");
+			    		  $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+						  $('#message').find('blockquote').addClass('bg-success').html(response.message);
+						  trArr.removeClass('upload');
+						  trArr.addClass('saved');
+						  power.attr('disabled', '');
+			       	  }
+				});
+			} 	
+		});	   
+
+		//delete 
+		$('.power-delete').click(function(){
+			var trEle = $(this).parent().parent();
+			var r = confirm('Are you sure delete this image?');
+			if (r == true)
+			{
+				ajaxDelete(trEle, $(this));
+			}
+		}); 
+
+		var ajaxDelete = function(trEle, btndel){
+			btndel.attr('disabled','');
+			btndel.html('');
+			btndel.append('<img src="'+miniLoading+'"/>');
+			$('#message').hide();
+			$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+			$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+			$.ajax({
+				  url: urlDelete,
+		    	  type: "POST",
+		    	  dataType: "json",
+		    	  data: {'id': trEle.attr('title'), 'src': trEle.find('img').attr('src')},
+		    	  success: function(response){
+		    		  btndel.removeAttr('disabled');
+		    		  btndel.find('img').remove();
+		    		  btndel.html('Delete');
+		    		  $('#message').show();
+			    	  if(response.status === 'UPLOAD')
+			    	  {
+			    		  trEle.remove();
+				    	  $('#message').hide();
+				    	  if($('.upload').length == 0)
+				    	  {
+								$('#btn-save-collection').attr('disabled','');
+								$('span#btn-save-collection').popover("hide");
+					      }
+				    	    
+				   	  }
+			    	  else if(response.status === 'SUCCESS')
+			    	  {
+			    		  $('#message').css("display", "none");
+			    		  trEle.remove();
+			    		  $('#message').addClass('animated bounceInDown text-success').css("display", "block");
+						  $('#message').find('blockquote').addClass('bg-success').html(response.message);
+				      }
+			    	  else
+			    	  {
+			    		  $('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+						 $('#message').find('blockquote').addClass('bg-danger').html(response.message);            
+				      }
+				    	
+		       	  }
+			});
+		}
+
+		//save information in textarea
+		var branchLoading = '<?php echo $this->getSkinUrl('images/load-vertical.gif') ?>';
+		var flag = false;
+		var urlSaveBrand = '<?php echo Mage::helper('salon')->getUrl('admin/gallery/saveBranch')?>';
+		function saveBranch(branch){
+			
+		}
+		$('textarea.hyper-stone').bind({
+			focus: function(){
+			},
+			keyup: function(){
+				flag = true;
+			},
+			blur: function(){
+				ajxSaveBranch(this);
+			},
+		});
+		var ajxSaveBranch = function(branch){
+			var tdEle = $(branch).parent();
+			if(flag)
+			  {
+				$(branch).parent().append('<img src="'+branchLoading+'" />');
+				  var ajxparams = {
+						  id: $(branch).parent().parent().attr('title'),
+						  target: $(branch).parent().attr('class'),
+						  value: $(branch).val()
+					}; 
+			      $.ajax({
+			    	  url: urlSaveBrand,
+			    	  type: "POST",
+			    	  dataType: "json",
+			    	  data: ajxparams,
+			    	  success: function(response){
+				    	  tdEle.find('img').remove();
+				    	  flag = false;
+				      }
+			      });
+			  }
+			else
+			{
+			}
+		};
+	});
+</script>

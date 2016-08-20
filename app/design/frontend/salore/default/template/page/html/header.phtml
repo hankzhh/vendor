@@ -1,0 +1,37 @@
+<?php 
+$logoImgUrl = $this->getLogoSrc();
+$backgrounds = array('san-francisco-bg', 'orchid-flower-bg');
+$randomKey = array_rand ( $backgrounds, 1 );
+$bgClass = $backgrounds[$randomKey];
+if ($bgClass == 'san-francisco-bg') {
+	$logoImgUrl = '/skin/frontend/salore/default/images/nailkare-white.png';
+} else if($bgClass == 'orchid-flower-bg') {
+	$logoImgUrl = '/skin/frontend/salore/default/images/nailkare-white.png';
+}
+?>
+<div id="nk-header" role="navigation" class="navbar navbar-inverse navbar-fixed-top <?php echo $bgClass ?>">
+	<div class="container">
+		<div class="navbar-header col-md-2">
+			<button data-target=".navbar-collapse" data-toggle="collapse"
+				class="navbar-toggle collapsed" type="button">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="logo navbar-brand" href="<?php echo $this->getUrl('') ?>">
+				<img src="<?php echo $logoImgUrl ?>"
+				alt="<?php echo $this->getLogoAlt() ?>" class="large" />
+			</a>
+		</div>
+		<div class="navbar-collapse collapse" style="height: 1px;">
+			<div class="col-md-4 search-wrapper">
+				<?php echo $this->getChildHtml('topSearch') ?>
+			</div>
+			<?php echo $this->getChildHtml('topLinks') ?>
+		</div>
+		<!--/.nav-collapse -->
+	</div>
+</div>
+<?php if (Mage::app()->getRequest()->getControllerName() === 'search'):?>
+	<?php echo $this->getChildHtml('topMenu')?>
+<?php endif;?>

@@ -1,0 +1,58 @@
+<?php $services = $this->getServicesFromMongoDb();?>
+<?php $serviceTotal = count($services)?>
+<?php $item = 0; $rowNumber = ceil($serviceTotal / 4);?>
+<?php if (is_array($services) && empty($services)):?>
+<p>There are no products matching the selection.</p>
+<?php else:?>
+<div class="item-wrapper row text-center content">
+   <?php foreach ($services as $service): ?>
+   		<?php if($item % $rowNumber == 0):?>
+		<div class="col-sm-3 col-xs-12 service-list">
+		<?php endif;?>	
+			<div class="thumbnail service-item">
+			 	<a href="<?php echo Mage::helper('salon')->getUrl('service/view') .'id/'.$service->getEntityId()?>"><img src="<?php echo isset($service['image_service']) ? $service['image_service'] : $this->getSkinUrl('images/not-available.jpg')?>"  alt="" /></a>
+                    <h4 class="product-name text-capitalize text-info"><a href="<?php echo Mage::helper('salon')->getUrl('service/view') .'id/'.$service->getEntityId()?>"><?php echo $service['service_name'];?></a></h4>
+                    <div class="price-box">
+                    <?php $price = Mage::helper('salon')->stringFormatToPrice($service['price'])?>
+            			<?php if(isset($service['special_price']) && $service['special_price']):?>
+            			<?php $specialPrice = Mage::helper('salon')->stringFormatToPrice($service['special_price']);?>
+            			<p class="price">
+                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+                			<strong class="price text-muted" id="old-price-7"><s><?php echo $price ? $price : ''?></s></strong>
+                			&nbsp;&nbsp;
+                	    	<span class="price-label hidden"><?php echo $this->__('Special Price')?></span>
+                			<strong class="price text-primary" id="product-price-7"><?php echo $specialPrice ? $specialPrice : ''?></strong>
+                		</p>
+                		<?php else:?>
+                		<p class="price">
+                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+                			<strong class="text-primary" id=""><?php echo $price ? $price : ''?></strong>
+            			</p>
+                		<?php endif;?>
+                    </div>
+               	 <p><button type="button" title="<?php echo $this->__('Reservation') ?>" class="btn nk-btn-default btn-cart" onclick="window.location.href = '<?php echo Mage::helper('salon')->getUrl('reservation') .'?serviceId='.$service->getEntityId()?>'"><span><span><?php echo $this->__('Reservation') ?></span></span></button></p>
+                         <div class="face-comment" style="display: none">
+					    <div class="box-collateral">
+					        <script type="text/javascript">(function (d, s, id) {
+				                var js, fjs = d.getElementsByTagName(s)[0];
+				                if (d.getElementById(id)) {
+				                    return;
+				                }
+				                js = d.createElement(s);
+				                js.id = id;
+				                js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+				                fjs.parentNode.insertBefore(js, fjs);
+				            }(document, 'script', 'facebook-jssdk'));</script>
+				        <fb:comments href="<?php echo $this->helper('salon/services')->getServiceUrl($service['entity_id'])?>" num_posts="1"
+					                     width="100%"></fb:comments>
+					    </div>
+            		</div>
+				</div>
+			<?php if(($item + 1) % $rowNumber == 0):?>
+		</div>
+		<?php endif;?>
+		<?php $item++?>
+<?php endforeach;?>
+</div>
+<?php endif;?>
+

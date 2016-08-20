@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<salon_admin_adminhtml_salon_index >
+		<reference name="head">
+			<action method="addJs"><script>salore/adminhtml/salonmanagement.js</script></action>
+			<action method="addJs"><script>prototype/window.js</script></action>
+     		<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/default.css</name>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/alphacube.css</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="salon/adminhtml_salon" name="salon.grid"  />
+		</reference>
+	</salon_admin_adminhtml_salon_index >
+	<salon_admin_adminhtml_city_index>
+		<reference name="head">
+			<action method="addJs"><script>prototype/window.js</script></action>
+			<action method="addJs">
+				<script>salore/adminhtml/citimanage.js</script>
+			</action>
+     		<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/default.css</name>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/alphacube.css</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="salon/adminhtml_city"/>
+		</reference>
+	</salon_admin_adminhtml_city_index>
+	<salon_admin_adminhtml_category_index>
+	<reference name="head">
+			<action method="addJs"><script>prototype/window.js</script></action>
+			<action method="addJs">
+				<script>salore/adminhtml/categorymanage.js</script>
+			</action>
+     		<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/default.css</name>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>prototype/windows/themes/alphacube.css</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="salon/adminhtml_category"/>
+		</reference>
+	</salon_admin_adminhtml_category_index>
+	<!-- <salon_admin_adminhtml_city_edit>
+		<reference name="content">
+			<block type="salon/adminhtml_city_edit"/>
+		</reference>
+	</salon_admin_adminhtml_city_edit>
+	<salon_admin_adminhtml_city_new>
+		<reference name="content">
+			<block type="salon/adminhtml_city_edit"/>
+		</reference>
+	</salon_admin_adminhtml_city_new> -->
+</layout>

@@ -1,0 +1,28 @@
+<?php $salonArr = $this->getSalonByList()?>
+<?php if(count($salonArr)):?>
+	<ul class="list-unstyled search-result-list">
+	<?php foreach ($salonArr as $salon):?>
+		<li class="col-sm-12">
+			<div class="col-sm-2">
+				<a href="<?php echo isset($salon['name_varchar']) ? Mage::getUrl().$salon['url_varchar'] : '#'?>">
+					<img class="img-responsive" src="<?php echo isset($salon['img_represent_varchar']) ? $salon['img_represent_varchar'] : '#'?>" alt="salon"/>
+				</a>
+			</div>
+			<div class="col-sm-10">
+				<h1>
+					<a href="<?php echo isset($salon['name_varchar']) ? Mage::getUrl().$salon['url_varchar'] : '#'?>">
+						<?php echo isset($salon['name_varchar']) ? $salon['name_varchar'] : 'undefined'?>
+					</a>
+				</h1>
+				<p>Address: <?php echo isset($salon['textSearchStandard'][1]) ? $salon['textSearchStandard'][1] : 'undefined'?></p>
+				<h4><a href="<?php echo isset($salon['name_varchar']) ? Mage::getUrl().$salon['url_varchar'].'/reservation' : '#'?>">Reservation</a></h4>			
+			</div>
+		</li>
+	<?php endforeach;?>
+	</ul>
+	<?php if(count($this->getSalonResultArr()) > $this->limit):?>
+		<div class="text-center">
+			<?php echo $this->getChildHtml('salon_search_pager'); ?>
+		</div>
+	<?php endif;?>
+<?php endif;?>

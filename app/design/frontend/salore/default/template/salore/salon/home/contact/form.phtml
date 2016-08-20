@@ -1,0 +1,96 @@
+<?php $sessionData = $this->showSessionWhenFormError()?>
+<div class="page-title">
+	<h2 class="legend"><?php echo Mage::helper('salon')->__('Contact Information') ?></h2>
+</div>
+	<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+			<div id="message-session"class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+				<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>" >
+					<?php echo $sessionMessageArr['message']?>
+				</blockquote>
+			</div>
+	<?php endif;?>
+<form action="<?php echo Mage::helper('salon')->getUrl('contact/post') ?>" id="contactForm" method="post">
+      
+        <ul class="form-list list-unstyled">
+                <div class="form-group">
+                    <label for="name" class="required control-label"><em>*</em><?php echo Mage::helper('salon')->__('Name') ?></label>
+                    <input name="name" id="name" title="<?php echo Mage::helper('salon')->__('Name') ?>"  class="  form-control" type="text" value="<?php echo (isset($sessionData['name']) && $sessionData['name']) ? $sessionData['name'] : ''?>"/>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="required control-label"><em>*</em><?php echo Mage::helper('salon')->__('Email') ?></label>
+                    <input name="email" id="email" title="<?php echo Mage::helper('salon')->__('Email') ?>"  class=" form-control" type="text" value="<?php echo (isset($sessionData['email']) && $sessionData['email']) ? $sessionData['email'] : ''?>"/>
+                </div>
+             <div class="form-group">
+                <label for="subject" class="required control-label"><em>*</em><?php echo Mage::helper('contacts')->__('Subject') ?></label>
+                <input name="subject" id="subject" title="<?php echo Mage::helper('salon')->__('Subject') ?>" class="form-control" type="text" value="<?php echo (isset($sessionData['subject']) && $sessionData['subject']) ? $sessionData['subject'] : ''?>"/>
+            </div>
+            <div class="form-group">
+                <label for="telephone" class="required control-label"><em>*</em><?php echo Mage::helper('contacts')->__('Phone Number') ?></label>
+                <input name="telephone" id="telephone" title="<?php echo Mage::helper('salon')->__('Telephone') ?>"  class=" form-control" type="text" value="<?php echo (isset($sessionData['telephone']) && $sessionData['telephone']) ? $sessionData['telephone'] : ''?>"/>
+            </div>
+            <div class="wide form-group">
+                <label for="comment" class="required control-label"><em>*</em><?php echo Mage::helper('salon')->__('Comment') ?></label>
+                <textarea name="comment" id="comment" title="<?php echo Mage::helper('salon')->__('Comment') ?>" class="form-control input-text" cols="5" rows="3"></textarea>
+            </div>
+        </ul>
+        <div class="buttons-set form-group">
+        <p class="required text-danger"><small><?php echo Mage::helper('contacts')->__('* Required Fields') ?></small></p>
+        <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
+        <button type="submit" title="<?php echo Mage::helper('salon')->__('Send Message') ?>" class="button btn btn-primary"><span><span><?php echo Mage::helper('contacts')->__('Send Message') ?></span></span></button>
+    </div>
+    
+</form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#contactForm').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+        	name: {
+                validators: {
+                    notEmpty: {
+                        message: 'Name is required and cannot be empty'
+                    },
+                }
+            },
+            comment: {
+                validators: {
+                    notEmpty: {
+                        message: 'Comment is required and cannot be empty'
+                    },
+                }
+            },
+            subject: {
+                validators: {
+                    notEmpty: {
+                        message: 'Subject is required and cannot be empty'
+                    },
+                }
+            },
+            telephone: {
+                validators: {
+                    notEmpty: {
+                        message: 'Telephone is required and cannot be empty'
+                    },
+                }
+            },
+            email: {
+                validators: {
+                    notEmpty: {
+                        message: 'The email is required and cannot be empty'
+                    },
+                    emailAddress: {
+                        message: 'The input is not a valid email address'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+

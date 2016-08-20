@@ -1,0 +1,99 @@
+<?php echo $this->getMessagesBlock()->getGroupedHtml()?>
+<?php $collection = $this->getStaffCollectionFromMongo()?>
+<?php echo $this->getChildHtml('salon_admin_staff_header')?>
+<?php 	$sessionMessageArr = Mage::helper('salon')->getSessionMessage();?>
+	<?php if (isset($sessionMessageArr['message']) && $sessionMessageArr['message']):?>
+		<div id="message-session" class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'text-danger' : 'text-success'?>">
+			<blockquote class="<?php echo ($sessionMessageArr['type'] == 'error') ? 'bg-danger' : 'bg-success'?>">
+				<?php echo $sessionMessageArr['message']?>
+			</blockquote>
+		</div>
+	<?php endif;?>
+	<div id="message"class="" style="display: none">
+		<blockquote class="">
+		</blockquote>
+	</div>
+<?php if($collection->getSize()): ?>
+<table id="my-custom-table" style="text-align: center;" class="table table-hover">
+	<thead>
+		<tr class="active">
+			<th><?php echo $this->__('Image') ?></th>
+			<th><?php echo $this->__('Name') ?></th>
+			<th><?php echo $this->__('Sex') ?></th>
+			<th><?php echo $this->__('Age') ?></th>
+			<th><?php echo $this->__('Years of experience') ?></th>
+			<th><span class="nobr"><?php echo $this->__('Edit') ?></span></th>
+			<th><span class="nobr"><?php echo $this->__('Delete') ?></span></th>
+		</tr>
+	</thead>
+	<tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($collection as $staff): ?>
+        <tr title="<?php echo $staff->getEntityId()?>">
+			<td>
+			<img src="<?php echo !is_null($staff->getImgAvatar())  ? $staff->getImgAvatar() : Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB).'skin/'.'frontend/'.'salore/'.'default/'.'images/'.'not-available.jpg'?>" style="width:135px; height:136px;"/>
+			</td>
+			<td><span class="nobr"><?php echo $staff->getName() ? $staff->getName() : ''; ?></span></td>
+			<td><span class="nobr"><?php echo $staff->getSex() ? $staff->getSex() : ''; ?></span></td>
+			<td><span class="nobr"><?php echo $staff->getAge() ? $staff->getAge() : ''; ?></span></td>
+			<td><span class="nobr"><?php echo $staff->getYear() ? $staff->getYear() : ''; ?></span></td>
+			<td>
+				<a class="edit" 
+					href="<?php echo $this->helper('salon')->getUrl('admin/staff/edit'). "?id={$staff->getEntityId()}";?>">
+					<?php echo $this->__("Edit");?>
+				</a>
+			</td>
+			<td>
+				<a class="staff-delete" 
+					href="#" onclick="ajaxDelete(this)">
+					<?php echo $this->__("Delete");?>
+				</a>
+			</td>
+		</tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?php else: ?>
+<p><?php echo $this->__('The collection is empty.'); ?></p>
+<?php endif; ?>
+<script type="text/javascript">
+//<![CDATA[
+    var urlDelete = '<?php echo $this->helper('salon')->getUrl('admin/staff/ajaxdelete')?>';
+   
+    function ajaxDelete(arg)
+    {
+    	$('#message').css("display", "none");
+    	if($('#message-session') != null)
+    	{
+    		$('#message-session').remove();
+    	}
+    	$('#message').removeClass('animated bounceInDown text-danger text-success'); 
+    	$('#message').find('blockquote').removeClass('bg-danger bg-success'); 	
+    	var serviceId = $(arg).parent().parent().attr('title');
+    	var serviceTitle = $(arg).parent().parent().children().children('span').html();
+    	var r = confirm('['+serviceTitle+'] Are you sure want to delete ' + serviceTitle +' service?');
+    	if (r == true)
+    	  {
+    		jQuery.ajax({
+        		type: "POST",
+        		url: urlDelete,
+        		data: { id: serviceId },
+        		dataType: "json",
+        	    success: function(data){
+            	    if(data.status === 'SUCCESS')
+            	    {
+            	    	$(arg).parent().parent().remove();
+            	    	$('#message').addClass('animated bounceInDown text-success').css("display", "block");
+    					$('#message').find('blockquote').addClass('bg-success').html(data.message);
+                	}
+            	    else
+            	    {
+            	    	$('#message').addClass('animated bounceInDown text-danger').css("display", "block");
+    					$('#message').find('blockquote').addClass('bg-danger').html(data.message);        
+                	}
+    			},
+    		}); 
+    	  }   	
+    }
+//]]>
+</script>

@@ -1,0 +1,87 @@
+<script type="text/javascript">
+var pid = new Array();
+var plagButtonControl = false;
+function inputSelect(that)
+	{
+		if( that.checked)
+		{
+			var input = $('.pselect').length;
+			var inputchoose = $('.pselect:checked').length;
+			if(input === inputchoose)
+				$('#selectedall').prop('checked', true);
+			else $('#selectedall').prop('checked', false);
+			if( false == plagButtonControl ) {
+				//addButton();
+				plagButtonControl = true;
+			}
+			pid.push($(that).attr('value'));
+		}
+		else {
+
+			$('#selectedall').prop('checked', false);
+
+			var removeArray = pid.indexOf($(that).attr('value'));
+
+			pid.splice(removeArray,1);
+
+			if( 0 === $('.pselect:checked').length ){
+
+				pid = new Array();
+			}
+		}
+	}
+	
+$('#selectedall').click(function(){
+				$('.pselect').prop('checked', this.checked);
+				if( this.checked )
+				{
+					if($('.pselect:checked').length > 0)
+					{
+						$('.pselect:checked').each( function() {
+							pid.push( $(this).attr('value'));
+							});
+					}
+					if(pid.length > 0 && false == plagButtonControl)
+					{
+						plagButtonControl = true;
+					}
+
+				}else
+				{
+					pid = new Array();
+				}
+	});
+	
+$('#deleteall').click(function(e) {
+			e.preventDefault();
+			if(pid.length === 0) {
+				alert('Please choose least one record to delete.');
+				return;
+			} else {
+				var number = pid.length;
+					
+				if( parseInt( number) > 1) {
+					
+					var objName = name + 's';
+				} else {
+					objName = name;
+				}
+				var r = confirm('Are you sure to delete ' + number +' '+ objName + ' ?');
+		    	if ( r == true ) {
+					$.ajax( {
+					      url: urlDelete,
+					      type: 'GET',
+					      data :{ id : pid},
+					      dataType: 'json',
+					      success: function(data, textStatus, jqXHR)
+					      {
+						       if(data.status === 'SUCCESS') {
+			    					window.location.href = urlIndex;
+						       }
+					      },
+					});
+		    	}
+		    	
+			}
+		});	
+</script>

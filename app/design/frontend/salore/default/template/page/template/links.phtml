@@ -1,0 +1,309 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * @see Mage_Page_Block_Template_Links
+ */
+$favourCookie = Mage::getModel('core/cookie')->get('salore_favourite');
+$favourModel = Mage::getModel('salon/favourite');
+$id = Mage::getSingleton('customer/session')->getId();
+$favourCookieFinal = array();
+if(isset($id) && $id)
+{
+	$favourModel->setCustomerId($id);
+	$favourModel = $favourModel->getCollection();
+	foreach ($favourModel as $favour)
+	{
+		$favourCookieFinal[$favour->getData('salon_url')] = array($favour->getData('salon_name'), $favour->getData('logo'));	
+	}
+}
+if($favourCookie)
+{
+	$favourTemp = explode(';', $favourCookie);
+	foreach ($favourTemp as $salonUrl =>$favour)
+	{
+		$favour = explode(',', $favour);
+		$favourCookieFinal[$favour[0]] = array($favour[1], $favour[2]);
+	}	
+}
+
+?>
+
+<?php $website_id = Mage::app()->getWebsite()->getId();?>
+<?php //Mage::getSingleton('checkout/session')->unsSalonReservation()?>
+<?php $_links = $this->getLinks(); ?>
+<?php if(count($_links)>0): ?>
+<ul class="nav navbar-nav navbar-right toplinks"<?php if($this->getName()): ?> id="<?php echo $this->getName() ?>"<?php endif;?>>
+	<li>
+		<a href="<?php echo Mage::getUrl('classified').'?mode=list'?>"><?php echo $this->__('Classified ads ')?><span class="glyphicon glyphicon-list"></span></a>
+	</li>
+	<li class="dropdown dropdown-my-favorites">
+		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+				<?php echo $this->__('My favorites ')?>
+				<span class="glyphicon glyphicon-heart"></span>
+		</a>
+		<ul class="dropdown-menu favorites-list" style="width: 271px">
+			<li class="favorites-empty">
+				<p class="text-center">
+					<strong><?php echo $this->__('There is no favorite item')?></strong>
+				</p>
+			</li>
+			<?php if(!empty($favourCookieFinal)):?>
+				<?php foreach ($favourCookieFinal as $salonUrl => $salonNameLogoArr ):?>
+				<li class="item-favour" style="position: relative;">
+					<a id="<?php echo isset($salonUrl) ? $salonUrl : ''?>" href="<?php echo isset($salonUrl) ? Mage::getUrl().$salonUrl : ''?>"><?php echo isset($salonNameLogoArr[0]) ? $salonNameLogoArr[0] : ''?><em style="background: url('<?php echo isset($salonNameLogoArr[1]) ? $salonNameLogoArr[1] : ''?>') no-repeat top"></em></a>
+					<span class="close-icon close" onclick="$(this).removeFavour(this, event)">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</span>
+				</li>
+				<?php endforeach;?>
+			<?php endif;?>
+		</ul>
+	</li>
+	<li class="dropdown dropdown-my-appointment" <?php //echo $website_id == 1 ? 'style="display: none"' : ''?>>
+		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+				<?php echo $this->__('My Appointment')?> &nbsp;
+				<span class="number-appointment label label-default">0</span>
+		</a>
+		<ul class="dropdown-menu reservation-list" style="width: 271px">
+			<li class="appointment-empty">
+				<p class="text-center">
+					<strong><?php echo $this->__('There is no any appointment yet')?></strong>
+				</p>
+			</li>
+<script>
+	var totalPrice = 0;
+	var itemTotal = 0;
+	var apointDropdown = $('.dropdown-my-appointment');
+	 var urlAddToCart = '<?php echo Mage::helper('salon')->getUrl('reservation/addToCart')?>';
+     var miniLoading = '<?php echo $this->getSkinUrl('images/mini_loading.gif')?>';
+     var horizontalLoading = '<?php echo $this->getSkinUrl('images/horizontal_loading.gif')?>';
+     function setHeightOpen(numItem)
+     {
+			if(numItem > 3)
+			{
+				$('#selected-item-wrapper').css({'height':'300px', 'overflow-y': 'scroll'});
+			}
+			else
+			{
+				$('#selected-item-wrapper').css({'height':'auto', 'overflow-y': 'visible'});
+			}
+     }
+	function refreshCheckout(stringEmpty, params)
+	{
+		//ajax remove item in cart
+		ajaxAddToCart(params,'', 'remove');
+	}
+	function ajaxAddToCart(params, cartElement, type)
+	{
+		if(params.power.is('div'))
+		{
+			params.power.children('span').html('<img src="'+miniLoading+'"/>');
+		}
+		else
+		{
+			params.power.append('<img style="position: absolute; top:0px; left:0px;" src="'+horizontalLoading+'"/>');
+		}
+		jQuery.ajax({
+    		type: "POST",
+    		url: params.urlRemove ? params.urlRemove : urlAddToCart,
+    		data: {id: params.getServiceId(params.power.attr('id')), date: params.dateSelected, timeframe: params.timeframe, price: params.price, type: type, elementId: params.power.attr('id')+'-selected-item', serviceName: params.power.children('input:nth-child(2)').attr('value'), staffId: params.staffSelected},
+    		dataType: "json",
+    	    success: function(data){
+    	    	params.power.children('img').remove();
+    	    	params.totalPriceWrap.html('<strong>Total Price:</strong> $' + totalPrice + '.00');
+        	    if(data.status === 'ERROR')
+        	    {
+            		alert(data.message);    
+            	}
+				if(type === 'add')
+				{
+					params.power.addClass('selected '+params.staffSelected);
+					params.checkoutWrap.append(cartElement);
+					params.messageEmptyCart.hide();
+					$('#submit-checkout-wrapper').show();
+					$('#total-price-services').show();
+					itemTotal++;
+					$('span.number-appointment').html(itemTotal);
+					if(!apointDropdown.hasClass('open'))
+					{
+						apointDropdown.addClass("open");
+					}
+					setHeightOpen($('span.number-appointment').html()); 
+				}
+				else
+				{
+					itemTotal--;
+					$('span.number-appointment').html(itemTotal);
+					if(params.power.is('div'))
+					{
+						liTarget = params.power.attr('id').replace('-selected-item','');
+						$('#'+liTarget).removeClass('selected');
+						params.power.remove();
+					}
+					else
+					{
+						params.power.removeClass('selected');
+						var deleteTar = params.power.attr('id')+'-selected-item';
+						$('#'+deleteTar).remove();
+					}
+					
+					if(0 == $('#selected-item-wrapper').children('div').length)
+					{
+						params.checkoutWrap.css({'height':'', 'overflow-y': 'visible'});
+						$('.reservation-list').children('li').first().show();
+						$('#submit-checkout-wrapper').hide();
+						$('#total-price-services').hide();
+					}
+					if(!apointDropdown.hasClass('open'))
+					{
+						apointDropdown.addClass("open");
+					}
+					setHeightOpen($('span.number-appointment').html()); 
+				}
+			},
+		}); 
+	}
+</script>
+			<li id="selected-item-wrapper">
+			<?php $reservationSession = Mage::getSingleton('checkout/session')->getData('salon_reservation')?>
+			<?php if (is_array($reservationSession) && !empty($reservationSession)): ?>
+			<script>
+				$('.reservation-list').children('li').first().hide();
+			</script>
+				<?php $total = 0?>
+				<?php foreach ($reservationSession as $item):?>
+					<?php //if(isset($item['website_id']) && $item['website_id'] == $website_id):?>
+					<?php $total += $item['price'] ?>
+					
+					<script>
+					itemTotal++;
+					(function(){
+							var total = '<?php echo isset($item['price']) ? $item['price'] : 0?>';
+							totalPrice += parseFloat(total);
+							var idService = '<?php echo $item['elementId']?>';
+
+							var cartElement = $(document.createElement('div')).addClass('selected-item').attr('id',idService);
+
+							var serviceName = $(document.createElement('div')).html('<?php echo isset($item['serviceName']) ? $item['serviceName'] : ''?>');
+
+							var serviceDate = $(document.createElement('div')).html('<?php echo isset($item['date']) ? $item['date'] : ''?>');
+
+							var staffId = $(document.createElement('div')).html('<?php echo isset($item['staffId']) ? $item['staffId'] : ''?>').css('display', 'none');
+
+							var serviceTime = $(document.createElement('div')).html('<?php echo isset($item['timeframe']) ? $item['timeframe'] : ''?>');
+							
+							var servicePrice = $(document.createElement('div')).html('Price:&nbsp$<span>'+'<?php echo isset($item['price']) ? $item['price'] : ''?>'+'</span>.00');
+
+							var serviceClose = $(document.createElement('span')).addClass('close-icon close').html('<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>');
+
+							cartElement.append(serviceName, serviceDate, serviceTime, servicePrice, staffId, serviceClose );
+								
+							$('#selected-item-wrapper').append(cartElement);
+							$('#checkout-wrapper').children('p:nth-child(2)').hide();
+							$('#submit-checkout-wrapper').show();
+							var date = '<?php echo $item['date']?>';
+							var dateStatic = $('#res-a-date').children('input').val();
+							if($('#res-a-date').children('input').val() == date)
+							{
+								idService = idService.replace('-selected-item', '');
+								$('#'+idService).addClass('selected');
+							}
+							$(serviceClose).click(function(e){
+								var params = {
+										power: $(this).parent(),
+										serviceId: $('#search_service').val(),
+										dateSelected: $(this).parent().children('div:nth-child(2)').html(),
+										staffSelected: $(this).parent().children('div:nth-child(5)').html(),
+										messageEmptyCart: $('.reservation-list').children('li').first(),
+										checkoutWrap: $('#selected-item-wrapper'),
+										totalPriceWrap: $('#total-price-services'),
+										timeframe: $(this).parent().children('div:nth-child(3)').html(),
+										price: $(this).parent().children('div:nth-child(4)').children('span').html(),
+										urlRemove: '<?php echo isset($item['salon_url']) ? Mage::getUrl().$item['salon_url'].'/reservation'.'/addToCart' : Mage::helper('salon')->getUrl('reservation/addToCart')?>',
+										getServiceId:function(text)
+										{
+											var text = text.split("-");
+											return text[1];
+										},
+								};
+								totalPrice = totalPrice - parseFloat(params.price);
+								e.stopPropagation();
+								refreshCheckout(params.messageEmptyCart, params); 
+							});
+					})();
+					</script>
+					<?php //endif;?>
+				<?php endforeach;?>
+				
+			<?php endif;?>
+			
+			</li>
+				<li id="total-price-services"><?php echo (isset($total) && $total) ? '<strong>'.$this->__('Total Price: ').'</strong>$'.$total.'.00' : ''?></li>
+				<li class="sida" id="submit-checkout-wrapper" style="display:<?php echo (is_array($reservationSession) && !empty($reservationSession)) ? 'block' : 'none'?>">
+					<button id="submit-service-checkout" type="submit" class="btn btn-default" title="<?php echo $this->__('Check Out') ?>"><span><span><?php echo $this->__('CheckOut') ?></span></span></button>
+				</li>	
+		</ul>
+	</li>
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+			<?php echo $this->__('Account ')?>
+			<span class="glyphicon glyphicon-user nk-account-icon"></span>
+		</a>
+		<ul class="dropdown-menu" role="menu">
+			<?php foreach($_links as $_link): ?>
+		        <?php if ($_link instanceof Mage_Core_Block_Abstract):?>
+		            <?php echo $_link->toHtml() ?>
+		        <?php else: ?>
+		            <li<?php if($_link->getIsFirst()||$_link->getIsLast()): ?> class="text-right <?php if($_link->getIsFirst()): ?>first<?php endif; ?><?php if($_link->getIsLast()): ?> last<?php endif; ?>"<?php endif; ?> <?php echo $_link->getLiParams() ?>><?php echo $_link->getBeforeText() ?><a href="<?php echo $_link->getUrl() ?>" title="<?php echo $_link->getTitle() ?>" <?php echo $_link->getAParams() ?>><?php echo $_link->getLabel() ?></a><?php echo $_link->getAfterText() ?></li>
+		        <?php endif;?>
+		    <?php endforeach; ?>
+		</ul>
+	</li>
+</ul>
+<?php endif; ?>
+<script>
+	$('span.number-appointment').html(itemTotal);
+	setHeightOpen($('span.number-appointment').html()); 
+	$('#submit-service-checkout').click(function(e){
+		$('#nailkare-sidebar-checkout').append('<div><img style="padding-bottom: 5px" alt="ajax loading" src="'+'<?php echo $this->getSkinUrl('images/res-loading.gif')?>'+'"/></div>');
+		window.location.href = location.protocol + '//' + location.host + '/checkout/onepage';
+		e.preventDefault();
+	});
+	jQuery(function($){
+	 	if($('.item-favour').html())
+		{
+			$('.favorites-empty').hide();
+		} 
+		if($('span.number-appointment').html() == 0)
+		{
+			$('.appointment-empty').show();
+			$('#submit-checkout-wrapper').hide();
+		}
+	});
+</script>

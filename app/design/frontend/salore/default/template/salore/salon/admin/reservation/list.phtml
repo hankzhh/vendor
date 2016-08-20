@@ -1,0 +1,114 @@
+<?php echo $this->getMessagesBlock()->getGroupedHtml()?>
+<?php $collection = $this->getReservationCollection();?>
+<div class="page-title">
+	<a style="margin-top: 10px" class="btn btn-default" href="<?php echo Mage::helper('salon')->getUrl('admin/reservation/new')?>"><?php echo $this->__('Reservation New')?></a>
+	<h3><?php echo $this->__('Reservation Management') ?> 
+	</h3>
+	
+</div>
+
+<table class="data-table table table-bordered" id="my-custom-table">
+	<!-- <col width="1" />
+	<col width="1" />
+	<col />
+	<col width="1" />
+	<col width="1" />
+	<col width="1" /> -->
+	<thead>
+		<tr>
+			<th><?php echo $this->__('Order Id') ?></th>
+			<th><?php echo $this->__('Customer Name') ?></th>
+			<th><?php echo $this->__('Service Name') ?></th>
+			<th><?php echo $this->__('Date Booking') ?></th>
+			<th><?php echo $this->__('Staff') ?></th>
+			<th><?php echo $this->__('Time Frame') ?></th>
+			<th><?php echo $this->__('Status') ?></th>
+			<th><?php echo $this->__('Subtotal') ?></th>
+			<th><span class="nobr"><?php echo $this->__('Confirm') ?></span></th>
+			<th><span class="nobr"><?php echo $this->__('Delete') ?></span></th>
+		</tr>
+	</thead>
+	<tbody>
+        <?php $_odd = ''; ?>
+        <?php foreach ($collection as $reservation): ?>
+        <tr title ="<?php echo isset($reservation['entity_id']) ? $reservation['entity_id'] : ''?>">
+			<td><span class="nobr"><?php echo isset($reservation['order_id']) ? $reservation['order_id'] : ''?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['customer_name']) ? $reservation['customer_name'] : '' ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['service_name']) ? $reservation['service_name'] : ''  ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['date_booking']) ? $reservation['date_booking'] : '' ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['staff_id']) ? $this->getStaffNameById($reservation['staff_id']) : ''  ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['time_frame']) ? $reservation['time_frame'] : '' ?></span></td>
+			<td><span class="nobr status-column"><?php echo isset($reservation['status']) ? $reservation['status'] : '' ?></span></td>
+			<td><span class="nobr"><?php echo isset($reservation['subtotal']) ? Mage::helper('salon')->stringFormatToPrice($reservation['subtotal']) : '' ?></span></td>
+			<td>
+				<a class="reservation-confirm" href="#">
+					<?php echo $this->__("Confirm");?>
+				</a>
+			</td>
+			<td>
+				<a class="reservation-delete" href="#">
+					<?php echo $this->__("Delete");?>
+				</a>
+			</td>
+		</tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<div class="text-center">
+	<?php echo $this->getChildHtml('reservation_pager'); ?>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+	jQuery(function($){
+		$('.reservation-confirm').on('click',function(){
+			var target = $(this).parent().parent();
+			var r = confirm("Are you sure?");
+			if(r == true)
+			{
+				$.ajax({
+					type: "post",
+					url: "<?php echo Mage::helper('salon')->getUrl('admin/reservation/confirm');?>",
+					dataType: "json",
+					data: {'id': target.attr('title')},
+					success: function(response){
+						if(response.status == 'SUCCESS')
+						{
+							target.find('span.status-column').text('complete');
+							target.css('background','#f9f9f9');
+						}
+						else
+						{
+							alert(response.message);
+						}
+					}
+				});
+			}
+		});
+		$('.reservation-delete').on('click', function(){
+			var target = $(this).parent().parent();
+			var r = confirm("Are you sure?");
+			if(r == true)
+			{
+				$.ajax({
+					type: "post",
+					url: "<?php echo Mage::helper('salon')->getUrl('admin/reservation/delete');?>",
+					dataType: "json",
+					data: {'id': target.attr('title')},
+					success: function(response){
+						if(response.status == 'SUCCESS')
+						{
+							target.remove();
+						}
+						else
+						{
+							alert(response.message);
+						}
+					}
+				});
+			}
+		});
+	});
+//]]>
+</script>
+
+

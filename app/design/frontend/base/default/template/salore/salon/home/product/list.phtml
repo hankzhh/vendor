@@ -1,0 +1,43 @@
+<?php $products = $this->getProductFromMongoDb();?>
+<?php $productTotal = count($products)?>
+<?php $item = 0; $rowNumber = ceil($productTotal / 4);?>
+<?php if (is_array($products) && empty($products)):?>
+<p>There are no products matching the selection.</p>
+<?php else:?>
+<div class="item-wrapper row text-center content">
+   <?php foreach ($products as $product): ?>
+   		<?php if($item % $rowNumber == 0):?>
+		<div class="col-sm-3 col-xs-12 service-list">
+		<?php endif;?>	
+			<div class="thumbnail service-item">
+			 	<a href="<?php echo Mage::helper('salon')->getUrl('product/view') .'id/'.$product->getEntityId()?>"><img src="<?php echo isset($product['image_product']) ? $product['image_product'] : $this->getSkinUrl('images/not-available.jpg')?>"  alt="" /></a>
+                    <h4 class="product-name text-capitalize text-info">	<a href="<?php echo Mage::helper('salon')->getUrl('product/view') .'id/'.$product->getEntityId()?>"><?php echo $product['product_name'];?></a></h4>
+                    <h4 class="product-name text-capitalize text-info"><?php echo $product['short_description'];?></h4>
+                    <div class="price-box">
+                    <?php $price = Mage::helper('salon')->stringFormatToPrice($product['price'])?>
+            			<?php if(isset($product['special_price']) && $product['special_price']):?>
+            			<?php $specialPrice = Mage::helper('salon')->stringFormatToPrice($product['special_price']);?>
+            			<p class="price">
+                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+                			<strong class="price text-muted" id="old-price-7"><s><?php echo $price ? $price : ''?></s></strong>
+                			&nbsp;&nbsp;
+                	    	<span class="price-label hidden"><?php echo $this->__('Special Price')?></span>
+                			<strong class="price text-primary" id="product-price-7"><?php echo $specialPrice ? $specialPrice : ''?></strong>
+                		</p>
+                		<?php else:?>
+                		<p class="price">
+                			<span class="price-label hidden"><?php echo $this->__('Regular Price:')?></span>
+                			<strong class="text-primary" id=""><?php echo $price ? $price : ''?></strong>
+            			</p>
+                		<?php endif;?>
+                    </div>
+               	 <p><button type="button" title="<?php echo $this->__('Add To Cart') ?>" class="btn nk-btn-default btn-cart" onclick="window.location.href = '<?php echo Mage::helper('salon')->getUrl('product/view') .'id/'.$product->getEntityId()?>'"><span><span><?php echo $this->__('Add To Cart') ?></span></span></button></p>
+				</div>
+			<?php if(($item + 1) % $rowNumber == 0):?>
+		</div>
+		<?php endif;?>
+		<?php $item++?>
+<?php endforeach;?>
+</div>
+<?php endif;?>
+

@@ -1,0 +1,124 @@
+#tabbed_nav {
+    margin: 0px auto;
+}
+
+.tabbed_nav h4 {
+    font-family: arial, helvetica;
+    font-size: 23px;
+    margin-bottom: 10px;
+}
+
+.tabbed_area {
+    background: #f0f0f0;
+}
+
+ul.tabs {
+    overflow: hidden;
+    margin: 5px 0px -1px 0px; 
+    padding: 0px;
+}
+
+ul.tabs li {
+    list-style: none;
+    display: inline;
+    float: left;
+}
+
+ul.tabs li a {
+    display: block;
+    height: inherit;
+    float: left;
+    padding: 10px 25px 10px 25px;
+    color: #333; line-height: 35px; text-align: center;
+    font-size: 16px; font-weight: 500;
+    text-decoration: none; text-transform: uppercase;
+    background: transparent url(images/button.png) no-repeat top left scroll;
+
+}
+
+ul.tabs li a:hover {
+    background: transparent url(images/button.png) no-repeat bottom left scroll;
+}
+
+ul.tabs li a.active {
+    color: #333333;
+    background: transparent url(images/button.png) no-repeat bottom left scroll ;
+}
+
+.tabbed-content {
+    padding: 10px;
+    position: relative; z-index:  999;
+    background: #fff url(images/content_bg.jpg) repeat-x bottom left scroll;
+}
+
+.tabbed-content ul {
+	list-style: none;
+    margin: 0px;
+    padding: 0;
+}
+
+
+.tabbed-content ul li {
+    border-bottom: 1px solid #e7e7e7;
+    padding: 15px 0px;
+    font-size: 13px;
+}
+
+.tabbed-content ul li a {
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.tabbed-content ul li:last-child {
+    border-bottom: none;
+}
+
+#tabbed_nav  a.tab:hover {
+    background-color: #ccc;
+    -webkit-transition: background-color 1000ms linear;
+    -moz-transition: background-color 1000ms linear;
+    -o-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: background-color 1000ms linear;
+}
+
+#tabbed_nav .active {
+	background: #ccc;
+}
+
+#classifed-gallery .description {
+	padding: 7px;
+}	
+
+#classifed-gallery .img-box a{
+	height: 225px;
+	display: block;
+}
+
+.img-thumb {
+	position: relative;
+}
+
+.img-thumb a {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.img-thumb img {
+	width: inherit;
+}
+
+.item {
+	text-align: center;
+}
+
+.currently h3 {
+	margin: 0;
+	padding-top: 20px;
+	padding-bottom: 10px;
+}
+
+.classifed-gallery .row {
+	padding: 15px 0px;
+}

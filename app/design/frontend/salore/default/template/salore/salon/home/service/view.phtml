@@ -1,0 +1,81 @@
+<?php $serviceObject = $this->getService()?>
+<div class="row service-wrapper">
+	<div class="col-sm-12">
+		<div class="page-title category-title">
+			<h1><?php echo $this->__('This should be Service').' <i class="fa fa-angle-right"></i> '.$serviceObject->getData('service_name')?></h1>
+		</div>
+	</div>
+	<div class="col-sm-6 image-collection">
+		<div class="product-img-box">
+			<div class="img-master text-center">
+				<img id="larger-product-image" alt="<?php echo $serviceObject->getData('service_name')?>" src="<?php echo $serviceObject->getData('largerUrl') ? $serviceObject->getData('largerUrl') : '' ?>"/>
+			</div>
+		</div>
+		<div class="img-collection img-more-view">
+			<h2><?php echo $this->__('Gallery')?></h2>
+			<ul class="product-image-thumbs list-unstyled pull-left" id="links">
+			<?php foreach($serviceObject->getData('images') as $thumb):?>
+				<?php if(isset($thumb['smallUrl'])):?>
+					<?php $baseImage = $serviceObject->getData('base_image')?>
+					<li class="pull-left"><a href="<?php echo isset($baseImage['url']) ? $baseImage['url'] : '' ?>" class="thumb-link"><img class="service-thumb" src="<?php echo $thumb['largerUrl']?>" alt="<?php echo $serviceObject->getData('service_name')?>"/></a></li>
+				<?php endif;?>
+			<?php endforeach;?>
+			</ul>
+		</div>
+	</div>
+	<div class="col-sm-6 service-detail">
+		<div class="product-name pull-left">
+			<h1 class="text-upper"><?php echo $serviceObject->getData('service_name')?></h1>
+		</div>
+		<div class="price-info pull-right">
+			<div class="price-box">
+				<h2 class="regular-price"><span class="price <?php echo $serviceObject->getData('special_price') ? 'line-through' : '' ?>"><?php echo Mage::helper('salon')->stringFormatToPrice($serviceObject->getData('price')) ?></span></h2>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+		<div class="duration"><p><strong><?php echo $this->__('Duration: ')?></strong><?php echo $serviceObject->getData('duration'). ' minute'?></p></div>
+		<?php if($serviceObject->getData('special_price')):?>
+		<div class="special-price-box">
+			<p class="special-price"><strong><?php echo $this->__('Special Price: ')?></strong><?php echo Mage::helper('salon')->stringFormatToPrice($serviceObject->getData('special_price'))?></p>
+			<p class="from-date"><strong><?php echo $this->__('Special From Date: ')?></strong><?php echo Mage::helper('salon')->transformTimestampToDate($serviceObject->getData('special_from_date'))?></p>
+			<p class="to-date"><strong><?php echo $this->__('Special To Date: ')?></strong><?php echo Mage::helper('salon')->transformTimestampToDate($serviceObject->getData('special_to_date'))?></p>
+		</div>
+		<?php endif;?>
+		<div class="short-description clear-fix">
+			<div class="std">
+				<p><strong><?php echo $this->__('Short Description: ')?></strong> <?php echo $serviceObject->getData('short_description')?></p>
+			</div>
+		</div>
+		<!-- 
+		<div class="reservation-group">
+			<button class="btn nk-btn-default btn-cart" onclick="window.location.href ='#'" title="Reservation" type="button"><?php echo $this->__('Reservation')?></button>
+		</div>
+		 -->
+	</div>
+	<div class="col-sm-12 toggle-content tabs view-more">
+		<h2><?php echo $this->__('Description')?></h2>
+		<div class="description">
+			<?php echo $serviceObject->getData('description')?>
+		</div>
+	</div>
+</div>
+<script type= "text/javascript">
+//<![CDATA[
+	/* $('.service-thumb').on('click', function(event){
+		var src = $(this).attr('src');
+		src = src.replace('small', 'larger');
+		$('#larger-product-image').attr('src', src);
+		event.preventDefault();
+	}); */
+	document.getElementById('links').onclick = function (event) {
+	    event = event || window.event;
+	    var target = event.target || event.srcElement,
+	        link = target.src ? target.parentNode : target,
+	        options = {index: link, event: event},
+	        links = this.getElementsByTagName('a');
+	    blueimp.Gallery(links, options);
+	};
+//]]>
+</script>
+
+

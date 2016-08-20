@@ -1,0 +1,24 @@
+<?php $textSearch = $this->getRequest()->getParam('q')?>
+<form action="<?php echo Mage::helper('salon')->getSearchFormActionUrl() ?>" method="get" role="search" id="dealerlocator_form" class="">
+	<div class="form-group nk-width-fluid nk-top-search">
+		<div class="input-group nk-width-fluid">
+			<input type="text" class="form-control" name="q" id="search-input" placeholder="Enter Zip Code or Postal Code..." value="<?php echo $textSearch ? $textSearch : ''?>"> 
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-default">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+			</span>
+		</div>
+		<input type="hidden" name="mode" value="list">
+	</div>
+</form>
+<script type= "text/javascript">
+//<![CDATA[
+           $('#search-input').autocomplete({
+			    serviceUrl: '<?php echo Mage::helper('solr')->getAutocompleteUrl()?>',
+			    onSelect: function (suggestion) {
+			        //alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+			    }
+			});
+//]]>
+</script>

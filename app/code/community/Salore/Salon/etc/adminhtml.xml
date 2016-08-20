@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <salore module="salon">
+            <title>Salore</title>
+            <sort_order>71</sort_order>
+            <depends>
+                <module>Salore_Salon</module>
+            </depends>
+            <children>
+                <salon_settings translate="title" module="salon">
+                    <title>Email settings</title>
+                    <sort_order>1</sort_order>
+                    <action>adminhtml/system_config/edit/section/salon
+                    </action>
+                </salon_settings>
+            </children>
+            <children>
+                <salore translate="title" module="salon">
+                    <title>Salon Management</title>
+                    <sort_order>2</sort_order>
+                    <action>sbsalon/adminhtml_salon/index</action>
+                </salore>
+                <topcitimanager translate="title" module="salon">
+                    <title>City Image Management</title>
+                    <sort_order>3</sort_order>
+                    <action>sbsalon/adminhtml_city/index</action>
+                </topcitimanager>
+                <category translate="title" module="salon">
+                    <title>Category Management</title>
+                    <sort_order>3</sort_order>
+                    <action>sbsalon/adminhtml_category/index</action>
+                </category>
+            </children>
+                
+        </salore>
+    </menu>
+    <acl>
+        <resources>
+            <all>
+                <title>Salore Salon</title>
+            </all>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <salon translate="title">
+                                        <title>Salore - Salon settings</title>
+                                        <sort_order>99</sort_order>
+                                    </salon>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

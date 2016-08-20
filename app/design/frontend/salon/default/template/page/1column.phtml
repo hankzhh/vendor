@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <?php echo $this->getChildHtml('head') ?>
+  </head>
+  <body>
+  	<?php echo $this->getChildHtml('header') ?>
+    <div class="container">
+    	<?php echo $this->getChildHtml('breadcrumbs') ?>
+      	<?php echo $this->getChildHtml('content') ?>
+    </div>
+    <footer class="container">
+    	<?php echo $this->getChildHtml('footer') ?>
+    </footer>
+  </body>
+</html>

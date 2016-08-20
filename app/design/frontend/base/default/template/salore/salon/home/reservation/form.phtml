@@ -1,0 +1,217 @@
+<?php
+    $_serviceCollection = $this->getServiceCollection();
+?>
+<div class="salon-page row"> 
+<div class="col-sm-12">
+	<div class="booking-content col-sm-12">
+	<div class="col-sm-7">
+		<form role="form" class="form-horizontal" action="<?php echo $this->getAction()?>" method="post" enctype="multipart/form-data" id="form-reservation">
+			 <div id="parent" class="form-group">
+				 <div id="input" class="inline" >
+				  	<label for="search_service" class="col-sm-3 control-label"><?php echo $this->__('Select Services:')?> </label>
+				   	<div style="padding: 0px" class="dropdown-wrapper col-sm-9">
+				   	<select name="search_service" class="form-control selectService" id="search_service">
+				   		<option value="<?php echo $this->__('all')?>"><?php echo $this->__('All Services')?></option>
+				   		<?php $serviceId = $this->getRequest()->getParam('serviceId')?>
+			   			<?php foreach ($_serviceCollection as $service):?>
+			   				<option value="<?php echo $service->getEntityId()?>" <?php echo ($service->getEntityId() == $serviceId) ? 'selected' : '' ?>> <?php echo $service->getServiceName()?>
+			   				</option>
+			   			<?php endforeach;?>
+				   	</select >
+				  	</div>
+				 </div>
+			 </div>
+			 <div id="resultService" style="height: 155px; margin-left:148px; width: 216px; display: none; border: 1px solid #D0D3D4; overflow-y: scroll">
+				  <ul id="result_service">
+				  </ul>
+			 </div>
+				<div class="form-group" id="date-reservation">
+					<div id="date-wrapper" class="input-box">
+						<label for="res-a-date" class="col-sm-3 control-label"><?php echo $this->__('Date Time:')?></label>
+						<div class="input-group date col-sm-9" id="res-a-date" data-date-format="dd-mm-yyyy" data-date="<?php echo Mage::helper('salon')->getCurrentDate()?>">
+							<input type="text" value="<?php echo $this->_dateSelected ? $this->_dateSelected : Mage::helper('salon')->getCurrentDate()?>" class="form-control"/>
+							<span class="input-group-addon add-on">
+								<i class="glyphicon glyphicon-calendar icon-calendar"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div id="peusedo"></div>
+		
+			<input type="hidden" id= "hidden-salonkey" name="salonkey" value="<?php echo $this->getSalonKey()?>">
+		</form>
+	</div>
+	<div class="col-sm-5 step-intro">
+		<div class="row">
+			<ol class="col-sm-offset-2">
+				<li><?php echo $this->__('Select a service from the dropdown.')?></li>
+				<li><?php echo $this->__('Pick a date.')?></li>
+				<li><?php echo $this->__('Choose a time frame.')?></li>
+				<li><?php echo $this->__('Click CHECK OUT to order your appointment.')?></li>
+			</ol>
+		</div>
+	</div>
+</div>
+</div>
+<div class="col-sm-12">
+	<div id="service-booking-wrapper" class="col-sm-9">
+			<?php echo $this->getServicesListHtml()?>	
+	</div>
+	<div id="checkout-wrapper" class="col-sm-3 sidebar-second thumbnail text-center">
+		<h4 class=""><?php echo $this->__('My Appointment')?></h4>
+		<p class=""><?php echo $this->__('You have no items in your shopping cart.')?></p>
+		<form id="nailkare-sidebar-checkout" action="<?php echo Mage::getUrl('salon/checkout')?>" method="post">
+			<div id="selected-item-wrapper">
+			<?php $reservationSession = Mage::getSingleton('checkout/session')->getData('salon_reservation')?>
+			<?php if (is_array($reservationSession) && !empty($reservationSession)): ?>
+				<?php $total = 0?>
+				<?php foreach ($reservationSession as $item):?>
+					<?php $total += $item['price'] ?>
+					
+					<script>
+					(function(){
+							var total = '<?php echo $total?>';
+							
+							var idService = '<?php echo $item['elementId']?>';
+
+							var cartElement = $(document.createElement('div')).addClass('selected-item').attr('id',idService);
+
+							var serviceName = $(document.createElement('div')).html('<?php echo $item['serviceName']?>');
+
+							var serviceDate = $(document.createElement('div')).html('<?php echo $item['date']?>');
+
+							var serviceTime = $(document.createElement('div')).html('<?php echo $item['timeframe']?>');
+							
+							var servicePrice = $(document.createElement('div')).html('Price:&nbsp$<span>'+'<?php echo $item['price']?>'+'</span>.00');
+
+							var serviceClose = $(document.createElement('span')).addClass('close-icon close').html('<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>');
+
+							cartElement.append(serviceName, serviceDate, serviceTime, servicePrice, serviceClose);
+								
+							$('#selected-item-wrapper').append(cartElement);
+							$('#checkout-wrapper').children('p:nth-child(2)').hide();
+							$('#submit-checkout-wrapper').show();
+							var date = '<?php echo $item['date']?>';
+							var dateStatic = $('#res-a-date').children('input').val();
+							if($('#res-a-date').children('input').val() == date)
+							{
+								idService = idService.replace('-selected-item', '');
+								$('#'+idService).addClass('selected');
+							}
+							$(serviceClose).click(function(){
+								var params = {
+										power: $(this).parent(),
+										serviceId: $('#search_service').val(),
+										dateSelected: $(this).parent().children('div:nth-child(2)').html(),
+										messageEmptyCart: $('#checkout-wrapper').children('p'),
+										checkoutWrap: $('#selected-item-wrapper'),
+										totalPriceWrap: $('#total-price-services'),
+										timeframe: $(this).parent().children('div:nth-child(3)').html(),
+										price: $(this).parent().children('div:nth-child(4)').children('span').html(),
+										getServiceId:function(text)
+										{
+											var text = text.split("-");
+											return text[1];
+										},
+								};
+								totalPrice = totalPrice - parseFloat(params.price);
+								refreshCheckout(params.messageEmptyCart, params); 
+							});
+							
+					})();
+				</script>
+				<?php endforeach;?>
+				
+			<?php endif;?>
+			
+			</div>
+				<div id="total-price-services"><?php echo (isset($total) && $total) ? '<strong>'.$this->__('Total Price: ').'</strong>$'.$total.'.00' : ''?></div>
+				<div class="sida" id="submit-checkout-wrapper" style="display:<?php echo (is_array($reservationSession) && !empty($reservationSession)) ? 'block' : 'none'?>">
+					<button id="submit-service-checkout" type="submit" class="btn btn-default" title="<?php echo $this->__('Check Out') ?>"><span><span><?php echo $this->__('CheckOut') ?></span></span></button>
+				</div>		
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var totalPrice = parseFloat('<?php echo isset($total) ? $total : 0?>');
+	var prepareData = {
+			imgAjxLoading : '<?php echo $this->getSkinUrl('images/res-loading.gif')?>',
+			urlFilter : '<?php echo Mage::helper('salon')->getUrl('reservation/ajaxDayCallService')?>',
+			urlCheckout: '<?php echo Mage::helper('salon')->getUrl('reservation/checkout')?>',
+			serviceWrap : $('#search_service').parent().parent(),
+			datepickerWrap : $('#res-a-date'),
+			contentWrap: $('#service-booking-wrapper'),
+			serviceInput: $('#search_service'),
+			btnCheckout: $('#submit-service-checkout'),
+	};
+	//setup datepicker
+    $(function () {
+		var datePicker = $('#res-a-date').datepicker().on('changeDate', function(ev){
+			datePicker.hide();
+			//catch ajax when having change event
+			$(prepareData.datepickerWrap).append('<img style="width: 40px; position: absolute; top: 0px; padding-left:10px" alt="ajax loading" src="'+prepareData.imgAjxLoading+'"/>');
+			ajaxRenderContent('datechange');
+		}).data('datepicker');
+	});
+	//disble date of past
+	var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+    $('#res-a-date').datepicker({
+    	onRender: function(date) {
+        	return date.valueOf() < now.valueOf() ? 'disabled' : '';
+		}
+	});
+	//catch ajax
+	var ajaxRenderContent = function(eventType)
+	{
+		var parameters = {
+			serviceId: $('#search_service').val(),
+			dateSelected: $('#res-a-date').children('input').val(),
+		};
+		$.ajax({
+    		type: "POST",
+    		url: prepareData.urlFilter,
+    		data: { serviceId: parameters.serviceId , dateSelected: parameters.dateSelected },
+    	    success: function(response){
+        	    if(eventType === 'datechange')
+        	    {
+        	    	$(prepareData.datepickerWrap).children('img').remove();
+        	    }
+        	    else
+        	    {
+					$(prepareData.serviceWrap).children('img').remove();
+             	}
+        	    prepareData.contentWrap.html(response);
+			}
+		});
+	}
+	
+	$(prepareData.serviceInput).change(function(e){
+		prepareData.serviceWrap.append('<img style="width: 40px; position: absolute; padding-left:10px" alt="ajax loading" src="'+prepareData.imgAjxLoading+'"/>');
+		ajaxRenderContent('servicechange');
+	});
+
+	prepareData.btnCheckout.click(function(e){
+		$('#nailkare-sidebar-checkout').append('<div><img style="padding-bottom: 5px" alt="ajax loading" src="'+prepareData.imgAjxLoading+'"/></div>');
+		$.ajax({
+    		type: "POST",
+    		url: prepareData.urlCheckout,
+    		data: { },
+    		dataType: "json",
+    	    success: function(response){
+        		if(response.status == 'DONE')
+        		{
+        			window.location.href = response.redirectUrl;
+            	}
+			}
+		});  
+		e.preventDefault();
+	});
+
+//]]>
+</script>
+
+
+
+

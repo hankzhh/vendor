@@ -1,0 +1,7 @@
+@CHARSET "UTF-8";
+.panel-gallery{
+	margin-top: 9px;
+}
+img {
+vertical-align: baseline !important;
+}

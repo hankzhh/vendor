@@ -1,0 +1,242 @@
+.time-frame {
+	position: relative;
+	float: left;
+	border-top: 1px solid #ddd;
+}
+
+.time-frame ul {
+	margin: auto;
+}
+
+.time-frame ul li {
+    background-image: linear-gradient(to bottom, #d9edf7 0px, #c4e3f3 100%);
+    cursor: pointer;
+    float: left;
+    margin-right: 15px;
+    margin-top: 10px;
+    padding: 5px 13px;
+    position: relative;
+}
+
+.time-frame ul li.booked, .time-frame ul li.booked:hover {
+	background: #eebc1b;
+	float: left;
+	cursor: not-allowed;
+	position: relative;
+}
+
+.time-frame ul li span.empty {
+	border-right: 1px solid #fff;
+	float: right;
+	cursor: pointer;
+}
+
+.time-frame ul li:hover, .time-frame ul li.selected {
+	background: #10ade7;
+}
+
+.field {
+	margin: 20px 0xp;
+}
+
+.field label {
+    display: block;
+    float: left;
+    width: 148px;
+}
+
+#peusedo {
+	clear: both;
+}
+
+#my-custom-table {
+	margin-bottom: 20px;
+	padding-right: 21px;
+}
+
+.col-main lable {
+	display: block;
+	width: 148px;
+}
+
+/* .#search_service {
+    padding: 2px;
+} */
+
+#form-reservation button {
+	margin-left: 275px;
+}
+
+.time-end {
+    font-size: 10px;
+    position: absolute;
+    right: -7px;
+    top: 0;
+}
+
+.time-sta {
+    font-size: 9px;
+    font-weight: normal;
+    left: -7px;
+    position: absolute;
+    top: 0px;
+}
+
+.time-duration {
+    font-size: 11px;
+    font-weight: normal;
+}
+.input-box {
+	padding-top: 18px;
+	padding-bottom: 20px;
+	width: 100%;
+	float: left;
+}
+
+#service-popup ul li{
+	padding: 2px;
+}
+
+#service-popup ul li:hover {
+	background-color: #ebffac;
+}
+
+.dropdown-wrapper {
+	position:relative; 
+}
+
+/* #search_service {
+	background: url('../images/caret.png') no-repeat right 1px #fff;
+	border: #ccc 1px solid;
+	cursor: pointer;
+} */
+
+.service-selector-popup {
+	position:absolute;
+	left:0;
+	right:0;
+	padding: 3px 5px;
+	min-height: 50px;
+	cursor:pointer; 
+	width:auto; 
+	border: #ccc 1px solid; 
+	border-top: none; 
+	background:#fff; 
+	overflow-y:scroll; 
+	z-index:99999;	
+}
+
+#selected-item-wrapper .selected-item {
+	border-bottom: #e7e7e7 1px solid;
+	padding: 5px;
+}
+
+#selected-item-wrapper .selected-item .service-name {
+	font-weight: bold;
+}
+
+#submit-checkout-wrapper {
+	border-top: #e7e7e7 1px solid;
+	margin-top: 8px;
+}
+
+#total-price-services {
+	padding-top: 5px;
+}
+
+.selecte_services_loading {
+	padding-left: 5px;
+	padding-top: 2px;
+}
+
+#date-wrapper {
+	padding-top: 20px;
+}
+
+#date-wrapper input {
+    float: left;
+}
+
+
+#my-custom-table th {
+	text-align: center;
+}
+
+#service-popup input {
+	margin: 0 5px;
+}
+
+#checkout-wrapper {
+	/* border-top: #ccc 5px solid; */
+	padding: 0px;
+	box-shadow: none;
+	margin-top: 56px;
+}
+#submit-checkout-wrapper button {
+	width: 100%;
+	border-radius: 0px;
+	border: none;
+	padding: 7px 0px;
+}
+#checkout-wrapper h4 {
+	border-bottom: 1px solid #e7e7e7;
+    padding: 6px 0px;
+    margin: 0px;
+}
+ 
+#nailkare-sidebar-checkout {
+	text-align: center;
+}
+
+.selected-item {
+	position: relative;
+}
+
+.close-icon{
+	height: 15px;
+    line-height: 1;
+    position: absolute;
+    right: 0;
+    top: 1px;
+    width: 16px;
+}
+
+.close-icon:hover {
+	cursor: pointer;
+}
+
+.selecte_services_loading {
+	margin: auto;
+}
+
+#checkout-wrapper p{
+	margin-top: 7px;
+}
+
+.dropdown-wrapper {
+	padding: 0px;
+}
+
+#date-wrapper div {
+	padding: 0;
+}
+
+.selected-item div:nth-child(1) {
+	font-weight: bold;
+}
+
+.step-intro li {
+    font-style: italic;
+    padding-bottom: 6px;
+}
+
+.booking-content {
+	padding-top: 15px;
+	padding-bottom: 15px;
+	background: #f0f0f0;
+	margin-top: 15px;
+}
+
+#service-booking-wrapper {
+	padding-left: 0px;
+}

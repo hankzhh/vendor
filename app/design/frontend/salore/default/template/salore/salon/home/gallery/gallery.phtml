@@ -1,0 +1,14 @@
+<h3><?php echo $this->__('Salon  Gallery')?></h3>
+<?php $galleryObj = $this->getGallery() ?>
+<?php $numGallery = count($galleryObj) ;?>
+<?php if (isset($numGallery) && $numGallery):?>
+<div id="links">
+	<?php foreach ($galleryObj as $gallery):?>
+		<a href="<?php echo $gallery->getLargerUrl() ? $gallery->getLargerUrl() : ''?>" data-gallery="">
+			<img alt="gallery" src="<?php echo $gallery->getSmallUrl() ? $gallery->getSmallUrl() : ''?>">
+		</a>
+	<?php endforeach;?>
+</div>
+<?php else : ?>
+<h4><?php echo $this->__('This no Item in Gallery')?></h4>
+<?php endif;?>
